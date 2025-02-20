@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:14 #
+    container_name: # какое имя контенера будет?
+    restart: always
+    environment:
+      POSTGRES_USER: # нужно добавить
+      POSTGRES_PASSWORD: # нужно добавить
+      POSTGRES_DB: # нужно добавить
+    ports:
+      - "5432:5432" # поменяйте или оставьте
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: # добавить имя контейнера
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: # добавить
+      SPRING_DATASOURCE_USERNAME: # нужно добавить
+      SPRING_DATASOURCE_PASSWORD: # нужно добавить
+    depends_on:
+      - db
+
+  # Фронтенд (Vue/React)
+  frontend:
+    build:
+      context: ./client
+    container_name: # добавить имя контейнера
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
