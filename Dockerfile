@@ -1,9 +1,9 @@
 # поправить версию node
 FROM node:16 AS frontend-builder
 WORKDIR /app/client
-COPY frontend/package*.json ./
+COPY client/package*.json ./
 RUN npm install
-COPY frontend/ .
+COPY client/ .
 RUN npm run build
 
 # поправить версию jdk
