@@ -1,13 +1,16 @@
+// Это сейчас главная стпница. Сюда по идее нужно импортировать основной компонент приложения (типа app). (/)
+// В этот же каталог (/routes) вносить дополнительные страницы.
+
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import { Button } from "~/src/components/button/button";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Hotel-booking" },
+    { name: "description", content: "Welcome to Hotel-booking!" },
   ];
 }
 
 export default function Home() {
-  return <Welcome />;
+  return <Button />;
 }
