@@ -1,0 +1,1 @@
+Для запуска использовать docker-compose up --build
