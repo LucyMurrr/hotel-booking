@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 type CollapseProps = {
   opened: boolean;
   children: React.ReactNode;
+  timeout: number
 };
 
 const Collapse: React.FC<CollapseProps> = ({ opened, children }) => {
