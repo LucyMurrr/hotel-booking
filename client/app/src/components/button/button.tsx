@@ -1,5 +1,5 @@
-import {Collapse}  from "./collapse"
-import { useState } from "react";
+import { Collapse } from './collapse'
+import { useState } from 'react';
 import ChildrenComponent from './children';
 
 const Button: React.FC = () => {
