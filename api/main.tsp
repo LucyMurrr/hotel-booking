@@ -267,6 +267,15 @@ model PaginatedDto<Data, Filters, SortBy> {
   sortOrder: "ASC" | "DESC";
 }
 
+model AuthInfo {
+  email: string;
+  password: string;
+}
+
+model TokenInfo {
+  token: string;
+}
+
 @route("/hotels")
 namespace Hotels {
   @get
@@ -486,4 +495,13 @@ namespace Favorites {
   op deleteFavorite(@path hotelId: int32): {
     @statusCode statusCode: 204;
   } | NotFoundError | UnauthorizedError | ForbiddenError;
+}
+
+@route("/tokens")
+namespace tokens {
+  @post
+  op create(@body authInfo: AuthInfo): {
+    @body token: TokenInfo;
+    @statusCode statusCode: 201;
+  } | UnprocessableEntityError;
 }
