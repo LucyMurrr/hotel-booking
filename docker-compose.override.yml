@@ -1,0 +1,21 @@
+services:
+  frontend:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev"
+
+  backend:
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - ./backend:/app
+    command: sh -c "gradle build && java -jar build/libs/hotel-booking-0.0.1-SNAPSHOT.jar"
+
+  db:
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb_dev
