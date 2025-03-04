@@ -11,10 +11,10 @@ COPY build.gradle.kts settings.gradle.kts ./
 COPY src ./src
 
 # Сборка проекта
-RUN gradle clean build --no-daemon -x checkstyleMain -x checkstyleTest
+RUN gradle clean build --no-daemon
 
 # Копирование собранного JAR-файла в рабочую директорию
 RUN cp build/libs/hotel-booking-0.0.1-SNAPSHOT.jar app.jar
 
 # Команда для запуска приложения
-CMD ["gradle", "bootRun"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
