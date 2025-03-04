@@ -4,4 +4,4 @@ COPY build.gradle.kts settings.gradle.kts ./
 RUN gradle dependencies --no-daemon
 COPY src ./src
 EXPOSE 8080
-CMD ["./gradlew", "bootRun"]
+CMD ["gradle", "bootRun"]
