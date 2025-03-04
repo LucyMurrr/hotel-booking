@@ -1,5 +1,5 @@
 services:
-  frontend:
+  client:
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -8,9 +8,9 @@ services:
     environment:
       - NODE_ENV=production
     depends_on:
-      - backend
+      - server
 
-  backend:
+  server:
     build:
       context: ./backend
       dockerfile: Dockerfile
