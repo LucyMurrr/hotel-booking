@@ -9,7 +9,7 @@ services:
       - "5173:5173"
     environment:
       NODE_ENV: development
-      HOST: '0.0.0.0'
+      HOST: "0.0.0.0"
     command: npm run dev
 
   server:
