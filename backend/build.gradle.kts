@@ -29,7 +29,6 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-web")
 	implementation ("org.postgresql:postgresql")
 	compileOnly("org.projectlombok:lombok")
-	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
