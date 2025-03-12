@@ -15,3 +15,24 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+
+    - name: Install TypeSpec Compiler
+      run: npm install -g @typespec/compiler
+
+    - name: Install OpenAPI Generator
+      run: sudo npm install -g @openapitools/openapi-generator-cli
+
+    - name: Generate OpenAPI from TypeSpec
+      run: |
+        cd backend
+        ./generate-openapi.sh
+
+    - name: Generate tests from OpenAPI
+      run: |
+        cd backend
+        ./generate-tests.sh
+
+    - name: Run tests
+      run: |
+        cd backend/generated-tests
+        mvn test 

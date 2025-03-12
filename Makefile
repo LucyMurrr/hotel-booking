@@ -8,7 +8,7 @@ gen-server:
 		-i /local/tsp-output/openapi.yaml \
 		-g spring \
 		-o /local/dist/server \
-  	--additional-properties=useSpringBoot3=true,dateLibrary=java8,library=spring-boot
+		--additional-properties=useSpringBoot3=true,dateLibrary=java8,library=spring-boot
 
 gen-client:
 	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \
@@ -17,7 +17,18 @@ gen-client:
 		-o /local/dist/client \
 		--additional-properties=npmName="@api/client",supportsES6=true
 
-gen-all: gen-api gen-server gen-client
+gen-tests:
+	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \
+		-i /local/tsp-output/openapi.yaml \
+		-g java \
+		-o /local/dist/tests \
+		--additional-properties=library=rest-assured,useJakartaEe=true
+
+test-api:
+	docker run --rm -v ${PWD}/api/dist/server:/app -w /app $(TEST_IMAGE) \
+		gradle test -Dspring.profiles.active=test
+
+gen-all: gen-api gen-server gen-client gen-tests
 
 dev:
 	docker compose up --build
