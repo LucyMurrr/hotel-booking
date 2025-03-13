@@ -17,18 +17,15 @@ gen-client:
 		-o /local/dist/client \
 		--additional-properties=npmName="@api/client",supportsES6=true
 
-gen-tests:
-	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \
-		-i /local/tsp-output/openapi.yaml \
-		-g java \
-		-o /local/dist/tests \
-		--additional-properties=library=rest-assured,useJakartaEe=true
-
 test-api:
-	docker run --rm -v ${PWD}/api/dist/server:/app -w /app $(TEST_IMAGE) \
-		gradle test -Dspring.profiles.active=test
+	docker run --rm -v ${PWD}/api:/api $(SCHEMATHESIS_IMAGE) run \
+		--base-url=http://backend:8080 \
+		/api/tsp-output/openapi.yaml \
+		--checks=all \
+		--validate-schema=true \
+		--hypothesis-max-examples=100
 
-gen-all: gen-api gen-server gen-client gen-tests
+gen-all: gen-api gen-server gen-client
 
 dev:
 	docker compose up --build
