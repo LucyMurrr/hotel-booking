@@ -1,4 +1,4 @@
-OPENAPI_GENERATOR_IMAGE :=openapitools/openapi-generator-cli:latest-release
+OPENAPI_GENERATOR_IMAGE := openapitools/openapi-generator-cli:latest-release
 SCHEMATHESIS_IMAGE := schemathesis/schemathesis:latest
 
 gen-api:
