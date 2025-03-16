@@ -1,15 +1,16 @@
-import { Collapse } from './collapse'
 import { useState } from 'react';
-import ChildrenComponent from './children';
+import Collapse from '@components/collapse';
+import ChildrenComponent from '@components/children';
 
-const Button: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+const Button = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleCollapse = () => setIsOpen(!isOpen);
 
   return (
     <div style={{ padding: '20px' }}>
       <button
+        type="button"
         onClick={toggleCollapse}
         style={{
           marginBottom: '16px',
@@ -23,12 +24,11 @@ const Button: React.FC = () => {
       >
         {isOpen ? 'Close' : 'Booking-Hotels'}
       </button>
-      {/* <SomeElement></SomeElement> */}
-      <Collapse opened={isOpen} timeout={200}>
+      <Collapse opened={isOpen}>
         <ChildrenComponent />
       </Collapse>
     </div>
   );
 };
 
-export { Button };
+export default Button;
