@@ -7,5 +7,5 @@ export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   server: {
     host: process.env.HOST,
-  }
+  },
 });

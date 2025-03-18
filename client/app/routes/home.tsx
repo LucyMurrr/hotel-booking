@@ -1,9 +1,11 @@
-// Это сейчас главная стпница. Сюда по идее нужно импортировать основной компонент приложения (типа app). (/)
+// eslint-disable-next-line max-len
+// Это сейчас главная страница. Сюда по идее нужно импортировать основной компонент приложения (типа app). (/)
 // В этот же каталог (/routes) вносить дополнительные страницы.
 
+import Button from '@components/button';
 import type { Route } from './+types/home';
-import { Button } from '~/src/components/button/button';
 
+// eslint-disable-next-line no-empty-pattern
 export function meta({}: Route.MetaArgs) {
   return [
     { title: 'Hotel-booking' },
@@ -11,6 +13,6 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Home() {
-  return <Button />;
-}
+const Home = () => <Button />;
+
+export default Home;

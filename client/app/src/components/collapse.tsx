@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type CollapseProps = {
   opened: boolean;
   children: React.ReactNode;
-  timeout: number
 };
 
-const Collapse: React.FC<CollapseProps> = ({ opened, children }) => {
+const Collapse = ({ opened, children }: CollapseProps) => {
   const [maxHeight, setMaxHeight] = useState<number | string>(opened ? 'none' : 0);
   const el = useRef<HTMLDivElement>(null);
 
@@ -20,16 +19,16 @@ const Collapse: React.FC<CollapseProps> = ({ opened, children }) => {
   }, [opened]);
 
   return (
-      <div
-        style={{
-          overflow: 'hidden',
-          maxHeight: maxHeight,
-          transition: `max-height ${200}ms ease`,
-        }}
-      >
-        <div ref={el}>{children}</div>
-      </div>
+    <div
+      style={{
+        overflow: 'hidden',
+        maxHeight,
+        transition: 'max-height 200ms ease',
+      }}
+    >
+      <div ref={el}>{children}</div>
+    </div>
   );
 };
 
-export { Collapse };
+export default Collapse;
