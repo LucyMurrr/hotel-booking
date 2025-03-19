@@ -1,0 +1,61 @@
+name: Lint and Typecheck
+
+on:
+  push: {}
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: "Frontend: Lint"
+            working-directory: client
+            command: make lint
+          - name: "Frontend: Typecheck"
+            working-directory: client
+            command: make typecheck
+          - name: "Backend: Lint"
+            working-directory: backend
+            command: ./gradlew checkstyleMain
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (for frontend)
+        if: contains(matrix.name, 'Frontend')
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - name: Set up Java (for backend)
+        if: contains(matrix.name, 'Backend')
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: "gradle"
+
+      - name: Install dependencies (frontend)
+        if: contains(matrix.name, 'Frontend')
+        run: npm install
+        working-directory: ${{ matrix.working-directory }}
+
+      - name: Install dependencies (backend)
+        if: contains(matrix.name, 'Backend')
+        run: ./gradlew build --no-daemon
+        working-directory: ${{ matrix.working-directory }}
+
+      - name: Generate server and client
+        run: |
+          make gen-all
+        working-directory: .
+
+      - name: Run command
+        run: ${{ matrix.command }}
+        working-directory: ${{ matrix.working-directory }}
