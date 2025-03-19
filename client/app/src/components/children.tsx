@@ -1,6 +1,21 @@
-import React from 'react';
+import { useEffect } from 'react';
 
-const ChildrenComponent: React.FC = () => {
+import client from '@api';
+
+const fetch = async () => {
+  try {
+    const resp = await client.amenitiesListAmenities();
+    console.log(resp); // eslint-disable-line no-console
+  } catch (err) {
+    console.error(err); // eslint-disable-line no-console
+  }
+};
+
+const ChildrenComponent = () => {
+  useEffect(() => {
+    fetch(); // eslint-disable-line @typescript-eslint/no-floating-promises
+  }, []);
+
   return (
     <div
       style={{
