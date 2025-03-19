@@ -41,6 +41,11 @@ jobs:
           java-version: "17"
           cache: "gradle"
 
+      - name: Make gradlew executable
+        if: contains(matrix.name, 'Backend')
+        run: chmod +x gradlew
+        working-directory: ${{ matrix.working-directory }}
+
       - name: Install dependencies (frontend)
         if: contains(matrix.name, 'Frontend')
         run: npm install
