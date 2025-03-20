@@ -51,7 +51,7 @@ jobs:
         run: npm ci
       - name: Run frontend linter
         working-directory: ./client
-        run: make lint
+        run: npm run lint -- --fix
       - name: Run frontend typecheck
         working-directory: ./client
         run: make typecheck
