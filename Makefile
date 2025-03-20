@@ -36,3 +36,9 @@ build: gen-all
 
 drop-database:
 	docker-compose down -v
+
+lint:
+	npm run lint
+
+typecheck:
+	npx tsc --noEmit
