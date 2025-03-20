@@ -28,9 +28,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('backend/**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+      - name: Make gradlew executable # Добавляем права на выполнение
+        working-directory: ./backend
+        run: chmod +x gradlew
       - name: Run backend linter
         working-directory: ./backend
         run: ./gradlew checkstyleMain
