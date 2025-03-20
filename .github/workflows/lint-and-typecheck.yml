@@ -19,24 +19,16 @@ jobs:
     needs: generate-api
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - name: Generate Gradle Wrapper
+        uses: docker://gradle:jdk23-corretto-al2023
         with:
-          java-version: "17"
-          distribution: "corretto"
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('backend/**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - name: Make gradlew executable # Добавляем права на выполнение
-        working-directory: ./backend
-        run: chmod +x gradlew
+          entrypoint: /bin/sh
+          args: -c "cd /github/workspace/backend && gradle wrapper"
       - name: Run backend linter
-        working-directory: ./backend
-        run: ./gradlew checkstyleMain
+        uses: docker://gradle:jdk23-corretto-al2023
+        with:
+          entrypoint: /bin/sh
+          args: -c "cd /github/workspace/backend && chmod +x gradlew && ./gradlew checkstyleMain"
 
   lint-frontend:
     runs-on: ubuntu-latest
