@@ -9,6 +9,7 @@
     "@typespec/openapi3": "latest"
   },
   "devDependencies": {
+    "@stoplight/prism-cli": "^5.12.0",
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",
     "@typespec/openapi": "latest",

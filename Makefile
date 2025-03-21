@@ -26,6 +26,9 @@ test-api:
 		--validate-schema=true \
 		--hypothesis-max-examples=100
 
+start-mock:
+	./api/node_modules/.bin/prism mock api/tsp-output/openapi.yaml
+
 gen-all: gen-api gen-server gen-client
 
 dev:
@@ -36,3 +39,4 @@ build: gen-all
 
 drop-database:
 	docker-compose down -v
+
