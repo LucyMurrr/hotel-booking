@@ -38,7 +38,7 @@ drop-database:
 	docker-compose down -v
 
 lint:
-	npm run lint
+	cd ./client && npm run lint
 
 typecheck:
-	npx tsc --noEmit
+	cd ./client && npx tsc --noEmit

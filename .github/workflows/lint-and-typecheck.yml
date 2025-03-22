@@ -78,10 +78,8 @@ jobs:
         working-directory: ./client
         run: npm ci
       - name: Run frontend typecheck
-        working-directory: ./client
         run: make typecheck
       - name: Run frontend
-        working-directory: ./client
         run: make lint
 
   parallel-linting:
@@ -93,4 +91,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run ${{ matrix.job }}
-        run: make ${{ matrix.job }}
+        if: matrix.job == 'lint-backend'
+        uses: docker://gradle:jdk23-corretto-al2023
+        with:
+          entrypoint: /bin/sh
+          args: -c "cd /github/workspace/backend && chmod +x gradlew && ./gradlew checkstyleMain"
+      - name: Run ${{ matrix.job }}
+        if: matrix.job == 'lint-frontend'
+        run: make lint
