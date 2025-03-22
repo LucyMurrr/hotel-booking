@@ -1,6 +1,7 @@
 OPENAPI_GENERATOR_IMAGE := openapitools/openapi-generator-cli:latest-release
 SCHEMATHESIS_IMAGE := schemathesis/schemathesis:latest
 
+
 gen-api:
 	docker run --rm -v ${PWD}/api:/api node:22-alpine sh -c "cd /api && npm i && npx tsp compile ."
 
@@ -37,6 +38,12 @@ build: gen-all
 drop-database:
 	docker-compose down -v
 
+install dep:
+	cd ./client && npm ci
+
+generate-types:
+	cd ./client && npx tsc --declaration --emitDeclarationOnly --outDir ./dist/types
+	
 lint:
 	cd ./client && npm run lint
 

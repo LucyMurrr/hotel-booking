@@ -75,11 +75,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install dependencies
-        working-directory: ./client
-        run: npm ci
+        run: make install dep
+      - name: Generate types
+        run: make generate-types
       - name: Run frontend typecheck
         run: make typecheck
-      - name: Run frontend
+      - name: Run frontend linter
         run: make lint
 
   parallel-linting:
