@@ -76,8 +76,6 @@ jobs:
             ${{ runner.os }}-node-
       - name: Install dependencies
         run: make install dep
-      - name: Generate types
-        run: make generate-types
       - name: Run frontend typecheck
         run: make typecheck
       - name: Run frontend linter

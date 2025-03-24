@@ -40,9 +40,6 @@ drop-database:
 
 install dep:
 	cd ./client && npm ci
-
-generate-types:
-	cd ./client && npx tsc --declaration --emitDeclarationOnly --outDir ./dist/types
 	
 lint:
 	cd ./client && npm run lint
