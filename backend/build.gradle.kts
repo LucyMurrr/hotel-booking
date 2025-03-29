@@ -20,6 +20,25 @@ configurations {
 	}
 }
 
+tasks.withType<ProcessResources> {
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+tasks.withType<JavaExec> {
+	mainClass.set("aim.hotel_booking.HotelBookingApplication")
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs("/api/generated-code/src/main/java")
+		}
+		resources {
+			srcDirs("/api/generated-code/src/main/resources")
+		}
+	}
+}
+
 repositories {
 	mavenCentral()
 }
@@ -27,9 +46,18 @@ repositories {
 dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation ("org.springframework.boot:spring-boot-starter-web")
+	implementation("io.springfox:springfox-boot-starter:3.0.0")
+	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation ("org.postgresql:postgresql")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
+	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+	implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("io.swagger.core.v3:swagger-annotations:2.2.15")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
