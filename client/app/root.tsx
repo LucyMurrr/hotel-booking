@@ -10,8 +10,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import type { Route } from './+types/root';
 import './app.css';
-import AppHeader from './src/components/header/header.component.tsx 16-54-30-927';
-import AppFooter from './src/components/footer/footer.component';
+// import AppHeader from './src/components/header/header.component.tsx 16-54-30-927';
+// import AppFooter from './src/components/footer/footer.component';
 import BaseLayout from './routes/baseLayout';
 // import BaseLayout from './routes/baseLayout.component';
 

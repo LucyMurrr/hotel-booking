@@ -4,12 +4,12 @@ import {
 } from 'antd';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { StarOutlined } from '@ant-design/icons';
-// import { ImgCarousel } from '../src/components/carousel.component';
+// import ImgCarousel from './carousel.component';
 
 const cardStyle: React.CSSProperties = {
-  width: '100%', // Ширина 100%
-  height: '83vh', // Высота 100% от высоты окна
-  display: 'flex', // Используем Flexbox для выравнивания содержимого
+  width: '100%',
+  height: '83vh',
+  display: 'flex',
   flexDirection: 'column',
 };
 
@@ -20,6 +20,7 @@ const imgStyle: React.CSSProperties = {
 
 const Hotel: React.FC = () => (
   <Card hoverable style={cardStyle} styles={{ body: { padding: 0, overflow: 'hidden' } }}>
+    {/* <ImgCarousel /> */}
     <Flex justify="space-between">
       <img
         alt="avatar"
