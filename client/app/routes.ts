@@ -8,5 +8,4 @@ export default [
   route('/hotels/:hotelName/rooms', 'routes/rooms.component.tsx'),
   route('/auth', 'routes/authorisation.form.tsx'),
   route('/profile', 'routes/profile.component.tsx'),
-
 ] satisfies RouteConfig;
