@@ -10,8 +10,9 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import type { Route } from './+types/root';
 import './app.css';
-import AppHeader from './src/components/header/header.component';
-import AppFooter from './src/components/footer/footer.component';
+// import AppHeader from './src/components/header/header.component.tsx 16-54-30-927';
+// import AppFooter from './src/components/footer/footer.component';
+import BaseLayout from './routes/baseLayout';
 // import BaseLayout from './routes/baseLayout.component';
 
 // export const links: Route.LinksFunction = () => [
@@ -46,35 +47,35 @@ export const Layout = ({ children }: { children: React.ReactNode }) => (
 
 // eslint-disable-next-line react/function-component-definition
 export default function App() {
-  
-    const headerRef = useRef<HTMLDivElement>(null);
-    const footerRef = useRef<HTMLDivElement>(null);
-    const [contentHeight, setContentHeight] = useState<string>('auto');
-  
-    useEffect(() => {
-      if (headerRef.current && footerRef.current) {
-        const headerHeight = headerRef.current.offsetHeight;
-        const footerHeight = footerRef.current.offsetHeight;
-        const totalHeight = headerHeight + footerHeight;
-  
-        setContentHeight(`calc(100% - ${totalHeight}px)`);
-      }
-    }, []);
-  
-    return (
-      <>
-        <div ref={headerRef}>
-          <AppHeader />
-        </div>
-        <div style={{ height: contentHeight, display: 'flex' }}>
-          <Outlet />
-        </div>
-        <div ref={footerRef}>
-          <AppFooter />
-        </div>
-      </>
-    );
-  };
+  const headerRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState<string>('auto');
+
+  useEffect(() => {
+    if (headerRef.current && footerRef.current) {
+      const headerHeight = headerRef.current.offsetHeight;
+      const footerHeight = footerRef.current.offsetHeight;
+      const totalHeight = headerHeight + footerHeight;
+
+      setContentHeight(`calc(100% - ${String(totalHeight)}px)`);
+    }
+  }, []);
+
+  return (
+    <>
+      <div ref={headerRef}>
+        {/* <AppHeader />
+      </div>
+      <div style={{ height: contentHeight, display: 'flex' }}>
+        <Outlet />
+      </div>
+      <div ref={footerRef}>
+        <AppFooter /> */}
+        <BaseLayout />
+      </div>
+    </>
+  );
+}
 // export const HydrateFallback = () => (
 //   <div id="losading-splash">
 //     <div id="loading-splash-spinner" />
@@ -82,10 +83,10 @@ export default function App() {
 //   </div>
 // );
 
-// export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
-//   let message = 'Oops!';
-//   let details = 'An unexpected error occurred.';
-//   let stack: string | undefined;
+export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
+  let message = 'Oops!';
+  let details = 'An unexpected error occurred.';
+  let stack: string | undefined;
 
 //   if (isRouteErrorResponse(error)) {
 //     message = error.status === 404 ? '404' : 'Error';
@@ -97,15 +98,15 @@ export default function App() {
 //     stack = error.stack;
 //   }
 
-//   return (
-//     <main className="pt-16 p-4 container mx-auto">
-//       <h1>{message}</h1>
-//       <p>{details}</p>
-//       {stack && (
-//         <pre className="w-full p-4 overflow-x-auto">
-//           <code>{stack}</code>
-//         </pre>
-//       )}
-//     </main>
-//   );
-// };
+  return (
+    <main className="pt-16 p-4 container mx-auto">
+      <h1>{message}</h1>
+      <p>{details}</p>
+      {stack && (
+        <pre className="w-full p-4 overflow-x-auto">
+          <code>{stack}</code>
+        </pre>
+      )}
+    </main>
+  );
+};
