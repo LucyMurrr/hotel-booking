@@ -45,7 +45,7 @@ jobs:
         uses: docker://gradle:jdk23-corretto-al2023
         with:
           entrypoint: /bin/sh
-          args: -c "cd /github/workspace/backend && gradlew && ./gradlew checkstyleMain"
+          args: -c "cd /github/workspace/backend && ./gradlew checkstyleMain"
 
   lint-frontend:
     runs-on: ubuntu-latest
