@@ -69,8 +69,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install dependencies
-        run: make install dep
+        run: cd client && npm ci
       - name: Run frontend typecheck
-        run: make typecheck
+        run: cd client && npx tsc --noEmit
       - name: Run frontend linter
-        run: make lint
+        run: cd client && npm run lint

@@ -40,12 +40,3 @@ build: gen-all
 
 drop-database:
 	docker-compose down -v
-
-install dep:
-	cd ./client && npm ci
-	
-lint:
-	cd ./client && npm run lint
-
-typecheck:
-	cd ./client && npx tsc --noEmit
