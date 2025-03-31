@@ -41,9 +41,6 @@ jobs:
         with:
           distribution: "corretto"
           java-version: "23"
-      - name: Generate Gradle Wrapper
-        working-directory: ./backend
-        run: gradle wrapper
       - name: Run backend linter
         working-directory: ./backend
         run: make lint
