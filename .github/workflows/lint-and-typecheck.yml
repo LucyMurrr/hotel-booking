@@ -36,16 +36,17 @@ jobs:
         with:
           name: generated-backend
           path: ./api/dist/server
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "23"
       - name: Generate Gradle Wrapper
-        uses: docker://gradle:jdk23-corretto-al2023
-        with:
-          entrypoint: /bin/sh
-          args: -c "cd /github/workspace/backend && gradle wrapper"
+        working-directory: ./backend
+        run: gradle wrapper
       - name: Run backend linter
-        uses: docker://gradle:jdk23-corretto-al2023
-        with:
-          entrypoint: /bin/sh
-          args: -c "cd /github/workspace/backend && ./gradlew checkstyleMain"
+        working-directory: ./backend
+        run: make lint
 
   lint-frontend:
     runs-on: ubuntu-latest
@@ -69,8 +70,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install dependencies
-        run: cd client && npm ci
+        working-directory: ./client
+        run: make install
       - name: Run frontend typecheck
-        run: cd client && npx tsc --noEmit
+        working-directory: ./client
+        run: make typecheck
       - name: Run frontend linter
-        run: cd client && npm run lint
+        working-directory: ./client
+        run: make lint
