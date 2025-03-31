@@ -1,15 +1,14 @@
-import React from 'react';
 import { Carousel } from 'antd';
 
-const imgStyle: React.CSSProperties = {
-  display: 'block',
-  width: '50%',
-};
+// const imgStyle: React.CSSProperties = {
+//   display: 'block',
+//   width: '50%',
+// };
 
 const ImgCarousel: React.FC = () => {
-  const onChange = (currentSlide: number) => {
-    console.log(currentSlide);
-  };
+  // const onChange = (currentSlide: number) => {
+  //   console.log(currentSlide);
+  // };
 
   const contentStyle: React.CSSProperties = {
     margin: 0,
