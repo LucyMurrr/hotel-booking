@@ -32,6 +32,7 @@ module.exports = {
     plugins: ['react-refresh', '@typescript-eslint'],
     rules: {
       'max-len': ['error', {'code': 108 }],
+      'no-console': 'off', // FIX: убрать, когда бОльшая часть кода будет готова
       'react/jsx-no-target-blank': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/jsx-one-expression-per-line': 'off',
