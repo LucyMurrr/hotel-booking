@@ -1,12 +1,13 @@
+/* eslint-disable max-len */
+import { useRef } from 'react';
 import {
-  isRouteErrorResponse,
+  // isRouteErrorResponse,
   Links,
   Meta,
-  Outlet,
+  // Outlet,
   Scripts,
   ScrollRestoration,
 } from 'react-router';
-import React, { useEffect, useRef, useState } from 'react';
 
 import type { Route } from './+types/root';
 import './app.css';
@@ -24,7 +25,7 @@ import BaseLayout from './routes/baseLayout';
 //   },
 //   {
 //     rel: 'stylesheet',
-//     // eslint-disable-next-line max-len
+//
 //     href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
 //   },
 // ];
@@ -48,55 +49,54 @@ export const Layout = ({ children }: { children: React.ReactNode }) => (
 // eslint-disable-next-line react/function-component-definition
 export default function App() {
   const headerRef = useRef<HTMLDivElement>(null);
-  const footerRef = useRef<HTMLDivElement>(null);
-  const [contentHeight, setContentHeight] = useState<string>('auto');
+  // const footerRef = useRef<HTMLDivElement>(null);
+  // const [contentHeight, setContentHeight] = useState<string>('auto');
 
-  useEffect(() => {
-    if (headerRef.current && footerRef.current) {
-      const headerHeight = headerRef.current.offsetHeight;
-      const footerHeight = footerRef.current.offsetHeight;
-      const totalHeight = headerHeight + footerHeight;
+  // useEffect(() => {
+  //   if (headerRef.current && footerRef.current) {
+  //     const headerHeight = headerRef.current.offsetHeight;
+  //     const footerHeight = footerRef.current.offsetHeight;
+  //     const totalHeight = headerHeight + footerHeight;
 
-      setContentHeight(`calc(100% - ${String(totalHeight)}px)`);
-    }
-  }, []);
+  //     setContentHeight(`calc(100% - ${String(totalHeight)}px)`);
+  //   }
+  // }, []);
 
   return (
-    <>
-      <div ref={headerRef}>
-        {/* <AppHeader />
+    <div ref={headerRef}>
+      {/* <AppHeader />
       </div>
       <div style={{ height: contentHeight, display: 'flex' }}>
         <Outlet />
       </div>
       <div ref={footerRef}>
         <AppFooter /> */}
-        <BaseLayout />
-      </div>
-    </>
+      <BaseLayout />
+    </div>
   );
 }
 // export const HydrateFallback = () => (
-//   <div id="losading-splash">
+//   <div id="loading-splash">
 //     <div id="loading-splash-spinner" />
-//     <p>Losding, please waite...</p>
+//     <p>Loading, please waite...</p>
 //   </div>
 // );
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
-  let message = 'Oops!';
-  let details = 'An unexpected error occurred.';
+  const message = 'Oops!';
+  const details = 'An unexpected error occurred.';
   let stack: string | undefined;
 
-//   if (isRouteErrorResponse(error)) {
-//     message = error.status === 404 ? '404' : 'Error';
-//     details = error.status === 404
-//       ? 'The requested page could not be found.'
-//       : error.statusText || details;
-//   } else if (import.meta.env.DEV && error && error instanceof Error) {
-//     details = error.message;
-//     stack = error.stack;
-//   }
+  //   if (isRouteErrorResponse(error)) {
+  //     message = error.status === 404 ? '404' : 'Error';
+  //     details = error.status === 404
+  //       ? 'The requested page could not be found.'
+  //       : error.statusText || details;
+  //   } else if (import.meta.env.DEV && error && error instanceof Error) {
+  //     details = error.message;
+  //     stack = error.stack;
+  //   }
 
   return (
     <main className="pt-16 p-4 container mx-auto">

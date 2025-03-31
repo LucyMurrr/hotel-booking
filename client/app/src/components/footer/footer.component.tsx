@@ -3,13 +3,10 @@ import { Layout } from 'antd';
 
 const { Footer } = Layout;
 
-const AppFooter: React.FC = () => {
+const AppFooter: React.FC = () => (
+  <Footer style={{ textAlign: 'center' }}>
+    HEXLING ©{new Date().getFullYear()} Created by students of Hexlet
+  </Footer>
+);
 
-  return (
-    <Footer style={{ textAlign: 'center' }}>
-        HEXLING ©{new Date().getFullYear()} Created by students of Hexlet
-    </Footer>
-      );
-};
-    
-export default AppFooter ;
+export default AppFooter;
