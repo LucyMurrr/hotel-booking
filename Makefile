@@ -14,7 +14,7 @@ gen-server:
 gen-client:
 	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \
 		-i /local/tsp-output/openapi.yaml \
-		-g typescript-axios \
+		-g typescript-fetch \
 		-o /local/dist/client \
 		--additional-properties=npmName="@api/client",supportsES6=true
 
@@ -32,10 +32,10 @@ start-mock:
 gen-all: gen-api gen-server gen-client
 
 dev:
-	docker compose up --build
+	docker-compose up --build
 
 build: gen-all
-	docker compose -f docker-compose.yml up --build
+	docker-compose -f docker-compose.yml up --build
 
 drop-database:
 	docker-compose down -v
