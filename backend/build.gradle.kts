@@ -31,10 +31,10 @@ tasks.withType<JavaExec> {
 sourceSets {
 	main {
 		java {
-			srcDirs("/api/generated-code/src/main/java")
+			srcDirs("/api/dist/server/src/main/java")
 		}
 		resources {
-			srcDirs("/api/generated-code/src/main/resources")
+			srcDirs("/api/dist/server/src/main/resources")
 		}
 	}
 }
@@ -55,6 +55,7 @@ dependencies {
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("io.swagger.core.v3:swagger-annotations:2.2.15")
+	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
