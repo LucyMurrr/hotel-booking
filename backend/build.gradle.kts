@@ -46,7 +46,6 @@ repositories {
 dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation ("org.springframework.boot:spring-boot-starter-web")
-	implementation("io.springfox:springfox-boot-starter:3.0.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation ("org.postgresql:postgresql")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
@@ -54,8 +53,8 @@ dependencies {
 	implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation("io.swagger.core.v3:swagger-annotations:2.2.15")
-	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+	implementation("io.swagger.core.v3:swagger-annotations:2.2.29")
+	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
