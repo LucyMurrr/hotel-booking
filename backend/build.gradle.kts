@@ -55,6 +55,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("io.swagger.core.v3:swagger-annotations:2.2.29")
 	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
+	implementation ("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+	implementation ("org.glassfish:jakarta.el:5.0.0-M1")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
