@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 // import './index.css';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AppstoreOutlined, MailOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -9,52 +10,52 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
 
-    {
-        key: '/hotels',
-        label: 'logo',
-        // img: favicon,
-    },
-    {
-        key: '/',
-        label: 'HEXLING',
-        
-    },
-    {
-        key: '/hotels/1',
-        label: 'Theme',
-       
-    },
-    {
-        label: 'Profile',
-        key: 'profileMenu',
-        icon: <UserOutlined />,
-        children: [
-            {
-                key: '/profile',
-                label: 'Настройка профиля',
-            },
-            {
-                key: 'bid',
-                label: 'Мои Бронирования',
-            
-            },
-            {
-                key: 'exit',
-                label: 'Выход',
-            
-            },
-        ],
-    },
+  {
+    key: '/hotels',
+    label: 'logo',
+    // img: favicon,
+  },
+  {
+    key: '/',
+    label: 'HEXLING',
+
+  },
+  {
+    key: '/hotels/1',
+    label: 'Theme',
+
+  },
+  {
+    label: 'Profile',
+    key: 'profileMenu',
+    icon: <UserOutlined />,
+    children: [
+      {
+        key: '/profile',
+        label: 'Настройка профиля',
+      },
+      {
+        key: 'bid',
+        label: 'Мои Бронирования',
+
+      },
+      {
+        key: 'exit',
+        label: 'Выход',
+
+      },
+    ],
+  },
 ];
 
 const AppHeader: React.FC = () => {
   const [current, setCurrent] = useState('mail');
   const navigate = useNavigate();
 
-  const onClick: MenuProps['onClick'] = (e) => {
+  const onClick: MenuProps['onClick'] = async (e) => {
     console.log('click ', e);
     setCurrent(e.key);
-    navigate(e.key);
+    await navigate(e.key);
   };
 
   return <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;

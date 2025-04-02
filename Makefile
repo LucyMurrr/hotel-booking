@@ -9,7 +9,7 @@ gen-server:
 		-i /local/tsp-output/openapi.yaml \
 		-g spring \
 		-o /local/dist/server \
-		--additional-properties=useSpringBoot3=true,dateLibrary=java8
+		--additional-properties=useSpringBoot3=true,dateLibrary=java8,library=spring-boot
 
 gen-client:
 	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \
@@ -25,6 +25,9 @@ test-api:
 		--checks=all \
 		--validate-schema=true \
 		--hypothesis-max-examples=100
+
+start-mock:
+	./api/node_modules/.bin/prism mock api/tsp-output/openapi.yaml
 
 gen-all: gen-api gen-server gen-client
 
