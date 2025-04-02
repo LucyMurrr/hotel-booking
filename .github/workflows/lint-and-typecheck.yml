@@ -68,7 +68,7 @@ jobs:
             ${{ runner.os }}-node-
       - name: Install dependencies
         working-directory: ./client
-        run: make install
+        run: npm ci --prefer-offline
       - name: Run frontend typecheck
         working-directory: ./client
         run: make typecheck
