@@ -55,17 +55,22 @@ jobs:
         with:
           name: generated-client
           path: ./api/dist/client
-      - name: Set up Node.js with built-in caching
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
-          cache-dependency-path: "client/package-lock.json"
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v4
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-node-${{ hashFiles('**/client/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Install dependencies
         working-directory: ./client
-        run: npm ci --prefer-offline --loglevel=error --no-audit --no-fund
-        env:
-          NODE_ENV: development
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: make install
       - name: Run frontend typecheck
         working-directory: ./client
         run: make typecheck
