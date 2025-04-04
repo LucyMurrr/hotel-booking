@@ -50,15 +50,20 @@ jobs:
         with:
           distribution: "corretto"
           java-version: "23"
-      - name: Cache Maven packages
+      - name: Cache Gradle
         uses: actions/cache@v4
         with:
           path: |
-            ~/.m2/repository
-            backend/target
-          key: ${{ runner.os }}-maven-${{ hashFiles('backend/pom.xml') }}
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/daemon
+            ~/.gradle/native
+            backend/.gradle
+            backend/build
+          key: ${{ runner.os }}-gradle-${{ hashFiles('backend/**/*.gradle*', 'backend/gradle.properties') }}-${{ hashFiles('backend/src/**') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-gradle-${{ hashFiles('backend/**/*.gradle*', 'backend/gradle.properties') }}-
+            ${{ runner.os }}-gradle-
       - name: Run backend linter
         working-directory: ./backend
         run: make lint
