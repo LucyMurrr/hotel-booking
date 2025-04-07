@@ -30,11 +30,15 @@ const HotelCard: React.FC = () => (
       />
     )}
     actions={[
-      <Link to="/hotels/hotel" key="information">
+      <Link to="/hotelC" key="information">
         <FullscreenOutlined />
       </Link>,
-      <CalendarOutlined key="date" />,
-      <ShoppingCartOutlined key="booking" />,
+      <Link to="/hotels/:hotelName/rooms" key="boking-date">
+        <CalendarOutlined key="date" />
+      </Link>,
+      <Link to="/auth" key="boking-date">
+        <ShoppingCartOutlined key="booking" />
+      </Link>,
     ]}
   >
     <Meta

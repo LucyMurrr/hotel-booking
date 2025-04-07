@@ -4,5 +4,5 @@ install:
 types-to-openapi:
 	npx tsp compile .
 
-start-mock:
+start-mock-server:
 	./node_modules/.bin/prism mock tsp-output/openapi.yaml

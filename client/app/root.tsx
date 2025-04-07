@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import { useRef } from 'react';
+// import { useRef } from 'react';
 import {
   // isRouteErrorResponse,
   Links,
   Meta,
+  Outlet,
   // Outlet,
   Scripts,
   ScrollRestoration,
@@ -13,7 +14,7 @@ import type { Route } from './+types/root';
 import './app.css';
 // import AppHeader from './src/components/header/header.component.tsx 16-54-30-927';
 // import AppFooter from './src/components/footer/footer.component';
-import BaseLayout from './routes/baseLayout';
+// import BaseLayout from './routes/baseLayout';
 // import BaseLayout from './routes/baseLayout.component';
 
 // export const links: Route.LinksFunction = () => [
@@ -48,7 +49,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => (
 
 // eslint-disable-next-line react/function-component-definition
 export default function App() {
-  const headerRef = useRef<HTMLDivElement>(null);
+  // const headerRef = useRef<HTMLDivElement>(null);
   // const footerRef = useRef<HTMLDivElement>(null);
   // const [contentHeight, setContentHeight] = useState<string>('auto');
 
@@ -63,7 +64,7 @@ export default function App() {
   // }, []);
 
   return (
-    <div ref={headerRef}>
+    <div>
       {/* <AppHeader />
       </div>
       <div style={{ height: contentHeight, display: 'flex' }}>
@@ -71,32 +72,32 @@ export default function App() {
       </div>
       <div ref={footerRef}>
         <AppFooter /> */}
-      <BaseLayout />
+      <Outlet />
     </div>
   );
 }
-// export const HydrateFallback = () => (
-//   <div id="loading-splash">
-//     <div id="loading-splash-spinner" />
-//     <p>Loading, please waite...</p>
-//   </div>
-// );
+export const HydrateFallback = () => (
+  <div id="loading-splash">
+    <div id="loading-splash-spinner" />
+    <p>Loading, please waite...</p>
+  </div>
+);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
   const message = 'Oops!';
-  const details = 'An unexpected error occurred.';
+  const details = 'Сьто-то отшатнулось.';
   let stack: string | undefined;
 
-  //   if (isRouteErrorResponse(error)) {
-  //     message = error.status === 404 ? '404' : 'Error';
-  //     details = error.status === 404
-  //       ? 'The requested page could not be found.'
-  //       : error.statusText || details;
-  //   } else if (import.meta.env.DEV && error && error instanceof Error) {
-  //     details = error.message;
-  //     stack = error.stack;
-  //   }
+  // if (isRouteErrorResponse(error)) {
+  //   message = error.status === 404 ? '404' : 'Error';
+  //   details = error.status === 404
+  //     ? 'The requested page could not be found.'
+  //     : error.statusText || details;
+  // } else if (import.meta.env.DEV && error && error instanceof Error) {
+  //   details = error.message;
+  //   stack = error.stack;
+  // }
 
   return (
     <main className="pt-16 p-4 container mx-auto">

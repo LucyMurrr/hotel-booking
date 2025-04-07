@@ -1,3 +1,6 @@
 # React Router
 /.react-router/
 /build/
+/src/api/
+/node_modules/
+package-lock.json

@@ -1,3 +1,5 @@
+// настроить layouot и outlet в routes;
+
 import { useState } from 'react';
 
 import {
@@ -6,12 +8,14 @@ import {
 import type { MenuTheme } from 'antd';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import {
+  BrowserRouter as Router, Route, Routes, Link, Outlet,
+} from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons/lib/icons';
-import Hotel from './hotel.component';
-import AuthForm from './authorisation.form';
-import Profile from './profile.component';
-import Hotels from './hotels.component';
+// import HotelPage from './hotel.component';
+// import AuthForm from './authorisation.form';
+// import Profile from './profile.component';
+// import Hotels from './hotels.component';
 
 // import HotelCard from './hotelCard.component';
 
@@ -41,8 +45,7 @@ const rightItems = [
       },
       {
         key: 'exit',
-        label: <Link to="/hotel">Выход</Link>, // 'Выход',
-
+        label: <Link to="/hotel">Выход</Link>,
       },
     ],
   },
@@ -113,14 +116,15 @@ const BaseLayout: React.FC = () => {
               padding: 24,
             }}
           >
-            <Routes>
+            <Outlet />
+            {/* <Routes>
 
               <Route path="/" element={<Hotels />} />
-              <Route path="/hotels/hotel" element={<Hotel />} />
+              <Route path="/hotels/hotel" element={<HotelPage />} />
               <Route path="/auth" element={<AuthForm />} />
               <Route path="/profile" element={<Profile />} />
 
-            </Routes>
+            </Routes> */}
           </div>
 
         </Content>
