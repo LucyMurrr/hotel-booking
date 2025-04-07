@@ -1,7 +1,6 @@
 name: Lint and Typecheck CI
 
 on:
-  push: {}
   pull_request:
     branches:
       - main
