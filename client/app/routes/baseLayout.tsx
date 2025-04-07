@@ -9,7 +9,7 @@ import type { MenuTheme } from 'antd';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
-  BrowserRouter as Router, Route, Routes, Link, Outlet,
+  BrowserRouter as Link, Outlet,
 } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons/lib/icons';
 // import HotelPage from './hotel.component';
