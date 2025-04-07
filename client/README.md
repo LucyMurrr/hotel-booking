@@ -1,11 +1,7 @@
-# Welcome to React Router!
-
-A modern, production-ready template for building full-stack React applications using React Router.
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+# Welcome HEXLING
+A modern applications using React Router.
 
 ## Features
-
 - 🚀 Server-side rendering
 - ⚡️ Hot Module Replacement (HMR)
 - 📦 Asset bundling and optimization
@@ -29,10 +25,24 @@ npm install
 Start the development server with HMR:
 
 ```bash
-npm run dev
-```
+make start-mock-server
+make generate-client
 
+### Затем в модуле /client/app/src/api/core/OpenApi.ts
+### меняем url сервера на url сервера prism: BASE: 'http://127.0.0.1:4010'
+
+make dev
+```
+Then 
 Your application will be available at `http://localhost:5173`.
+
+
+
+
+
+
+
+
 
 ## Building for Production
 

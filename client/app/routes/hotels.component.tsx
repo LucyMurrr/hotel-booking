@@ -4,8 +4,8 @@ import HotelCard from '../src/components/hotelCard.component';
 
 const Hotels: React.FC = () => (
   <Flex wrap gap="large">
-    {Array.from({ length: 24 }, () => (
-      <HotelCard />
+    {Array.from({ length: 24 }, (_, index) => (
+      <HotelCard key={index} />
     ))}
   </Flex>
 );
