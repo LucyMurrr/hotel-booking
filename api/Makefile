@@ -6,3 +6,6 @@ types-to-openapi:
 
 start-mock:
 	./node_modules/.bin/prism mock tsp-output/openapi.yaml
+
+dev:
+	npx tsp compile . --watch
