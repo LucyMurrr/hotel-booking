@@ -22,3 +22,7 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
     volumes:
       - ./backend/:/app
+
+  db:
+    ports:
+      - "5432:5432"
