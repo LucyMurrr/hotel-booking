@@ -10,7 +10,8 @@ gen-server:
 		-g spring \
 		-o /local/dist/server \
 		-t /local/custom-templates \
-   		--additional-properties=useSpringBoot3=true,hibernateMode=true,jpa=true,useBeanValidation=true,useLombok=true
+   		--additional-properties=useSpringBoot3=true,hibernateMode=true,jpa=true \
+   		--additional-properties=useBeanValidation=true,useLombok=true,delegatePattern=true
 
 gen-client:
 	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \

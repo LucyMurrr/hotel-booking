@@ -169,7 +169,7 @@ model RoomParams extends CommonParams {
 model User {
   @extension("x-primary-key", true)
   @extension("x-generated-value", true)
-  id: int32;
+  id?: int32;
   @minLength(3)
   @maxLength(50)
   name: string;
