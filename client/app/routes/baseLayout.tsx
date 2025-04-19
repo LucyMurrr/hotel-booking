@@ -8,10 +8,11 @@ import {
 import type { MenuTheme } from 'antd';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {
-  BrowserRouter as Link, Outlet,
-} from 'react-router-dom';
+// import {
+//   BrowserRouter as Link, Outlet,
+// } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons/lib/icons';
+import { Link, Outlet } from 'react-router-dom';
 // import HotelPage from './hotel.component';
 // import AuthForm from './authorisation.form';
 // import Profile from './profile.component';
@@ -58,7 +59,7 @@ const BaseLayout: React.FC = () => {
   };
 
   return (
-
+  // <Router>
     <ConfigProvider
       theme={{
         algorithm: currentTheme === 'light' ? theme.compactAlgorithm : theme.darkAlgorithm,

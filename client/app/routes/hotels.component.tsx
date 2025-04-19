@@ -1,12 +1,32 @@
 import React from 'react';
 import { Flex } from 'antd';
-import HotelCard from '../src/components/hotelCard.component';
+import type { Hotel } from '@api';
+import client from '~/src/api';
+import HotelCard from '../src/components/hotelCard/hotelCard.component';
 
-const Hotels: React.FC = () => (
-  <Flex wrap gap="large">
-    {Array.from({ length: 24 }, (_, index) => (
-      <HotelCard key={index} />
-    ))}
-  </Flex>
-);
+export async function loader() {
+  const Data: Hotel[] = (await client.hotelsListHotels()).data;
+
+  console.log(111, Data);
+  return Data;
+}
+
+export type HotelsProps = {
+  loaderData: Hotel[];
+};
+
+const Hotels: React.FC<HotelsProps> = ({
+  loaderData,
+}) => {
+  const {
+    id, name, description,
+  } = loaderData[0];
+  return (
+    <Flex wrap gap="large">
+      {Array.from({ length: 24 }, () => (
+        <HotelCard key={id} name={name} description={description} />
+      ))}
+    </Flex>
+  );
+};
 export default Hotels;

@@ -17,7 +17,7 @@
     "paths": {
       "~/*": ["./app/*"],
       "@components/*": ["./app/src/components/*"],
-      "@api": ["./app/src/api/index"],
+      "@api": ["app/src/api/index"],
       "@generatedClient/*": ["../api/dist/client/src/*"],
     },
     "esModuleInterop": true,

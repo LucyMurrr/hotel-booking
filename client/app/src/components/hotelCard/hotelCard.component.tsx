@@ -1,11 +1,3 @@
-// export default function Hotel() {
-//     return (
-//         <>
-//             <h1>HOTEL</h1>
-//         </>
-//     )
-// }
-
 import React from 'react';
 import { CalendarOutlined, FullscreenOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { Avatar, Card } from 'antd';
@@ -16,8 +8,17 @@ const cardStyle: React.CSSProperties = {
   width: 350,
 };
 
-const HotelCard: React.FC = () => (
+type HotelCardProps = {
+  key: number;
+  name: string;
+  // stars: number;
+  description: string;
+  // rating: number;
+};
+
+const HotelCard: React.FC<HotelCardProps> = ({ key, name, description }) => (
   <Card
+    key={key}
     hoverable
     style={cardStyle}
     styles={{ body: { padding: 0, overflow: 'hidden' } }}
@@ -43,8 +44,10 @@ const HotelCard: React.FC = () => (
   >
     <Meta
       avatar={<Avatar src="../public/booking.png" />}
-      title="Hotel name"
-      description="This is the hotel description"
+      title={name}
+      description={description}
+      // stars={stars}
+      // rating={rating}
     />
   </Card>
 );
