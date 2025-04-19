@@ -13,7 +13,7 @@ module.exports = {
       'plugin:@typescript-eslint/strict-type-checked',
       // 'plugin:@typescript-eslint/stylistic-type-checked', // TODO: включить, когда будет готова основная кодовая база
     ],
-    ignorePatterns: ['dist', '.eslintrc.cjs'],
+    ignorePatterns: ['dist', '.eslintrc.cjs', 'build'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
       ecmaVersion: 'latest',

@@ -10,9 +10,6 @@ lint-fix:
 typecheck:
 	npm run typecheck
 
-dev:
-	npm run dev
-
 build:
 	npm run build
 
@@ -22,5 +19,8 @@ start:
 docker-dependencies-fix:
 	docker run --rm -it -v .:/app -w /app node:22-alpine sh -c "npm i"
 
-start-mock:
+start-mock-server:
 	../api/node_modules/.bin/prism mock ../api/tsp-output/openapi.yaml
+
+dev: 
+	npm run dev
