@@ -56,9 +56,13 @@ model UnprocessableEntityError {
 
 model Hotel {
   id: int32;
+  @example("Hilton")
   name: string;
+  @example("Описание отеля")
   description: string;
+  @example(5)
   rating: float;
+  @example(5)
   stars: int32;
 }
 
