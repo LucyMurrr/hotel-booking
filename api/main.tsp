@@ -165,17 +165,10 @@ model RoomParams extends CommonParams {
   @query sortBy?: RoomSortOptions = "name";
 }
 
-@extension("x-jpa-entity", true)
 model User {
-  @extension("x-primary-key", true)
-  @extension("x-generated-value", true)
-  id?: int32;
-  @minLength(3)
-  @maxLength(50)
+  id: int32;
   name: string;
-  @format("email")
   email: string;
-  @minLength(6)
   password: string;
 }
 

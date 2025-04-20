@@ -6,26 +6,21 @@ import org.springframework.stereotype.Service;
 import org.openapitools.model.*;
 import org.openapitools.api.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
 @Service
 @Primary
 public class CustomUsersApiDelegate implements UsersApiDelegate {
+    private final UserService service;
 
-    private final UserService userService;
-
-    public CustomUsersApiDelegate(UserService userService) {
-        this.userService = userService;
+    public CustomUsersApiDelegate(UserService service) {
+        this.service = service;
     }
 
     @Override
     public ResponseEntity<UserDto> usersCreateUser(UserCreateDto userCreateDto) {
-        return userService.createUser(userCreateDto);
-    }
-
-    @Override
-    public ResponseEntity<UserDto> usersGetUser(Integer userId) {
-        return userService.getUser(userId);
+        return service.createUser(userCreateDto);
     }
 }

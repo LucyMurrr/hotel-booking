@@ -9,7 +9,6 @@ gen-server:
 		-i /local/tsp-output/openapi.yaml \
 		-g spring \
 		-o /local/dist/server \
-		-t /local/custom-templates \
    		--additional-properties=useSpringBoot3=true,hibernateMode=true,jpa=true \
    		--additional-properties=useBeanValidation=true,useLombok=true,delegatePattern=true
 

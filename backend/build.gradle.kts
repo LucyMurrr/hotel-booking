@@ -40,12 +40,14 @@ sourceSets {
 }
 
 repositories {
+	gradlePluginPortal()
 	mavenCentral()
 }
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.postgresql:postgresql")
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -55,7 +57,10 @@ dependencies {
 	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
 	implementation("io.swagger.core.v3:swagger-annotations:2.2.29")
-	compileOnly("org.projectlombok:lombok")
+	implementation("org.mapstruct:mapstruct:1.6.3");
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3");
+	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+	compileOnly("org.projectlombok:lombok:1.18.32")
 	annotationProcessor("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
