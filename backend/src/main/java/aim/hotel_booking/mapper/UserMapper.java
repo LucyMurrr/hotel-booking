@@ -1,7 +1,8 @@
 package aim.hotel_booking.mapper;
 
 import aim.hotel_booking.entity.UserEntity;
-import org.openapitools.model.*;
+import org.openapitools.model.UserCreateDto;
+import org.openapitools.model.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.security.crypto.password.PasswordEncoder;
