@@ -34,10 +34,18 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
             String sortOrder
     ) {
         // Установка значений по умолчанию
-        if (page == null || page < 1) page = 1;
-        if (perPage == null || perPage < 1) perPage = 24;
-        if (sortBy == null) sortBy = "name";
-        if (sortOrder == null) sortOrder = "ASC";
+        if (page == null || page < 1) {
+            page = 1;
+        }
+        if (perPage == null || perPage < 1) {
+            perPage = 24;
+        }
+        if (sortBy == null) {
+            sortBy = "name";
+        }
+        if (sortOrder == null) {
+            sortOrder = "ASC";
+        }
 
         // Валидация параметров сортировки
         try {
