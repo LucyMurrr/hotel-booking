@@ -10,4 +10,4 @@ public class TestController {
     public String test() {
         return "Application is running!";
     }
-} 
+}

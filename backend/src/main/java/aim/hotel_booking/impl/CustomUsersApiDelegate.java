@@ -3,12 +3,10 @@ package aim.hotel_booking.impl;
 import aim.hotel_booking.service.UserService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import org.openapitools.model.*;
-import org.openapitools.api.*;
+import org.openapitools.model.UserCreateDto;
+import org.openapitools.model.UserDto;
+import org.openapitools.api.UsersApiDelegate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URI;
 
 @Service
 @Primary

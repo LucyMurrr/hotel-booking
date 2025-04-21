@@ -71,3 +71,10 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks {
+	named<Checkstyle>("checkstyleMain") {
+		source = sourceSets.main.get().allJava // Включает сгенерированные файлы
+		classpath = sourceSets.main.get().compileClasspath
+	}
+}
