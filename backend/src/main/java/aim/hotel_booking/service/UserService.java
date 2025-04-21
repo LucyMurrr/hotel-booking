@@ -9,7 +9,10 @@ import org.openapitools.model.UserDto;
 import org.openapitools.model.UserFilters;
 import org.openapitools.model.UsersListUsers200Response;
 import org.openapitools.model.HotelsListHotels200ResponsePagination;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.net.URI;
 
-import static aim.hotel_booking.repository.specification.UserSpecifications.*;
+import static aim.hotel_booking.repository.specification.UserSpecifications.hasEmailLike;
+import static aim.hotel_booking.repository.specification.UserSpecifications.hasNameLike;
 
 @Service
 @RequiredArgsConstructor
