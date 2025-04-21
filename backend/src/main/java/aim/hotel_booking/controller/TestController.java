@@ -1,4 +1,4 @@
-package aim.hotel_booking.сontroller;
+package aim.hotel_booking.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

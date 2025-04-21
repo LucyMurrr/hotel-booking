@@ -9,7 +9,8 @@ gen-server:
 		-i /local/tsp-output/openapi.yaml \
 		-g spring \
 		-o /local/dist/server \
-		--additional-properties=useSpringBoot3=true,dateLibrary=java8,library=spring-boot
+   		--additional-properties=useSpringBoot3=true,hibernateMode=true,jpa=true \
+   		--additional-properties=useBeanValidation=true,useLombok=true,delegatePattern=true
 
 gen-client:
 	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \
