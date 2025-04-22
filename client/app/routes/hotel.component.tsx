@@ -4,15 +4,15 @@ import {
 } from 'antd';
 import { StarOutlined } from '@ant-design/icons';
 import { Link } from 'react-router';
-import type { Hotel, HotelsGetHotelRequest } from '@api';
+import type { Hotel, HotelsGetRequest } from '@api';
 import client from '~/src/api';
 import type { Route } from './+types/hotel.component';
 
 const hotelID: number = 2;
 
 export async function loader() {
-  const request: HotelsGetHotelRequest = { hotelId: hotelID };
-  const Data: Hotel = await client.hotelsGetHotel(request);
+  const request: HotelsGetRequest = { hotelId: hotelID };
+  const Data: Hotel = await client.hotelsGet(request);
   console.log(Data);
   return Data;
 }
