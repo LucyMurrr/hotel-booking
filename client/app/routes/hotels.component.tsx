@@ -5,7 +5,7 @@ import client from '~/src/api';
 import HotelCard from '../src/components/hotelCard/hotelCard.component';
 
 export async function loader() {
-  const Data: Hotel[] = (await client.hotelsListHotels()).data;
+  const Data: Hotel[] = (await client.hotelsList()).data;
 
   console.log(111, Data);
   return Data;
