@@ -10,7 +10,7 @@ import BaseLayoutForm from '../src/components/baseLayoutForm/baseLayoutForm.comp
 export async function loader() {
   const Data: Hotel[] = (await client.hotelsListHotels()).data;
 
-  console.log(111, Data); // удалить
+  // console.log(111, Data); // удалить
   return Data;
 }
 

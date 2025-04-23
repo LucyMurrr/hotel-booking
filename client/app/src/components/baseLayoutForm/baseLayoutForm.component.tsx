@@ -8,9 +8,11 @@ import {
   Space,
   Form as AntdForm,
 } from 'antd';
-// import { useSubmit, type FormProps } from 'react-router';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
+// import { useSubmit } from 'react-router-dom';
+import type { FormProps } from 'antd';
+import client, { type Hotel } from '~/src/api';
 
 const { RangePicker } = DatePicker;
 
@@ -18,27 +20,60 @@ type FormValues = {
   search?: string;
   minStar?: string;
   maxStar?: string;
-  dates?: [moment.Moment | null, moment.Moment | null]; // Изменено для поддержки диапазона дат
-  raiting?: number;
+  dates?: [moment.Moment | null, moment.Moment | null];
+  rating?: number;
 };
 
+interface ApiResponse {
+  raw: Response;
+}
+
+async function fetchHotels(requestParameters: { name?: string; minStars?: number; maxStars?: number }) {
+  const response: ApiResponse = await client.hotelsListHotelsRaw(requestParameters);
+  return response.raw;
+}
+
+export async function action({ request }: { request: Request }) {
+  const formData = await request.formData();
+  const requestParameters: {
+    name?: string;
+    minStars?: number | undefined;
+    maxStars?: number | undefined;
+  } = {
+    name: formData.get('search') as string || undefined,
+    minStars: formData.get('minStar') ? Number(formData.get('minStar')) : undefined,
+    maxStars: formData.get('maxStar') ? Number(formData.get('maxStar')) : undefined,
+  };
+
+  return fetchHotels(requestParameters);
+}
+
 const BaseLayoutForm: React.FC = () => {
-  const [antdForm] = AntdForm.useForm<FormValues>();
+  const [antdForm] = AntdForm.useForm();
   // const submit = useSubmit();
 
-  // const handleAntdSubmit: FormProps<FormValues>['onFinish'] = (values) => {
-  //   const formData = new FormData();
-  //   (Object.entries(values) as Array<[keyof FormValues, any]>).forEach(
-  //     ([key, value]) => {
-  //       formData.append(key, value);
-  //     },
-  //   );
+  const handleAntdSubmit: FormProps['onFinish'] = async (values: FormValues) => {
+    const requestParameters = {
+      name: values.search || undefined,
+      minStars: values.minStar ? Number(values.minStar) : undefined,
+      maxStars: values.maxStar ? Number(values.maxStar) : undefined,
+    };
 
-  //   submit(formData, {
-  //     method: 'post',
-  //     action: '/',
-  //   });
-  // };
+    try {
+      const rawResponse = await fetchHotels(requestParameters);
+
+      if (rawResponse.ok) {
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        const jsonData: Hotel[] = (await rawResponse.json()).data;
+        console.log('Parsed Response:', jsonData);
+      } else {
+        console.error('Ошибка при получении данных:', rawResponse.statusText);
+      }
+    } catch (error) {
+      console.error('Ошибка при отправке формы:', error);
+    }
+  };
 
   return (
     <AntdForm<FormValues>
@@ -47,7 +82,7 @@ const BaseLayoutForm: React.FC = () => {
       wrapperCol={{ span: 20 }}
       layout="horizontal"
       style={{ minWidth: 400 }}
-      // onFinish={handleAntdSubmit}
+      onFinish={handleAntdSubmit}
     >
       <Space direction="vertical" size="large" style={{ display: 'flex' }}>
         <AntdForm.Item
@@ -63,10 +98,10 @@ const BaseLayoutForm: React.FC = () => {
           name="minStar"
         >
           <Select>
-            <Select.Option value="1">⭐⭐</Select.Option>
-            <Select.Option value="2">⭐⭐⭐</Select.Option>
-            <Select.Option value="3">⭐⭐⭐⭐</Select.Option>
-            <Select.Option value="4">⭐⭐⭐⭐⭐</Select.Option>
+            <Select.Option value="2">⭐⭐</Select.Option>
+            <Select.Option value="3">⭐⭐⭐</Select.Option>
+            <Select.Option value="4">⭐⭐⭐⭐</Select.Option>
+            <Select.Option value="5">⭐⭐⭐⭐⭐</Select.Option>
           </Select>
         </AntdForm.Item>
         <AntdForm.Item
@@ -75,10 +110,10 @@ const BaseLayoutForm: React.FC = () => {
           name="maxStar"
         >
           <Select>
-            <Select.Option value="1">⭐⭐</Select.Option>
-            <Select.Option value="2">⭐⭐⭐</Select.Option>
-            <Select.Option value="3">⭐⭐⭐⭐</Select.Option>
-            <Select.Option value="4">⭐⭐⭐⭐⭐</Select.Option>
+            <Select.Option value="2">⭐⭐</Select.Option>
+            <Select.Option value="3">⭐⭐⭐</Select.Option>
+            <Select.Option value="4">⭐⭐⭐⭐</Select.Option>
+            <Select.Option value="5">⭐⭐⭐⭐⭐</Select.Option>
           </Select>
         </AntdForm.Item>
         <AntdForm.Item
@@ -91,7 +126,7 @@ const BaseLayoutForm: React.FC = () => {
         <AntdForm.Item
           label="Выберите рейтинг"
           labelCol={{ span: 24 }}
-          name="raiting"
+          name="rating"
         >
           <Slider range defaultValue={[3, 8]} max={10} />
         </AntdForm.Item>
