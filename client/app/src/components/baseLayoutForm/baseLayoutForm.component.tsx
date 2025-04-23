@@ -29,7 +29,7 @@ interface ApiResponse {
 }
 
 async function fetchHotels(requestParameters: { name?: string; minStars?: number; maxStars?: number }) {
-  const response: ApiResponse = await client.hotelsListHotelsRaw(requestParameters);
+  const response: ApiResponse = await client.hotelsListRaw(requestParameters);
   return response.raw;
 }
 

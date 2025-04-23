@@ -6,7 +6,7 @@ import { StarOutlined } from '@ant-design/icons';
 import { Link } from 'react-router';
 import type { Hotel, HotelsGetRequest } from '@api';
 import client from '~/src/api';
-import type { Route } from './+types/hotel.component';
+import type { Route } from './+types/hotel';
 
 const hotelID: number = 2;
 

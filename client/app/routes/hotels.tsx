@@ -8,7 +8,7 @@ import HotelCard from '../src/components/hotelCard/hotelCard.component';
 import BaseLayoutForm from '../src/components/baseLayoutForm/baseLayoutForm.component';
 
 export async function loader() {
-  const Data: Hotel[] = (await client.hotelsListHotels()).data;
+  const Data: Hotel[] = (await client.hotelsList()).data;
 
   // console.log(111, Data); // удалить
   return Data;
