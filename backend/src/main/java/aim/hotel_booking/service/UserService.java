@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.openapitools.model.UserCreateDto;
 import org.openapitools.model.UserDto;
 import org.openapitools.model.UserFilters;
-import org.openapitools.model.UsersListUsers200Response;
-import org.openapitools.model.HotelsListHotels200ResponsePagination;
+import org.openapitools.model.UsersList200Response;
+import org.openapitools.model.HotelsList200ResponsePagination;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +39,7 @@ public class UserService {
                 .body(responseDto);
     }
 
-    public ResponseEntity<UsersListUsers200Response> getUsers(
+    public ResponseEntity<UsersList200Response> getUsers(
             String name,
             String email,
             String sortBy,
@@ -69,26 +69,26 @@ public class UserService {
                 .name(name)
                 .email(email);
 
-        HotelsListHotels200ResponsePagination pagination = new HotelsListHotels200ResponsePagination()
+        HotelsList200ResponsePagination pagination = new HotelsList200ResponsePagination()
                 .page(page)
                 .perPage(perPage)
                 .totalPages(userPage.getTotalPages())
                 .total((int) userPage.getTotalElements());
 
         // Преобразуем Sort.Direction в SortOrderEnum
-        UsersListUsers200Response.SortOrderEnum sortOrder =
-                UsersListUsers200Response.SortOrderEnum.fromValue(sortOrderDirection.toString());
+        UsersList200Response.SortOrderEnum sortOrder =
+                UsersList200Response.SortOrderEnum.fromValue(sortOrderDirection.toString());
 
         // Преобразуем строку sortBy в SortByEnum
-        UsersListUsers200Response.SortByEnum sortByEnum;
+        UsersList200Response.SortByEnum sortByEnum;
         try {
-            sortByEnum = UsersListUsers200Response.SortByEnum.fromValue(sortBy);
+            sortByEnum = UsersList200Response.SortByEnum.fromValue(sortBy);
         } catch (IllegalArgumentException e) {
-            sortByEnum = UsersListUsers200Response.SortByEnum.NAME;
+            sortByEnum = UsersList200Response.SortByEnum.NAME;
         }
 
         // Создаем ответ
-        UsersListUsers200Response response = new UsersListUsers200Response(
+        UsersList200Response response = new UsersList200Response(
                 mapper.toDtoList(userPage.getContent()),
                 pagination,
                 filters,
