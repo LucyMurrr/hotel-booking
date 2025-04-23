@@ -1,8 +1,6 @@
 import { Layout, Menu, theme } from 'antd';
 import { Outlet, useNavigate } from 'react-router';
 import { UserOutlined } from '@ant-design/icons/lib/icons';
-// import Hotels from './hotels.component';
-// import favicon from '../../public/favicon.ico';
 
 const { Header, Content, Footer } = Layout;
 
@@ -10,26 +8,21 @@ const items = [
   {
     key: 'logo',
     label: 'logo',
-    // img: favicon,
-
   },
 
   {
     key: '/hotels',
     label: 'HEXLING',
-
   },
 
   {
     key: 'heme',
     label: 'Theme',
-
   },
   {
     key: '/profile',
     label: 'Profile',
     icon: <UserOutlined />,
-
   },
 ];
 
