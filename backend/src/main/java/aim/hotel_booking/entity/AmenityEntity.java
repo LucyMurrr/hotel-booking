@@ -1,0 +1,21 @@
+package aim.hotel_booking.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Table(name = "Amenity")
+@Getter
+@Setter
+public class AmenityEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(nullable = false, length = 50)
+    private String name;
+
+    @Column(length = 100)
+    private String description;
+}
