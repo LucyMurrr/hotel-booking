@@ -41,6 +41,6 @@ public interface HotelMapper {
 
     @Named("formatRating")
     default BigDecimal formatRating(BigDecimal rating) {
-        return rating != null ? rating.setScale(2, BigDecimal.ROUND_HALF_UP) : null;
+        return rating != null ? rating.setScale(2, java.math.RoundingMode.HALF_UP) : null;
     }
 }
