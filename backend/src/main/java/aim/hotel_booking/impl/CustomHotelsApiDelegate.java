@@ -1,7 +1,9 @@
 package aim.hotel_booking.impl;
 
 import aim.hotel_booking.service.HotelService;
+import aim.hotel_booking.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.openapitools.api.HotelsApi;
 import org.openapitools.api.HotelsApiDelegate;
 import org.openapitools.model.Hotel;
 import org.openapitools.model.HotelsList200Response;
@@ -19,6 +21,7 @@ import java.math.BigDecimal;
 public class CustomHotelsApiDelegate implements HotelsApiDelegate {
 
     private final HotelService hotelService;
+    private final RoomService roomService;
 
     @Override
     public ResponseEntity<HotelsList200Response> hotelsList(
@@ -86,8 +89,16 @@ public class CustomHotelsApiDelegate implements HotelsApiDelegate {
             sortBy = (sortBy == null) ? "name" : sortBy;
             sortOrder = (sortOrder == null) ? "ASC" : sortOrder;
 
-            // TODO: Добавить метод в HotelService для получения списка комнат
-            throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Method not implemented yet");
+            return roomService.getRooms(
+                hotelId,
+                name,
+                minPrice,
+                maxPrice,
+                sortBy,
+                Sort.Direction.fromString(sortOrder),
+                page,
+                perPage
+            );
         } catch (ResponseStatusException e) {
             throw e;
         } catch (Exception e) {
@@ -134,29 +145,31 @@ public class CustomHotelsApiDelegate implements HotelsApiDelegate {
         }
     }
 
-    private void validateStarsParams(Integer minStars, Integer maxStars) {
-        if (minStars != null && (minStars < 0 || minStars > 5)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-                "Minimum stars must be between 0 and 5");
-        }
-        if (maxStars != null && (maxStars < 0 || maxStars > 5)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-                "Maximum stars must be between 0 and 5");
-        }
-        if (minStars != null && maxStars != null && minStars > maxStars) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum stars cannot be greater than maximum stars");
-        }
-    }
-
     private void validatePriceParams(BigDecimal minPrice, BigDecimal maxPrice) {
         if (minPrice != null && minPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum price cannot be negative");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Minimum price must be positive");
         }
         if (maxPrice != null && maxPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Maximum price cannot be negative");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Maximum price must be positive");
         }
         if (minPrice != null && maxPrice != null && minPrice.compareTo(maxPrice) > 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum price cannot be greater than maximum price");
+        }
+    }
+
+    private void validateStarsParams(Integer minStars, Integer maxStars) {
+        if (minStars != null && (minStars < 1 || minStars > 5)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Minimum stars must be between 1 and 5");
+        }
+        if (maxStars != null && (maxStars < 1 || maxStars > 5)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Maximum stars must be between 1 and 5");
+        }
+        if (minStars != null && maxStars != null && minStars > maxStars) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum stars cannot be greater than maximum stars");
         }
     }
 }
