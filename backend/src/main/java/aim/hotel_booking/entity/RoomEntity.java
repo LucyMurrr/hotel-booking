@@ -18,7 +18,7 @@ public class RoomEntity {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "text")
     private String description;
 
     @Column(nullable = false, precision = 10, scale = 2)

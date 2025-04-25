@@ -19,7 +19,7 @@ public class HotelEntity {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "text")
     private String description;
 
     @Column(nullable = false)
