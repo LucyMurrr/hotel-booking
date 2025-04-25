@@ -3,7 +3,6 @@ package aim.hotel_booking.impl;
 import aim.hotel_booking.service.HotelService;
 import aim.hotel_booking.service.RoomService;
 import lombok.RequiredArgsConstructor;
-import org.openapitools.api.HotelsApi;
 import org.openapitools.api.HotelsApiDelegate;
 import org.openapitools.model.Hotel;
 import org.openapitools.model.HotelsList200Response;
