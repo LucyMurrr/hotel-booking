@@ -142,7 +142,8 @@ public class CustomHotelsApiDelegate implements HotelsApiDelegate {
                 "Maximum rating must be between 0 and 5.0");
         }
         if (minRating != null && maxRating != null && minRating.compareTo(maxRating) > 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum rating cannot be greater than maximum rating");
+            throw new ResponseStatusException
+                    (HttpStatus.BAD_REQUEST, "Minimum rating cannot be greater than maximum rating");
         }
     }
 
