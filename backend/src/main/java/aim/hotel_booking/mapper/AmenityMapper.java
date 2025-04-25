@@ -11,4 +11,4 @@ public interface AmenityMapper {
     
     @Mapping(target = "description", ignore = true)
     AmenityEntity toEntity(Amenity dto);
-} 
+}

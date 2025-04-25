@@ -131,11 +131,13 @@ public class CustomHotelsApiDelegate implements HotelsApiDelegate {
     }
 
     private void validateRatingParams(BigDecimal minRating, BigDecimal maxRating) {
-        if (minRating != null && (minRating.compareTo(BigDecimal.ZERO) < 0 || minRating.compareTo(BigDecimal.valueOf(5.0)) > 0)) {
+        if (minRating != null && (minRating.compareTo(BigDecimal.ZERO) < 0 ||
+                minRating.compareTo(BigDecimal.valueOf(5.0)) > 0)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
                 "Minimum rating must be between 0 and 5.0");
         }
-        if (maxRating != null && (maxRating.compareTo(BigDecimal.ZERO) < 0 || maxRating.compareTo(BigDecimal.valueOf(5.0)) > 0)) {
+        if (maxRating != null && (maxRating.compareTo(BigDecimal.ZERO) < 0 ||
+                maxRating.compareTo(BigDecimal.valueOf(5.0)) > 0)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
                 "Maximum rating must be between 0 and 5.0");
         }
@@ -154,7 +156,8 @@ public class CustomHotelsApiDelegate implements HotelsApiDelegate {
                 "Maximum price must be positive");
         }
         if (minPrice != null && maxPrice != null && minPrice.compareTo(maxPrice) > 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum price cannot be greater than maximum price");
+            throw new ResponseStatusException
+                    (HttpStatus.BAD_REQUEST, "Minimum price cannot be greater than maximum price");
         }
     }
 
@@ -168,7 +171,8 @@ public class CustomHotelsApiDelegate implements HotelsApiDelegate {
                 "Maximum stars must be between 1 and 5");
         }
         if (minStars != null && maxStars != null && minStars > maxStars) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Minimum stars cannot be greater than maximum stars");
+            throw new ResponseStatusException
+                    (HttpStatus.BAD_REQUEST, "Minimum stars cannot be greater than maximum stars");
         }
     }
 }

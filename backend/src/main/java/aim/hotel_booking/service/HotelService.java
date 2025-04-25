@@ -20,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.ArrayList;
 
 import static aim.hotel_booking.repository.specification.HotelSpecifications.hasNameLike;
 import static aim.hotel_booking.repository.specification.HotelSpecifications.hasRatingGreaterThanOrEqual;
@@ -101,11 +100,21 @@ public class HotelService {
             String name, BigDecimal minRating, BigDecimal maxRating, Integer minStars, Integer maxStars) {
 
         Specification<HotelEntity> spec = Specification.where(null);
-        if (name != null) spec = spec.and(hasNameLike(name));
-        if (minRating != null) spec = spec.and(hasRatingGreaterThanOrEqual(minRating));
-        if (maxRating != null) spec = spec.and(hasRatingLessThanOrEqual(maxRating));
-        if (minStars != null) spec = spec.and(hasStarsGreaterThanOrEqual(minStars));
-        if (maxStars != null) spec = spec.and(hasStarsLessThanOrEqual(maxStars));
+        if (name != null) {
+            spec = spec.and(hasNameLike(name));
+        }
+        if (minRating != null) {
+            spec = spec.and(hasRatingGreaterThanOrEqual(minRating));
+        }
+        if (maxRating != null) {
+            spec = spec.and(hasRatingLessThanOrEqual(maxRating));
+        }
+        if (minStars != null) {
+            spec = spec.and(hasStarsGreaterThanOrEqual(minStars));
+        }
+        if (maxStars != null) {
+            spec = spec.and(hasStarsLessThanOrEqual(maxStars));
+        }
         return spec;
     }
 

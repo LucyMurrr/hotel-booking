@@ -100,9 +100,15 @@ public class RoomService {
             Integer hotelId, String name, BigDecimal minPrice, BigDecimal maxPrice) {
 
         Specification<RoomEntity> spec = Specification.where(hasHotelId(hotelId));
-        if (name != null) spec = spec.and(hasNameLike(name));
-        if (minPrice != null) spec = spec.and(hasPriceGreaterThanOrEqual(minPrice));
-        if (maxPrice != null) spec = spec.and(hasPriceLessThanOrEqual(maxPrice));
+        if (name != null) {
+            spec = spec.and(hasNameLike(name));
+        }
+        if (minPrice != null) {
+            spec = spec.and(hasPriceGreaterThanOrEqual(minPrice));
+        }
+        if (maxPrice != null) {
+            spec = spec.and(hasPriceLessThanOrEqual(maxPrice));
+        }
         return spec;
     }
 
