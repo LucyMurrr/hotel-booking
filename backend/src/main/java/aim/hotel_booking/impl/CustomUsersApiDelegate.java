@@ -1,22 +1,30 @@
 package aim.hotel_booking.impl;
 
+import aim.hotel_booking.service.BookingService;
 import aim.hotel_booking.service.UserService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.openapitools.model.UserDto;
 import org.openapitools.model.UserCreateDto;
 import org.openapitools.model.UsersList200Response;
+import org.openapitools.model.UserBookingsList200Response;
 import org.openapitools.api.UsersApiDelegate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
+import java.time.OffsetDateTime;
 
 @Service
 @Primary
 public class CustomUsersApiDelegate implements UsersApiDelegate {
     private final UserService service;
+    private final BookingService bookingService;
 
-    public CustomUsersApiDelegate(UserService service) {
+    public CustomUsersApiDelegate(UserService service, BookingService bookingService) {
         this.service = service;
+        this.bookingService = bookingService;
     }
 
     @Override
@@ -64,5 +72,81 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
                 page,
                 perPage
         );
+    }
+
+    @Override
+    public ResponseEntity<UserBookingsList200Response> userBookingsList(
+            Integer userId,
+            Integer roomId,
+            OffsetDateTime checkInBefore,
+            OffsetDateTime checkInAfter,
+            OffsetDateTime checkOutBefore,
+            OffsetDateTime checkOutAfter,
+            String sortBy,
+            Integer page,
+            Integer perPage,
+            String sortOrder
+    ) {
+        try {
+            // Валидация параметров
+            validatePaginationParams(page, perPage);
+            validateSortOrder(sortOrder);
+            validateDateParams(checkInBefore, checkInAfter, checkOutBefore, checkOutAfter);
+
+            // Установка значений по умолчанию
+            page = (page == null || page < 1) ? 1 : page;
+            perPage = (perPage == null || perPage < 1) ? 24 : Math.min(perPage, 100);
+            sortBy = (sortBy == null) ? "checkIn" : sortBy;
+            sortOrder = (sortOrder == null) ? "ASC" : sortOrder;
+
+            return bookingService.getUserBookings(
+                userId,
+                roomId,
+                checkInBefore,
+                checkInAfter,
+                checkOutBefore,
+                checkOutAfter,
+                sortBy,
+                Sort.Direction.fromString(sortOrder),
+                page,
+                perPage
+            );
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing request", e);
+        }
+    }
+
+    private void validatePaginationParams(Integer page, Integer perPage) {
+        if (page != null && page < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page number must be positive");
+        }
+        if (perPage != null && (perPage < 1 || perPage > 100)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Per page must be between 1 and 100");
+        }
+    }
+
+    private void validateSortOrder(String sortOrder) {
+        if (sortOrder != null && !sortOrder.equalsIgnoreCase("ASC") && !sortOrder.equalsIgnoreCase("DESC")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sort order must be either ASC or DESC");
+        }
+    }
+
+    private void validateDateParams(
+            OffsetDateTime checkInBefore,
+            OffsetDateTime checkInAfter,
+            OffsetDateTime checkOutBefore,
+            OffsetDateTime checkOutAfter
+    ) {
+        if (checkInBefore != null && checkInAfter != null && checkInBefore.isBefore(checkInAfter)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Check-in before date must be after check-in after date");
+        }
+        if (checkOutBefore != null && checkOutAfter != null && checkOutBefore.isBefore(checkOutAfter)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                "Check-out before date must be after check-out after date");
+        }
     }
 }
