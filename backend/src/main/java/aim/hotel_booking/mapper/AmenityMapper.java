@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface AmenityMapper {
     Amenity toDto(AmenityEntity entity);
-    
-    @Mapping(target = "description", ignore = true)
+
     AmenityEntity toEntity(Amenity dto);
 }

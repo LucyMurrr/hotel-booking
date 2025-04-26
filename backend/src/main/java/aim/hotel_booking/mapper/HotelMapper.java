@@ -16,17 +16,11 @@ import java.util.List;
 public interface HotelMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "rating", source = "rating", qualifiedByName = "setDefaultRating")
-    @Mapping(target = "address", ignore = true)
-    @Mapping(target = "phone", ignore = true)
     HotelEntity toEntity(HotelCreateDto dto);
 
     @Mapping(target = "rating", source = "rating", qualifiedByName = "setDefaultRating")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "address", ignore = true)
-    @Mapping(target = "phone", ignore = true)
     HotelEntity updateFromDto(HotelUpdateDto dto, @MappingTarget HotelEntity entity);
 
     @Mapping(target = "rating", source = "rating", qualifiedByName = "formatRating")

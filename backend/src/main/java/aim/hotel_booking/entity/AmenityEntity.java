@@ -20,7 +20,4 @@ public class AmenityEntity {
 
     @Column(nullable = false, length = 50)
     private String name;
-
-    @Column(length = 100)
-    private String description;
 }

@@ -32,15 +32,4 @@ public class HotelEntity {
 
     @Column(precision = 3, scale = 2)
     private BigDecimal rating;
-
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
-
-    // Дополнительные поля, если необходимо
-    @Column(length = 100)
-    private String address;
-
-    @Column(length = 20)
-    private String phone;
 }
