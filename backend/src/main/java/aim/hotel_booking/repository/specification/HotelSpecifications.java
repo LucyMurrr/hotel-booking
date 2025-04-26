@@ -30,16 +30,4 @@ public class HotelSpecifications {
         return (root, query, cb) ->
                 maxStars == null ? null : cb.lessThanOrEqualTo(root.get("stars"), maxStars);
     }
-
-    // Дополнительные спецификации, если нужно
-
-    public static Specification<HotelEntity> hasExactStars(Integer stars) {
-        return (root, query, cb) ->
-                stars == null ? null : cb.equal(root.get("stars"), stars);
-    }
-
-    public static Specification<HotelEntity> isActive() {
-        return (root, query, cb) ->
-                cb.isTrue(root.get("active"));
-    }
 }

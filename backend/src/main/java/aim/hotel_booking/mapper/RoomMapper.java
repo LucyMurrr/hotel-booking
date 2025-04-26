@@ -19,8 +19,6 @@ public interface RoomMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "amenities", ignore = true)
     @Mapping(target = "hotel", ignore = true)
-    @Mapping(target = "capacity", ignore = true)
-    @Mapping(target = "squareMeters", ignore = true)
     RoomEntity toEntity(RoomCreateDto dto);
 
     @Mapping(target = "amenities", source = "amenities", qualifiedByName = "mapAmenities")
@@ -32,8 +30,6 @@ public interface RoomMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "amenities", ignore = true)
     @Mapping(target = "hotel", ignore = true)
-    @Mapping(target = "capacity", ignore = true)
-    @Mapping(target = "squareMeters", ignore = true)
     void updateFromDto(RoomUpdateDto dto, @MappingTarget RoomEntity entity);
 
     @Named("mapAmenities")

@@ -41,11 +41,4 @@ public class RoomEntity {
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomAmenityEntity> amenities;
-
-    // Дополнительные поля, если необходимо
-    @Column(name = "capacity")
-    private Integer capacity;
-
-    @Column(name = "square_meters")
-    private Integer squareMeters;
 }

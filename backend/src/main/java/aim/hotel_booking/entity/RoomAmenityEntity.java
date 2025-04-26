@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,8 +27,4 @@ public class RoomAmenityEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "amenity_id", nullable = false)
     private AmenityEntity amenity;
-
-    // Дополнительные поля для связи, если необходимо
-    @Column(name = "is_free")
-    private Boolean isFree = true;
 }

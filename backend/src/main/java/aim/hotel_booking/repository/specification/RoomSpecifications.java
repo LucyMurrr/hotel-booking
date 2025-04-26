@@ -25,17 +25,4 @@ public class RoomSpecifications {
         return (root, query, cb) ->
                 maxPrice == null ? null : cb.lessThanOrEqualTo(root.get("price"), maxPrice);
     }
-
-    // Дополнительные спецификации для комнат
-
-    public static Specification<RoomEntity> hasCapacity(Integer capacity) {
-        return (root, query, cb) ->
-                capacity == null ? null : cb.equal(root.get("capacity"), capacity);
-    }
-
-    public static Specification<RoomEntity> hasAmenity(Integer amenityId) {
-        return (root, query, cb) ->
-                amenityId == null ? null :
-                        cb.equal(root.join("amenities").get("amenity").get("id"), amenityId);
-    }
 }
