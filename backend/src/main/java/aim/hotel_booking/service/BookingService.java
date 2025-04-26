@@ -64,8 +64,17 @@ public class BookingService {
     }
 
     public ResponseEntity<Void> deleteBooking(Integer bookingId) {
-        // Implementation of deleteBooking method
-        return null; // Placeholder return, actual implementation needed
+        // Проверяем существование бронирования
+        if (!bookingRepository.existsById(bookingId)) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Booking not found with id: " + bookingId
+            );
+        }
+
+        // Удаляем бронирование
+        bookingRepository.deleteById(bookingId);
+        return ResponseEntity.noContent().build();
     }
 
     public ResponseEntity<Booking> updateBooking(Integer bookingId, BookingUpdateDto bookingUpdateDto) {
