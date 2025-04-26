@@ -69,8 +69,55 @@ public class BookingService {
     }
 
     public ResponseEntity<Booking> updateBooking(Integer bookingId, BookingUpdateDto bookingUpdateDto) {
-        // Implementation of updateBooking method
-        return null; // Placeholder return, actual implementation needed
+        // Получаем существующее бронирование
+        BookingEntity existingBooking = bookingRepository.findById(bookingId)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Booking not found with id: " + bookingId
+            ));
+
+        // Если обновляются даты, проверяем доступность номера
+        if (bookingUpdateDto.getCheckIn() != null || bookingUpdateDto.getCheckOut() != null) {
+            OffsetDateTime newCheckIn = bookingUpdateDto.getCheckIn() != null ? 
+                bookingUpdateDto.getCheckIn() : existingBooking.getCheckInDate();
+            OffsetDateTime newCheckOut = bookingUpdateDto.getCheckOut() != null ? 
+                bookingUpdateDto.getCheckOut() : existingBooking.getCheckOutDate();
+
+            // Проверяем пересечение с другими бронированиями
+            long overlappingBookings = bookingRepository.count(
+                bookingSpecification.datesOverlap(
+                    existingBooking.getRoom().getId(),
+                    newCheckIn,
+                    newCheckOut,
+                    bookingId
+                )
+            );
+
+            if (overlappingBookings > 0) {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Room is not available for the selected dates"
+                );
+            }
+        }
+
+        // Обновляем поля бронирования
+        if (bookingUpdateDto.getUserId() != null) {
+            existingBooking.getUser().setId(bookingUpdateDto.getUserId());
+        }
+        if (bookingUpdateDto.getRoomId() != null) {
+            existingBooking.getRoom().setId(bookingUpdateDto.getRoomId());
+        }
+        if (bookingUpdateDto.getCheckIn() != null) {
+            existingBooking.setCheckInDate(bookingUpdateDto.getCheckIn());
+        }
+        if (bookingUpdateDto.getCheckOut() != null) {
+            existingBooking.setCheckOutDate(bookingUpdateDto.getCheckOut());
+        }
+
+        // Сохраняем обновленное бронирование
+        BookingEntity updatedBooking = bookingRepository.save(existingBooking);
+        return ResponseEntity.ok(bookingMapper.toDto(updatedBooking));
     }
 
     public ResponseEntity<Booking> createBooking(BookingCreateDto bookingCreateDto) {
