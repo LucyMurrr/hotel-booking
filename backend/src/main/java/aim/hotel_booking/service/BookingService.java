@@ -54,8 +54,13 @@ public class BookingService {
     }
 
     public ResponseEntity<Booking> getBooking(Integer bookingId) {
-        // Implementation of getBooking method
-        return null; // Placeholder return, actual implementation needed
+        return bookingRepository.findById(bookingId)
+            .map(bookingMapper::toDto)
+            .map(ResponseEntity::ok)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Booking not found with id: " + bookingId
+            ));
     }
 
     public ResponseEntity<Void> deleteBooking(Integer bookingId) {
