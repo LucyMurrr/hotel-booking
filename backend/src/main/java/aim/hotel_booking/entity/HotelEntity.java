@@ -2,28 +2,32 @@ package aim.hotel_booking.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "User")
+@Table(name = "Hotel")
 @Getter
 @Setter
-public class UserEntity {
+public class HotelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(columnDefinition = "text")
+    private String description;
 
     @Column(nullable = false)
-    private String password;  // Зашифрованный
+    private Integer stars;
+
+    @Column(precision = 3, scale = 2)
+    private BigDecimal rating;
 }
