@@ -8,8 +8,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 
 @Entity

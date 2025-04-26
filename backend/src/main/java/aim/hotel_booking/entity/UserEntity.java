@@ -8,8 +8,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "User")
