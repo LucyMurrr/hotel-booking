@@ -47,7 +47,7 @@ public class CustomFavoritesApiDelegate implements FavoritesApiDelegate {
         favorite.setHotel(hotel);
         favoriteRepository.save(favorite);
         
-        return ResponseEntity.ok(convertToDto(hotel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(hotel));
     }
 
     private Hotel convertToDto(HotelEntity entity) {
