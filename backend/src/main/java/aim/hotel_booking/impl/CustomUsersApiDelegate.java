@@ -162,6 +162,15 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
         return ResponseEntity.ok(userDto);
     }
 
+    @Override
+    public ResponseEntity<Void> usersDelete(Integer userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        userRepository.delete(userEntity);
+        return ResponseEntity.noContent().build();
+    }
+
     private void validatePaginationParams(Integer page, Integer perPage) {
         if (page != null && page < 1) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page number must be positive");
