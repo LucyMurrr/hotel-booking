@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.openapitools.model.UserDto;
 import org.openapitools.model.UserCreateDto;
+import org.openapitools.model.UserUpdateDto;
 import org.openapitools.model.UsersList200Response;
 import org.openapitools.model.UserBookingsList200Response;
 import org.openapitools.api.UsersApiDelegate;
@@ -126,6 +127,32 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
     public ResponseEntity<UserDto> usersGet(Integer userId) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        UserDto userDto = new UserDto();
+        userDto.setId(userEntity.getId());
+        userDto.setName(userEntity.getName());
+        userDto.setEmail(userEntity.getEmail());
+
+        return ResponseEntity.ok(userDto);
+    }
+
+    @Override
+    public ResponseEntity<UserDto> usersUpdate(Integer userId, UserUpdateDto userUpdateDto) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Обновляем только те поля, которые пришли в запросе
+        if (userUpdateDto.getName() != null) {
+            userEntity.setName(userUpdateDto.getName());
+        }
+        if (userUpdateDto.getEmail() != null) {
+            userEntity.setEmail(userUpdateDto.getEmail());
+        }
+        if (userUpdateDto.getPassword() != null) {
+            userEntity.setPassword(userUpdateDto.getPassword());
+        }
+
+        userRepository.save(userEntity);
 
         UserDto userDto = new UserDto();
         userDto.setId(userEntity.getId());
