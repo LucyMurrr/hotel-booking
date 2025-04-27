@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import aim.hotel_booking.entity.UserEntity;
+import aim.hotel_booking.repository.UserRepository;
 
 import java.time.OffsetDateTime;
 
@@ -21,10 +23,12 @@ import java.time.OffsetDateTime;
 public class CustomUsersApiDelegate implements UsersApiDelegate {
     private final UserService service;
     private final BookingService bookingService;
+    private final UserRepository userRepository;
 
-    public CustomUsersApiDelegate(UserService service, BookingService bookingService) {
+    public CustomUsersApiDelegate(UserService service, BookingService bookingService, UserRepository userRepository) {
         this.service = service;
         this.bookingService = bookingService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -116,6 +120,19 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing request", e);
         }
+    }
+
+    @Override
+    public ResponseEntity<UserDto> usersGet(Integer userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        UserDto userDto = new UserDto();
+        userDto.setId(userEntity.getId());
+        userDto.setName(userEntity.getName());
+        userDto.setEmail(userEntity.getEmail());
+
+        return ResponseEntity.ok(userDto);
     }
 
     private void validatePaginationParams(Integer page, Integer perPage) {
