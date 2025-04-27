@@ -50,6 +50,25 @@ public class CustomFavoritesApiDelegate implements FavoritesApiDelegate {
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToDto(hotel));
     }
 
+    @Override
+    public ResponseEntity<Void> favoritesDelete(Integer hotelId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        
+        HotelEntity hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
+        
+        FavoriteEntity favorite = favoriteRepository.findByUserIdAndHotelId(user.getId(), hotel.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found in favorites"));
+        
+        favoriteRepository.delete(favorite);
+        
+        return ResponseEntity.noContent().build();
+    }
+
     private Hotel convertToDto(HotelEntity entity) {
         Hotel dto = new Hotel();
         dto.setId(entity.getId());
