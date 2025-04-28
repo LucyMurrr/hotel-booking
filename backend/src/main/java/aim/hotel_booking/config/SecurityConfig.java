@@ -26,7 +26,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/hotels").permitAll()
-                        .requestMatchers("/auth/**", "/tokens", "/users", "/swagger-ui/**", "/v3/api-docs/**")
+                        .requestMatchers(HttpMethod.GET, "/hotels/*/rooms").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/hotels/*").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/", "/auth/**", "/tokens", "/users", "/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
