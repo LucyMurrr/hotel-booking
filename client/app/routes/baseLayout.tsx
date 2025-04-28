@@ -62,11 +62,20 @@ const BaseLayout: React.FC = () => {
   // <Router>
     <ConfigProvider
       theme={{
-        algorithm: currentTheme === 'light' ? theme.compactAlgorithm : theme.darkAlgorithm,
+        // algorithm: currentTheme === 'light' ? theme.compactAlgorithm : theme.darkAlgorithm,
+        algorithm: currentTheme === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
       }}
     >
       <Layout>
-        <Header style={{ display: 'flex', alignItems: 'center' }}>
+        <Header style={{
+          display: 'flex',
+          alignItems: 'center',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          width: '100%',
+        }}
+        >
           <Row align="middle" style={{ width: '100%' }}>
             <Col span={(12)}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
