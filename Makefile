@@ -20,12 +20,11 @@ gen-client:
 		--additional-properties=npmName="@api/client",supportsES6=true
 
 test-api:
-	docker run --rm -v ${PWD}/api:/api $(SCHEMATHESIS_IMAGE) run \
-		--base-url=http://backend:8080 \
+	docker run --rm --network=hotel-booking_default -v ${PWD}/api:/api $(SCHEMATHESIS_IMAGE) run \
+		--url=http://hotel-booking-server-1:8080 \
 		/api/tsp-output/openapi.yaml \
 		--checks=all \
-		--validate-schema=true \
-		--hypothesis-max-examples=100
+		--max-examples=100
 
 start-mock:
 	./api/node_modules/.bin/prism mock api/tsp-output/openapi.yaml
