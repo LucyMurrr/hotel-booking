@@ -6,7 +6,6 @@ import { FullscreenOutlined, ShoppingCartOutlined, CommentOutlined } from '@ant-
 const { Meta } = Card;
 
 interface HotelCardProps {
-  key: React.Key;
   name: string;
   stars: number;
   description: ReactNode;
@@ -70,14 +69,13 @@ const InnerCard: React.FC<InnerCardProps> = ({
 };
 
 const HotelCard: React.FC<HotelCardProps> = ({
-  key, name, stars, description, rating,
+  name, stars, description, rating,
 }) => {
   const star: string = '⭐'.repeat(stars);
   return (
   // <div>
     <Card
       type="inner"
-      key={key}
       hoverable
       style={{ width: '100%' }}
     >
