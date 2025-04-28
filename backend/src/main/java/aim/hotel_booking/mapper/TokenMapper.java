@@ -13,6 +13,7 @@ public abstract class TokenMapper {
     @Autowired
     protected AuthenticationService authenticationService;
 
-    @Mapping(target = "token", expression = "java(authenticationService.authenticate(user.getEmail(), user.getPassword()))")
+    @Mapping(target = "token", expression =
+            "java(authenticationService.authenticate(user.getEmail(), user.getPassword()))")
     public abstract TokenInfo toDto(UserEntity user);
-} 
+}

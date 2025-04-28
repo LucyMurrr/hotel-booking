@@ -18,4 +18,4 @@ public class CustomAmenitiesApiDelegate implements AmenitiesApiDelegate {
     public ResponseEntity<List<Amenity>> amenitiesList() {
         return amenityService.getAmenities();
     }
-} 
+}

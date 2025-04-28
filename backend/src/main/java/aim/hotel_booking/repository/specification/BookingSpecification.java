@@ -64,4 +64,4 @@ public class BookingSpecification {
             return cb.and(roomPredicate, datesOverlapPredicate);
         };
     }
-} 
+}

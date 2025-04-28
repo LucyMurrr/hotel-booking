@@ -233,4 +233,4 @@ public class BookingService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing request", e);
         }
     }
-} 
+}

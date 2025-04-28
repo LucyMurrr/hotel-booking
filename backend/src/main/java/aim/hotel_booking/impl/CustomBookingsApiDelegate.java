@@ -78,4 +78,4 @@ public class CustomBookingsApiDelegate implements BookingsApiDelegate {
                 "Check-in date must be in the future");
         }
     }
-} 
+}

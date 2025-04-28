@@ -78,4 +78,4 @@ public class CustomFavoritesApiDelegate implements FavoritesApiDelegate {
         dto.setRating(entity.getRating());
         return dto;
     }
-} 
+}

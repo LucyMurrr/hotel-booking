@@ -20,4 +20,4 @@ public class CustomTokensApiDelegate implements TokensApiDelegate {
         TokenInfo tokenInfo = tokenService.createToken(authInfo);
         return ResponseEntity.status(201).body(tokenInfo);
     }
-} 
+}

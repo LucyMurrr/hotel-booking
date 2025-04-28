@@ -25,7 +25,8 @@ public class AuthenticationService {
             );
             
             UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with email: " + email));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with email: "
+                        + email));
                 
             return jwtService.generateToken(user);
         } catch (Exception e) {

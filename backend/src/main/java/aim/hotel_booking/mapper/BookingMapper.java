@@ -32,4 +32,4 @@ public interface BookingMapper {
     @Mapping(source = "checkIn", target = "checkInDate")
     @Mapping(source = "checkOut", target = "checkOutDate")
     void updateEntity(BookingUpdateDto dto, @MappingTarget BookingEntity entity);
-} 
+}

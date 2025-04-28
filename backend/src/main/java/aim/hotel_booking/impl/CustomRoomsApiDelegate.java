@@ -25,4 +25,4 @@ public class CustomRoomsApiDelegate implements RoomsApiDelegate {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing request", e);
         }
     }
-} 
+}

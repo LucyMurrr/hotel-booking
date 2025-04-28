@@ -10,4 +10,4 @@ import java.util.Optional;
 public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Integer> {
     Optional<FavoriteEntity> findByUserIdAndHotelId(Integer userId, Integer hotelId);
     boolean existsByUserIdAndHotelId(Integer userId, Integer hotelId);
-} 
+}

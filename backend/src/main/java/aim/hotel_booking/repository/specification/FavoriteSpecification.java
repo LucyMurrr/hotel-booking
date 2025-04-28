@@ -16,4 +16,4 @@ public class FavoriteSpecification {
         return (root, query, cb) -> 
             hotelId != null ? cb.equal(root.get("hotel").get("id"), hotelId) : null;
     }
-} 
+}

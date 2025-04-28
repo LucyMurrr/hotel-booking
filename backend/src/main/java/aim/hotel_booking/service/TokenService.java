@@ -54,4 +54,4 @@ public class TokenService {
     public void invalidateToken(String token) {
         // JWT токены не требуют инвалидации, так как они имеют срок действия
     }
-} 
+}

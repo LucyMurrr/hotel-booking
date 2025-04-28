@@ -27,4 +27,4 @@ public class AmenityService {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(amenities);
     }
-} 
+}
