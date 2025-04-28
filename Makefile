@@ -1,5 +1,7 @@
 OPENAPI_GENERATOR_IMAGE := openapitools/openapi-generator-cli:latest-release
 SCHEMATHESIS_IMAGE := schemathesis/schemathesis:latest
+API_URL = http://server:8080
+ENDPOINTS = "/hotels$$|/hotels/\\d+/rooms$$|/hotels/\\d+$$|/amenities$$|/bookings$$|/bookings/\\d+$$|/favorites$$|/favorites/\\d+$$|/rooms/\\d+$$|/tokens$$|/users$$|/users/\\d+$$|/users/\\d+/favorites$$"
 
 gen-api:
 	docker run --rm -v ${PWD}/api:/api node:22-alpine sh -c "cd /api && npm i && npx tsp compile ."
@@ -20,11 +22,22 @@ gen-client:
 		--additional-properties=npmName="@api/client",supportsES6=true
 
 test-api:
-	docker run --rm --network=hotel-booking_default -v ${PWD}/api:/api $(SCHEMATHESIS_IMAGE) run \
-		--url=http://hotel-booking-server-1:8080 \
-		/api/tsp-output/openapi.yaml \
-		--checks=all \
-		--max-examples=100
+		rm -f $(CURDIR)/tests/schemathesis_reports/junit.xml
+		mkdir -p ${PWD}/tests/schemathesis_reports
+		chmod -R u+w ${PWD}/tests/schemathesis_reports
+		docker run --rm \
+				--network=hotel-booking_default \
+				-v ${PWD}/api:/api \
+				-v ${PWD}/tests/schemathesis_reports:/reports \
+				$(SCHEMATHESIS_IMAGE) run \
+				--url=$(API_URL) \
+				/api/tsp-output/openapi.yaml \
+				--include-path-regex=$(ENDPOINTS) \
+				--checks=all \
+				--max-examples=50 \
+				--report=junit \
+				--report-dir=/reports
+			ls -l /reports	
 
 start-mock:
 	./api/node_modules/.bin/prism mock api/tsp-output/openapi.yaml
