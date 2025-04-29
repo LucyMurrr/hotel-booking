@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -58,6 +60,14 @@ public class RoomService {
 
     protected RoomEntity findById(Integer id) {
         return repository.findById(id).orElse(null);
+    }
+
+    public ResponseEntity<RoomDto> roomsGet(Integer roomId) {
+        RoomEntity entity = findById(roomId);
+        if (entity == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found");
+        }
+        return ResponseEntity.ok(mapper.toDto(entity));
     }
 
     public ResponseEntity<RoomDto> createRoom(Integer hotelId, RoomCreateDto dto) {
