@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   DatePicker,
@@ -10,9 +10,9 @@ import {
 } from 'antd';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
-// import { useSubmit } from 'react-router-dom';
+// import { Form } from 'react-router-dom';
 import type { FormProps } from 'antd';
-import client, { type Hotel } from '~/src/api';
+import client from '~/src/api';
 
 const { RangePicker } = DatePicker;
 
@@ -21,7 +21,7 @@ type FormValues = {
   minStar?: string;
   maxStar?: string;
   dates?: [moment.Moment | null, moment.Moment | null];
-  rating?: number;
+  rating?: number[];
 };
 
 interface ApiResponse {
@@ -29,6 +29,7 @@ interface ApiResponse {
 }
 
 async function fetchHotels(requestParameters: { name?: string; minStars?: number; maxStars?: number }) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   const response: ApiResponse = await client.hotelsListRaw(requestParameters);
   return response.raw;
 }
@@ -44,35 +45,58 @@ export async function action({ request }: { request: Request }) {
     minStars: formData.get('minStar') ? Number(formData.get('minStar')) : undefined,
     maxStars: formData.get('maxStar') ? Number(formData.get('maxStar')) : undefined,
   };
-
+  console.log('Response 111:', requestParameters, request);
   return fetchHotels(requestParameters);
 }
 
-const BaseLayoutForm: React.FC = () => {
+// eslint-disable-next-line max-len
+const BaseLayoutForm: React.FC<{ onFilterChange: (requestParameters: FormValues) => void }> = ({ onFilterChange }: { onFilterChange: (requestParameters: FormValues) => void}) => {
   const [antdForm] = AntdForm.useForm();
+  const [rating, setRating] = useState<number[]>([3, 8]);
   // const submit = useSubmit();
+
+  useEffect(() => {
+    antdForm.setFieldsValue({
+      rating,
+    });
+  }, [antdForm, rating]);
 
   const handleAntdSubmit: FormProps['onFinish'] = async (values: FormValues) => {
     const requestParameters = {
       name: values.search || undefined,
-      minStars: values.minStar ? Number(values.minStar) : undefined,
-      maxStars: values.maxStar ? Number(values.maxStar) : undefined,
+      minStar: values.minStar || undefined,
+      maxStar: values.maxStar || undefined,
+      dates: values.dates || undefined,
+      rating: values.rating || rating,
     };
 
     try {
-      const rawResponse = await fetchHotels(requestParameters);
-
+      onFilterChange(requestParameters);
+      const rawResponse = await fetchHotels({
+        name: requestParameters.name,
+        minStars: requestParameters.minStar ? Number(requestParameters.minStar) : undefined,
+        maxStars: requestParameters.maxStar ? Number(requestParameters.maxStar) : undefined,
+      });
+      // Правильная передача параметров
       if (rawResponse.ok) {
+      // if (rawResponse.ok) {
+      // eslint-disable-next-line max-len
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // const jsonData: Hotel[] = (await rawResponse.json()).data;
         // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const jsonData: Hotel[] = (await rawResponse.json()).data;
-        console.log('Parsed Response:', jsonData);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        // console.log('Parsed Response 111:', rawResponse, jsonData);
+        // return jsonData;
       } else {
         console.error('Ошибка при получении данных:', rawResponse.statusText);
       }
     } catch (error) {
       console.error('Ошибка при отправке формы:', error);
     }
+  };
+
+  const handleSliderChange = (newRating: number[]) => {
+    setRating(newRating); // Обновляем значение ползунка в состоянии
   };
 
   return (
@@ -128,7 +152,13 @@ const BaseLayoutForm: React.FC = () => {
           labelCol={{ span: 24 }}
           name="rating"
         >
-          <Slider range defaultValue={[3, 8]} max={10} />
+          <Slider
+            range
+            value={rating}
+            onChange={handleSliderChange}
+            max={10}
+            step={0.5}
+          />
         </AntdForm.Item>
         <div
           style={{

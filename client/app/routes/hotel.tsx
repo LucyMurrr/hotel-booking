@@ -8,12 +8,13 @@ import type { Hotel, HotelsGetRequest } from '@api';
 import client from '~/src/api';
 import type { Route } from './+types/hotel';
 
-const hotelID: number = 2;
+const hotelID: number = 2; // костыль
 
 export async function loader() {
   const request: HotelsGetRequest = { hotelId: hotelID };
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   const Data: Hotel = await client.hotelsGet(request);
-  console.log(Data);
+  // console.log(Data);
   return Data;
 }
 
