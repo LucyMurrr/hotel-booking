@@ -26,6 +26,8 @@ import org.openapitools.model.HotelFilters;
 import org.openapitools.model.Hotel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import aim.hotel_booking.repository.specification.FavoriteSpecification;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -40,13 +42,15 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
     private final UserRepository userRepository;
     private final FavoriteRepository favoriteRepository;
     private final HotelRepository hotelRepository;
+    private final FavoriteSpecification favoriteSpecification;
 
-    public CustomUsersApiDelegate(UserService service, BookingService bookingService, UserRepository userRepository, FavoriteRepository favoriteRepository, HotelRepository hotelRepository) {
+    public CustomUsersApiDelegate(UserService service, BookingService bookingService, UserRepository userRepository, FavoriteRepository favoriteRepository, HotelRepository hotelRepository, FavoriteSpecification favoriteSpecification) {
         this.service = service;
         this.bookingService = bookingService;
         this.userRepository = userRepository;
         this.favoriteRepository = favoriteRepository;
         this.hotelRepository = hotelRepository;
+        this.favoriteSpecification = favoriteSpecification;
     }
 
     @Override
@@ -205,32 +209,30 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        // Преобразуем sortBy для сортировки по полям отеля
-        String hotelSortBy = "h." + (sortBy != null ? sortBy : "name");
-
         // Создаем объект пагинации
         PageRequest pageRequest = PageRequest.of(
                 page != null ? page - 1 : 0,
                 perPage != null ? perPage : 24,
                 Sort.by(Sort.Direction.fromString(sortOrder != null ? sortOrder : "ASC"),
-                        hotelSortBy)
+                        "hotel." + (sortBy != null ? sortBy : "name"))
+        );
+
+        // Создаем спецификацию для фильтрации
+        Specification<FavoriteEntity> spec = favoriteSpecification.buildFilterSpecification(
+                userId,
+                name,
+                minRating,
+                maxRating,
+                minStars,
+                maxStars
         );
 
         // Получаем избранные отели пользователя с фильтрацией
-        Page<FavoriteEntity> favoritesPage = favoriteRepository.findByUserIdWithFilters(
-                userId,
-                name != null ? name.toLowerCase() : null,
-                minRating != null ? minRating.doubleValue() : null,
-                maxRating != null ? maxRating.doubleValue() : null,
-                minStars,
-                maxStars,
-                pageRequest
-        );
+        Page<FavoriteEntity> favoritesPage = favoriteRepository.findAll(spec, pageRequest);
 
         // Преобразуем результаты в DTO
         List<Hotel> hotels = favoritesPage.getContent().stream()
                 .map(FavoriteEntity::getHotel)
-                .filter(hotel -> name == null || hotel.getName().toLowerCase().contains(name.toLowerCase()))
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
 
