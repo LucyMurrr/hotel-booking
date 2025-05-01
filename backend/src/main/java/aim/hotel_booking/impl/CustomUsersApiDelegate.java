@@ -44,7 +44,9 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
     private final HotelRepository hotelRepository;
     private final FavoriteSpecification favoriteSpecification;
 
-    public CustomUsersApiDelegate(UserService service, BookingService bookingService, UserRepository userRepository, FavoriteRepository favoriteRepository, HotelRepository hotelRepository, FavoriteSpecification favoriteSpecification) {
+    public CustomUsersApiDelegate(UserService service, BookingService bookingService, UserRepository userRepository,
+                                  FavoriteRepository favoriteRepository, HotelRepository hotelRepository,
+                                  FavoriteSpecification favoriteSpecification) {
         this.service = service;
         this.bookingService = bookingService;
         this.userRepository = userRepository;
