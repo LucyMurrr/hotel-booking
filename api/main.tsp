@@ -455,6 +455,7 @@ namespace UserBookings {
 @useAuth(BearerAuth)
 namespace UserFavorites {
   @get
+  @operationId("listUserFavorites")
   op list(@path userId: int32, ...HotelParams): {
     @statusCode statusCode: 200;
     @body favorites: PaginatedDto<Hotel[], HotelFilters, HotelSortOptions>;
@@ -492,12 +493,14 @@ namespace Bookings {
 @useAuth(BearerAuth)
 namespace Favorites {
   @post
+  @operationId("createFavorite")
   op create(@body favorite: FavoriteCreateDto): {
     @statusCode statusCode: 201;
     @body newFavorite: Hotel;
   } | UnprocessableEntityError | UnauthorizedError | ForbiddenError;
 
   @delete
+  @operationId("deleteFavorite")
   op delete(@path hotelId: int32): {
     @statusCode statusCode: 204;
   } | NotFoundError | UnauthorizedError | ForbiddenError;
