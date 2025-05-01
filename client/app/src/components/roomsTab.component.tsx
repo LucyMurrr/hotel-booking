@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Space, Table } from 'antd';
 import { Link } from 'react-router-dom';
-import client, { type HotelRoomsList200Response } from '@api';
+import client, { type HotelRoomsList200Response, type RoomDto } from '@api';
+
+// interface DataType {
+//   key: number;
+//   name: string;
+//   date_of_building: number;
+//   dist_to_airport: number;
+//   star: number;
+//   description: string;
+//   rating: number;
+// }
+interface Amenities {
+  id: number,
+  name: string,
+}
 
 interface DataType {
-  key: number;
+  id: number;
   name: string;
-  date_of_building: number;
-  dist_to_airport: number;
-  star: number;
-  description: string;
-  rating: number;
+  price: number;
+  hotelId: number;
+  amenities: Amenities[],
 }
 
 const columns = [
@@ -21,9 +33,9 @@ const columns = [
   },
   {
     title: 'Стоимость',
-    key: 'price',
-    dataIndex: 'price',
-    sorter: (a: DataType, b: DataType) => a.date_of_building - b.date_of_building,
+    key: 'minPrice',
+    dataIndex: 'minPrice',
+    sorter: (a: DataType, b: DataType) => a.price - b.price,
   },
   {
     title: '',
@@ -36,28 +48,28 @@ const columns = [
   },
 ];
 
+//   // eslint-disable-next-line @typescript-eslint/no-floating-promises
 interface RoomsTableProps {
   hotelId: number;
 }
 
 const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<RoomDto[]>([]);
 
   async function fetchRooms(requestParameters: { hotelId: number }) {
     try {
-      const param = { ...requestParameters, hotelId: requestParameters.hotelId.toString() };
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      const response = await client.hotelRoomsListRaw({ ...param });
+      const response = await client.hotelRoomsListRaw({ ...requestParameters });
       // eslint-disable-next-line max-len
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const resp: HotelRoomsList200Response = await response.raw.json();
       // eslint-disable-next-line max-len
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-member-access
       return resp.data;
     } catch (error) {
       if (error instanceof Error) {
-        console.error('Ошибка:');
+        console.error('Ошибка:', error.message);
       } else {
         console.error('Неизвестная ошибка:', error);
       }
@@ -65,30 +77,12 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
     }
   }
 
-  // async function fetchRooms(hotelId: number): Promise<Room[]> {
-  //   try {
-  //     const params: HotelRoomsListRequest = {
-  //       hotelId,
-  //     };
-  //     const response = await client.hotelRoomsListRaw(params);
-  //     const data = await response.raw.json();
-  //     return data.data;
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       console.error('Ошибка:', error.message);
-  //     } else {
-  //       console.error('Неизвестная ошибка:', error);
-  //     }
-  //     return [];
-  //   }
-  // }
-
   useEffect(() => {
     const getRooms = async () => {
       setLoading(true);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const fetchedData = await fetchRooms({ hotelId });
-      console.log(111, fetchedData);
+      console.log('Fetched Data:', fetchedData);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setData(fetchedData);
       setLoading(false);
@@ -97,7 +91,6 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     getRooms();
   }, [hotelId]);
-
   return (
     <>
       <Form layout="inline" className="table-demo-control-bar" style={{ marginBottom: 16 }} />
@@ -105,11 +98,9 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
         bordered
         size="large"
         columns={columns}
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         dataSource={data.map((item, index) => ({
           ...item,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          key: item.key || index,
+          key: item.hotelId || index,
         }))}
         loading={loading}
       />
