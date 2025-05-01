@@ -122,8 +122,12 @@ const BaseLayout: React.FC = () => {
         >
           <div
             style={{
-              minHeight: 600,
+              // minHeight: 600,
+              height: '100%',
               padding: 24,
+              boxSizing: 'border-box',
+              // display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <Outlet />

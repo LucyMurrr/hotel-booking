@@ -1,17 +1,16 @@
 import React from 'react';
 import {
-  Button, Card, Flex, Typography,
+  Button, Card, Space, Tag, Typography,
 } from 'antd';
-import { StarOutlined } from '@ant-design/icons';
+import { HeartTwoTone, StarTwoTone } from '@ant-design/icons';
 import { Link } from 'react-router';
 import type { Hotel, HotelsGetRequest } from '@api';
 import client from '~/src/api';
 import type { Route } from './+types/hotel';
+import RoomsTable from '../src/components/roomsTab.component';
 
-const hotelID: number = 2; // костыль
-
-export async function loader() {
-  const request: HotelsGetRequest = { hotelId: hotelID };
+export async function loader({ params }: Route.LoaderArgs) {
+  const request: HotelsGetRequest = { hotelId: Number(params.hotelId) };
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   const Data: Hotel = await client.hotelsGet(request);
   // console.log(Data);
@@ -20,50 +19,76 @@ export async function loader() {
 
 const cardStyle: React.CSSProperties = {
   width: '100%',
-  height: '83vh',
   display: 'flex',
   flexDirection: 'column',
 };
-
-const imgStyle: React.CSSProperties = {
-  display: 'block',
-  width: '50%',
-};
-
 const HotelPage: React.FC<Route.ComponentProps> = ({
   loaderData,
 }) => {
   const {
-    name, description, stars,
+    id, name, description, stars, rating,
   } = loaderData;
+  // eslint-disable-next-line no-nested-ternary
+  const ratingColor = rating <= 5 ? '#B22222' : rating >= 8 ? '#008000' : '#FFD700';
   return (
-    <Card hoverable style={cardStyle} styles={{ body: { padding: 0, overflow: 'hidden' } }}>
-      <Flex justify="space-between">
-        <img
-          alt="avatar"
-          // eslint-disable-next-line max-len
-          src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
-          style={imgStyle}
-        />
-        <Flex vertical align="flex-end" justify="space-between" style={{ padding: 32 }}>
-          <Typography.Title level={2}>
-            {name}
-          </Typography.Title>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
+    <Card hoverable style={cardStyle}>
+      <Space style={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+      }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             {Array.from({ length: stars }, (_, index) => (
-              <StarOutlined key={index} style={{ color: 'hotpink' }} />
+              <StarTwoTone key={index} twoToneColor="#eb2f96" />
             ))}
           </div>
-          <Typography.Title level={5}>
-            {description}
+          <Typography.Title level={2} style={{ margin: '0 0 8px 0' }}>
+            {name}
           </Typography.Title>
-          <Link to="/hotelsTab" key="boking-date">
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <HeartTwoTone style={{ fontSize: '24px', marginRight: '16px' }} />
+          <Link to="/hotelsTab" key="booking-date">
             <Button>
-              Выбрать дату
+              Забронировать
             </Button>
           </Link>
-        </Flex>
-      </Flex>
+        </div>
+      </Space>
+
+      <div className="flex gap-4 justify-between h-full mt-5">
+        <img
+          alt="Hotel"
+          // eslint-disable-next-line max-len
+          src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
+          style={{
+            width: '50%',
+            height: 'auto',
+            display: 'block',
+          }}
+        />
+        <div style={{ display: 'flex' }}>
+          <Typography.Title level={5}>Оценка пользователей </Typography.Title>
+          <Tag
+            bordered={false}
+            color={ratingColor}
+            style={{ alignSelf: 'flex-start', marginLeft: '8px' }}
+          >
+            {rating}
+          </Tag>
+        </div>
+      </div>
+      <div className="mt-10">
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+      </div>
+      <div>
+        <RoomsTable hotelId={Number(id)} />
+      </div>
     </Card>
   );
 };

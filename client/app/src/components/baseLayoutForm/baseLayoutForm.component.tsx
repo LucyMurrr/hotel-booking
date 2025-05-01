@@ -45,7 +45,7 @@ export async function action({ request }: { request: Request }) {
     minStars: formData.get('minStar') ? Number(formData.get('minStar')) : undefined,
     maxStars: formData.get('maxStar') ? Number(formData.get('maxStar')) : undefined,
   };
-  console.log('Response 111:', requestParameters, request);
+  // console.log('Response 111:', requestParameters, request);
   return fetchHotels(requestParameters);
 }
 
