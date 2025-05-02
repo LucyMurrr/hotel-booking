@@ -16,7 +16,7 @@ export async function loader({
   // eslint-disable-next-line max-len
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const data = await response.raw.json();
-  console.log(111, params);
+  // console.log(111, params);
   // eslint-disable-next-line max-len
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   return data.data;
@@ -32,8 +32,8 @@ const BaseLayoutForm: React.FC = () => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [search, setSearch] = useState<string>('');
-  const [minStar, setMinStar] = useState<string>('2');
-  const [maxStar, setMaxStar] = useState<string>('5');
+  const [minStars, setminStars] = useState<string>('2');
+  const [maxStars, setmaxStars] = useState<string>('5');
 
   const resetFilters = () => {
     setMinRating(0);
@@ -41,8 +41,8 @@ const BaseLayoutForm: React.FC = () => {
     setStartDate('');
     setEndDate('');
     setSearch('');
-    setMinStar('2');
-    setMaxStar('5');
+    setminStars('2');
+    setmaxStars('5');
   };
 
   return (
@@ -64,11 +64,11 @@ const BaseLayoutForm: React.FC = () => {
         <div>
           <label className="block mb-1 text-gray-500">... минимальному количеству звезд:</label>
           <select
-            name="minStar"
-            value={minStar}
-            onChange={(e) => setMinStar(e.target.value)}
+            name="minStars"
+            value={minStars}
+            onChange={(e) => setminStars(e.target.value)}
             // eslint-disable-next-line max-len
-            className="p-2 h-8 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
+            className="p-2 h-9 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
           >
             <option value="2">⭐⭐</option>
             <option value="3">⭐⭐⭐</option>
@@ -80,11 +80,11 @@ const BaseLayoutForm: React.FC = () => {
         <div>
           <label className="block mb-1 text-gray-500">... максимальному количеству звезд:</label>
           <select
-            name="maxStar"
-            value={maxStar}
-            onChange={(e) => setMaxStar(e.target.value)}
+            name="maxStars"
+            value={maxStars}
+            onChange={(e) => setmaxStars(e.target.value)}
             // eslint-disable-next-line max-len
-            className="p-2 h-8 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
+            className="p-2 h-9 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
           >
             <option value="2">⭐⭐</option>
             <option value="3">⭐⭐⭐</option>
@@ -119,14 +119,14 @@ const BaseLayoutForm: React.FC = () => {
               name="minRating"
               value={minRating}
               onChange={(e) => setMinRating(Number(e.target.value))}
-              className="w-1/2 p-2 h-8 border border-gray-300 rounded-md"
+              className="w-1/2 p-2 h-9 border border-gray-300 rounded-md"
             />
             <input
               type="text"
               name="maxRating"
               value={maxRating}
               onChange={(e) => setMaxRating(Number(e.target.value))}
-              className="w-1/2 p-2 h-8 border border-gray-300 rounded-md"
+              className="w-1/2 p-2 h-9 border border-gray-300 rounded-md"
             />
           </div>
         </div>
@@ -140,7 +140,7 @@ const BaseLayoutForm: React.FC = () => {
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               // eslint-disable-next-line max-len
-              className="p-2 h-8 bg-blue-200 text-gray-500 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
+              className="p-2 h-9 bg-blue-200 text-gray-500 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
             />
             <input
               type="date"
@@ -148,7 +148,7 @@ const BaseLayoutForm: React.FC = () => {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               // eslint-disable-next-line max-len
-              className="p-2 h-8 border bg-blue-200 text-gray-500 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
+              className="p-2 h-9 border bg-blue-200 text-gray-500 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
             />
           </div>
         </div>
@@ -199,7 +199,7 @@ const Hotels: React.FC<HotelsProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [sortedData, setSortedData] = useState(loaderData);
-
+  // console.log(sortedData);
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const paginatedData = sortedData.slice(startIndex, endIndex);
@@ -243,7 +243,7 @@ const Hotels: React.FC<HotelsProps> = ({
         {/* <Flex vertical justify="space-between" style={{ padding: 32 }}> */}
         {/* <Space direction="vertical" size="middle" style={{ display: 'flex', flexGrow: 1 }}> */}
         {/* eslint-disable-next-line max-len */}
-        <Space className="border rounded-md p-2 w-2/5" style={{ display: 'flex', flexGrow: 1, alignItems: 'center' }}>
+        <Space className="border rounded-md p-2 w-2/5" style={{ display: 'flex', flexGrow: 1, alignItems: 'center', overflow: 'hidden' }}>
           <label className="mr-2">Сортировать по ...</label>
           <SortButton onChange={handleSortChange} />
         </Space>
@@ -259,7 +259,7 @@ const Hotels: React.FC<HotelsProps> = ({
           <Flex wrap gap="large">
             {paginatedData.map((data) => (
               // eslint-disable-next-line max-len
-              <HotelCard key={data.id} name={data.name} description={data.description} stars={data.stars} rating={data.rating} />
+              <HotelCard key={data.id} name={data.name} description={data.description} stars={data.stars} rating={data.rating} id={data.id} />
             ))}
           </Flex>
           <Pagination

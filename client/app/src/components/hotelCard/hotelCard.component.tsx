@@ -6,6 +6,7 @@ import { FullscreenOutlined, ShoppingCartOutlined, CommentOutlined } from '@ant-
 const { Meta } = Card;
 
 interface HotelCardProps {
+  id: number,
   name: string;
   stars: number;
   description: ReactNode;
@@ -23,6 +24,7 @@ const cardWrapperStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
+  overflow: 'auto',
 };
 
 const imageStyle: React.CSSProperties = {
@@ -49,13 +51,14 @@ const InnerCard: React.FC<InnerCardProps> = ({
   // eslint-disable-next-line no-nested-ternary
   const ratingColor = rating <= 5 ? '#B22222' : rating >= 8 ? '#008000' : '#FFD700';
   return (
-    <div>
+    <div style={{ ...cardWrapperStyle }}>
       <Card
         type="inner"
         variant="borderless"
-        title={<h2 style={{ color: '#FFD700' }}>{name}</h2>}
+        title={<h1 style={{ color: '#FFD700' }}>{name}</h1>}
         extra={stars}
         // style={{ borderRadius: 0 }}
+        style={{ width: '100%' }}
       >
         <Meta
           // avatar={<Avatar src="../public/booking.png" />}
@@ -69,9 +72,10 @@ const InnerCard: React.FC<InnerCardProps> = ({
 };
 
 const HotelCard: React.FC<HotelCardProps> = ({
-  name, stars, description, rating,
+  id, name, stars, description, rating,
 }) => {
   const star: string = '⭐'.repeat(stars);
+  console.log(id);
   return (
   // <div>
     <Card
@@ -90,7 +94,7 @@ const HotelCard: React.FC<HotelCardProps> = ({
         <div style={descriptionStyle}>
           <InnerCard name={name} stars={star} description={description} rating={rating} />
           <div style={{ ...actionStyle, display: 'flex' }}>
-            <Link to="/hotelC">
+            <Link to={`hotels/${String(id)}`}>
               <FullscreenOutlined /> Информация
             </Link>
             <Link to="/hotels/:hotelName/rooms" style={{ marginLeft: '30px' }}>

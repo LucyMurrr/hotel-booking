@@ -55,6 +55,7 @@ model UnprocessableEntityError {
 }
 
 model Hotel {
+  @example(1)
   id: int32;
   @example("Hilton")
   name: string;
@@ -129,10 +130,15 @@ model RoomAmenityCreateDto {
 }
 
 model Room {
+  @example(1)
   id: int32;
+  @example("Люкс с видом на колизей")
   name: string;
+  @example("Описание люкса с видом на колизей")
   description: string;
+  @example(300)
   price: float;
+  @example(1)
   hotelId: int32;
 }
 
