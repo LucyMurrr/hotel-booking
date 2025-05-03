@@ -20,7 +20,8 @@ ALTER SEQUENCE "Favorites_id_seq" RESTART WITH 1;
 INSERT INTO "User" (name, email, password) VALUES
 ('John Doe', 'john.doe@example.com', '$2a$10$X7J3Y5Z9A1B3C5D7E9G1I3K5M7O9Q1S3U5W7Y9A1B3C5D7E9G1I3K5M7O9Q1S3U'),
 ('Jane Smith', 'jane.smith@example.com', '$2a$10$X7J3Y5Z9A1B3C5D7E9G1I3K5M7O9Q1S3U5W7Y9A1B3C5D7E9G1I3K5M7O9Q1S3U'),
-('Bob Johnson', 'bob.johnson@example.com', '$2a$10$X7J3Y5Z9A1B3C5D7E9G1I3K5M7O9Q1S3U5W7Y9A1B3C5D7E9G1I3K5M7O9Q1S3U');
+-- Добавлены пользователь test с паролем 'testtest'
+('test', 'test@test.ru', '$2a$10$dW1NBS9T37CzH6cGhhUSEeYo4yodMtMj7cge9lqaSVsqe2mzvRZRO');
 
 -- Insert test data for Hotel table (удален createdAt)
 INSERT INTO "Hotel" (name, description, stars, rating) VALUES
