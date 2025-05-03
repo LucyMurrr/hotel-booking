@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Flex, Pagination, Space, Select, type PaginationProps,
 } from 'antd';
-import type { Hotel } from '@api';
+import type { Hotel, HotelsList200Response } from '@api';
 import { Form } from 'react-router-dom';
 import client from '~/src/api';
 import HotelCard from '../src/components/hotelCard/hotelCard.component';
@@ -11,15 +11,16 @@ import type { Route } from '../+types/root';
 export async function loader({
   params,
 }: Route.LoaderArgs) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const response = await client.hotelsListRaw(params);
-  // eslint-disable-next-line max-len
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  const data = await response.raw.json();
-  // console.log(111, params);
-  // eslint-disable-next-line max-len
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-  return data.data;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const response: HotelsList200Response = await client.hotelsList(params);
+    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+    return response.data;
+  } catch {
+    console.log('Error response', Error);
+  }
+  return null;
 }
 
 export type HotelsProps = {
