@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Button, Card, Space, Tag, Typography,
 } from 'antd';
@@ -30,6 +30,13 @@ const HotelPage: React.FC<Route.ComponentProps> = ({
   } = loaderData;
   // eslint-disable-next-line no-nested-ternary
   const ratingColor = rating <= 5 ? '#B22222' : rating >= 8 ? '#008000' : '#FFD700';
+  const targetRef = useRef<HTMLDivElement | null>(null);
+  const scrollToElement = (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (targetRef.current) {
+      targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
   return (
     <Card hoverable style={cardStyle}>
       <Space style={{
@@ -52,7 +59,7 @@ const HotelPage: React.FC<Route.ComponentProps> = ({
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <HeartTwoTone style={{ fontSize: '24px', marginRight: '16px' }} />
           <Link to="/hotelsTab" key="booking-date">
-            <Button>
+            <Button onClick={scrollToElement}>
               Забронировать
             </Button>
           </Link>
@@ -85,8 +92,65 @@ const HotelPage: React.FC<Route.ComponentProps> = ({
         <Typography.Title level={5}>
           {description}
         </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
+        <Typography.Title level={5}>
+          {description}
+        </Typography.Title>
       </div>
-      <div>
+      <div ref={targetRef}>
         <RoomsTable hotelId={Number(id)} />
       </div>
     </Card>

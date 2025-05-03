@@ -3,26 +3,18 @@ import { Form, Space, Table } from 'antd';
 import { Link } from 'react-router-dom';
 import client, { type HotelRoomsList200Response, type RoomDto } from '@api';
 
-// interface DataType {
-//   key: number;
-//   name: string;
-//   date_of_building: number;
-//   dist_to_airport: number;
-//   star: number;
-//   description: string;
-//   rating: number;
-// }
 interface Amenities {
-  id: number,
-  name: string,
+  id: number;
+  name: string;
 }
 
 interface DataType {
   id: number;
   name: string;
+  description: string;
   price: number;
   hotelId: number;
-  amenities: Amenities[],
+  amenities: Amenities[];
 }
 
 const columns = [
@@ -33,8 +25,8 @@ const columns = [
   },
   {
     title: 'Стоимость',
-    key: 'minPrice',
-    dataIndex: 'minPrice',
+    key: 'price',
+    dataIndex: 'price',
     sorter: (a: DataType, b: DataType) => a.price - b.price,
   },
   {
@@ -91,6 +83,7 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     getRooms();
   }, [hotelId]);
+  const expandedRowRender = (record: DataType) => <p style={{ margin: 0 }}>{record.description}</p>;
   return (
     <>
       <Form layout="inline" className="table-demo-control-bar" style={{ marginBottom: 16 }} />
@@ -103,6 +96,10 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
           key: item.hotelId || index,
         }))}
         loading={loading}
+        expandable={{
+          expandedRowRender,
+          rowExpandable: (record) => record.name !== 'Not Expandable',
+        }}
       />
     </>
   );
