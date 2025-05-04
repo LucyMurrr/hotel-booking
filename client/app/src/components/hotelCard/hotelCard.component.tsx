@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { Card } from 'antd';
 import { Link } from 'react-router-dom';
-import { FullscreenOutlined, ShoppingCartOutlined, CommentOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, CommentOutlined } from '@ant-design/icons';
 
 const { Meta } = Card;
 
@@ -94,16 +94,16 @@ const HotelCard: React.FC<HotelCardProps> = ({
         <div style={descriptionStyle}>
           <InnerCard name={name} stars={star} description={description} rating={rating} />
           <div style={{ ...actionStyle, display: 'flex' }}>
-            <Link to={`hotels/${String(id)}`}>
+            {/* <Link to={`hotels/${String(id)}`}>
               <FullscreenOutlined /> Информация
-            </Link>
+            </Link> */}
             <Link
               to={`/hotels/${String(id)}/newRoom`}
               style={{ marginLeft: '30px' }}
             > {/* временная ссылка */}
               <CommentOutlined /> Отзывы
             </Link>
-            <Link to="/auth" style={{ marginLeft: '30px' }}>
+            <Link to={`hotels/${String(id)}`} style={{ marginLeft: '30px' }}>
               <ShoppingCartOutlined /> Бронирование
             </Link>
           </div>

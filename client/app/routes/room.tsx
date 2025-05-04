@@ -1,19 +1,20 @@
+/* eslint-disable max-len */
 import React from 'react';
 import {
+  Button,
   Card, Space, Typography,
 } from 'antd';
 // import { HeartTwoTone, StarTwoTone } from '@ant-design/icons';
 // import { Link, useParams } from 'react-router';
 import type { RoomDto, RoomsGetRequest } from '@api';
+import { Link } from 'react-router-dom';
 import client from '~/src/api';
 import type { Route } from './+types/hotel';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const request: RoomsGetRequest = { roomId: Number(params.roomId) };
-  // eslint-disable-next-line max-len
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, max-len
   const response = await client.roomsGetRaw(request);
-  // eslint-disable-next-line max-len
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const data = await response.raw.json();
   // console.log(data);
@@ -35,7 +36,7 @@ const RoomPage: React.FC<RoomPageProps> = ({
   const {
     name, description, price, amenities,
   } = loaderData;
-  console.log(loaderData);
+  // console.log(loaderData);
   return (
     <Card hoverable style={cardStyle}>
       <Space style={{
@@ -58,7 +59,6 @@ const RoomPage: React.FC<RoomPageProps> = ({
       <div className="flex gap-4 justify-between h-full mt-5">
         <img
           alt="Room"
-          // eslint-disable-next-line max-len
           src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRKkcou-Xjhqa2ZCOyuf06STxjRX4A-gZJnhetJ1QT75gpWYVxb"
           style={{
             width: '50%',
@@ -72,9 +72,14 @@ const RoomPage: React.FC<RoomPageProps> = ({
       </div>
       <div className="flex gap-4 justify-between h-full mt-5">
         {amenities.map((amenity) => (
-          <Typography.Title level={5}>{amenity.name} </Typography.Title>
+          <Typography.Title key={amenity.id} level={5}>{amenity.name} </Typography.Title>
         ))}
         <Typography.Title level={5}>Стоимость: {price} </Typography.Title>
+        <Link to="/booking">
+          <Button>
+            Забронировать
+          </Button>
+        </Link>
       </div>
     </Card>
   );

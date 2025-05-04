@@ -146,6 +146,9 @@ const HotelPage = ({ loaderData }: Route.ComponentProps) => {
           {description}
         </Typography.Title>
       </div>
+      <Typography.Title level={4}>
+        Выберите номер:
+      </Typography.Title>
       <div ref={targetRef}>
         <RoomsTable hotelId={Number(id)} />
       </div>

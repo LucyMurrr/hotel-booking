@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import {
   Flex, Pagination, Space, Select, type PaginationProps,
@@ -12,7 +13,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   return response.data;
 }
 
-const BaseLayoutForm: React.FC = () => {
+const HotelsFilterForm: React.FC = () => {
   const [minRating, setMinRating] = useState<number>(0);
   const [maxRating, setMaxRating] = useState<number>(10);
   const [startDate, setStartDate] = useState<string>('');
@@ -42,7 +43,6 @@ const BaseLayoutForm: React.FC = () => {
             name="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            // eslint-disable-next-line max-len
             className="p-2 border text-gray-500 h-8 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
           />
         </div>
@@ -53,7 +53,6 @@ const BaseLayoutForm: React.FC = () => {
             name="minStars"
             value={minStars}
             onChange={(e) => setminStars(e.target.value)}
-            // eslint-disable-next-line max-len
             className="p-2 h-9 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
           >
             <option value="2">⭐⭐</option>
@@ -69,7 +68,6 @@ const BaseLayoutForm: React.FC = () => {
             name="maxStars"
             value={maxStars}
             onChange={(e) => setmaxStars(e.target.value)}
-            // eslint-disable-next-line max-len
             className="p-2 h-9 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
           >
             <option value="2">⭐⭐</option>
@@ -125,7 +123,6 @@ const BaseLayoutForm: React.FC = () => {
               name="startDate"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              // eslint-disable-next-line max-len
               className="p-2 h-9 bg-blue-200 text-gray-500 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
             />
             <input
@@ -133,7 +130,6 @@ const BaseLayoutForm: React.FC = () => {
               name="endDate"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              // eslint-disable-next-line max-len
               className="p-2 h-9 border bg-blue-200 text-gray-500 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
             />
           </div>
@@ -143,14 +139,12 @@ const BaseLayoutForm: React.FC = () => {
           <button
             type="submit"
             onClick={resetFilters}
-            // eslint-disable-next-line max-len
             className="border border-gray-300 text-gray-500 px-3 py-2 rounded-md transition duration-200 hover:bg-gray-200"
           >
             Отмена
           </button>
           <button
             type="submit"
-            // eslint-disable-next-line max-len
             className="bg-blue-600 text-white px-3 py-2 rounded-md shadow-md transition duration-200 hover:bg-blue-500"
           >
             OK
@@ -221,12 +215,11 @@ const Hotels = ({ loaderData }: Route.ComponentProps) => {
   return (
     <Space direction="horizontal" size="middle" style={{ display: 'flex', height: '100%' }}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <BaseLayoutForm />
+        <HotelsFilterForm />
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         {/* <Flex vertical justify="space-between" style={{ padding: 32 }}> */}
         {/* <Space direction="vertical" size="middle" style={{ display: 'flex', flexGrow: 1 }}> */}
-        {/* eslint-disable-next-line max-len */}
         <Space className="border rounded-md p-2 w-2/5" style={{ display: 'flex', flexGrow: 1, alignItems: 'center', overflow: 'hidden' }}>
           <label className="mr-2">Сортировать по ...</label>
           <SortButton onChange={handleSortChange} />
@@ -242,7 +235,6 @@ const Hotels = ({ loaderData }: Route.ComponentProps) => {
           />
           <Flex wrap gap="large">
             {paginatedData.map((data) => (
-              // eslint-disable-next-line max-len
               <HotelCard key={data.id} name={data.name} description={data.description} stars={data.stars} rating={data.rating} id={data.id} />
             ))}
           </Flex>
