@@ -6,7 +6,7 @@ import { Form, redirect } from 'react-router';
 import client from '@api';
 import { useState } from 'react';
 import { Typography } from 'antd';
-import type { Route } from './+types/newRoom.Form.js';
+import type { Route } from './+types/newRoom.form';
 
 const { Paragraph } = Typography;
 
