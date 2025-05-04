@@ -1,38 +1,30 @@
-// настроить layouot и outlet в routes;
-
 import { useState } from 'react';
 
 import {
-  Avatar, Col, ConfigProvider, Layout, Menu, Row, Switch, theme,
+  Avatar, ConfigProvider, Layout, Menu, Switch, theme, Space, Flex,
 } from 'antd';
 import type { MenuTheme } from 'antd';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import {
-//   BrowserRouter as Link, Outlet,
-// } from 'react-router-dom';
-import { UserOutlined } from '@ant-design/icons/lib/icons';
+import { MoonOutlined, SunOutlined, UserOutlined } from '@ant-design/icons/lib/icons';
 import { Link, Outlet } from 'react-router-dom';
-// import HotelPage from './hotel.component';
-// import AuthForm from './authorisation.form';
-// import Profile from './profile.component';
-// import Hotels from './hotels.component';
-
-// import HotelCard from './hotelCard.component';
 
 const { Header, Content, Footer } = Layout;
 
 const leftItems = [
   {
     key: '/hotels',
-    label: <Link to="/">HEXLING</Link>,
-
+    label: (
+      <Link to="/">
+        <Space>
+          <Avatar src="/public/booking.png" />HEXLING
+        </Space>
+      </Link>),
   },
 ];
 
 const rightItems = [
   {
-    label: 'Profile',
+    label: 'Профиль',
     key: 'profileMenu',
     icon: <UserOutlined />,
     children: [
@@ -54,93 +46,49 @@ const rightItems = [
 
 const BaseLayout: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<MenuTheme>('dark');
-  const changeTheme = (value: boolean) => {
-    setCurrentTheme(value ? 'dark' : 'light');
+  const changeTheme = (isNewThemeDark: boolean) => {
+    setCurrentTheme(isNewThemeDark ? 'dark' : 'light');
   };
 
   return (
-  // <Router>
     <ConfigProvider
       theme={{
         algorithm: currentTheme === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
       }}
     >
       <Layout>
-        <Header style={{
-          display: 'flex',
-          alignItems: 'center',
-          position: 'sticky',
-          top: 0,
-          zIndex: 1,
-          width: '100%',
-        }}
-        >
-          <Row align="middle" style={{ width: '100%' }}>
-            <Col span={(12)}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
-                <Avatar src="../../public/booking.png" />
-                <Menu
-                  theme="dark"
-                  mode="horizontal"
-                  items={leftItems}
-                  style={{ flex: '1', display: 'flex', justifyContent: '' }}
-                />
-              </div>
-            </Col>
-            <Col span={(5)}>
-              <div />
-            </Col>
-            <Col span={(7)}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
-                <Switch
-                  checked={currentTheme === 'dark'}
-                  onChange={changeTheme}
-                  checkedChildren="Dark"
-                  unCheckedChildren="Light"
-                />
-                <Menu
-                  theme="dark"
-                  mode="horizontal"
-                  items={rightItems}
-                  style={{ flex: '1', display: 'flex', textAlign: 'right' }}
-                />
-              </div>
-            </Col>
-          </Row>
+        <Header>
+          <Flex justify="space-between">
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              items={leftItems}
+            />
+            <Flex align="center">
+              <Switch
+                checked={currentTheme === 'dark'}
+                onChange={changeTheme}
+                checkedChildren={<MoonOutlined />}
+                unCheckedChildren={<SunOutlined />}
+              />
+              <Menu
+                theme="dark"
+                mode="horizontal"
+                items={rightItems}
+              />
+            </Flex>
+          </Flex>
         </Header>
-        <Content
-          style={{ padding: '0 48px' }}
-        >
-          <div
-            style={{
-              // minHeight: 600,
-              height: '100%',
-              padding: 24,
-              boxSizing: 'border-box',
-              // display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <Outlet />
-            {/* <Routes>
 
-              <Route path="/" element={<Hotels />} />
-              <Route path="/hotels/hotel" element={<HotelPage />} />
-              <Route path="/auth" element={<AuthForm />} />
-              <Route path="/profile" element={<Profile />} />
-
-            </Routes> */}
-          </div>
-
+        <Content style={{ padding: 48 }}>
+          <Outlet />
         </Content>
 
         <Footer style={{ textAlign: 'center' }}>
-          HEXLING ©{new Date().getFullYear()} Created by students of Hexlet
+          HEXLING © {new Date().getFullYear()} Created by students of Hexlet
         </Footer>
       </Layout>
     </ConfigProvider>
-  // </Router>
-
   );
 };
 

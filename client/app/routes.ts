@@ -5,7 +5,6 @@ import {
 export default [
   layout('routes/baseLayout.tsx', [
     index('routes/hotels.tsx'),
-    route('/auth', 'routes/authorisation.form.tsx'),
     route('/profile', 'routes/profile.tsx'),
     route('/booking', 'routes/booking.form.tsx'),
     ...prefix('hotels', [
@@ -13,6 +12,9 @@ export default [
       route(':hotelId/newRoom', 'routes/newRoom.form.tsx'),
       route(':hotelId/rooms/:roomId', 'routes/room.tsx'),
     ]),
-
+    route('/hotels/:hotelId/rooms/:roomId', 'routes/room.tsx'),
+    route('/auth', 'routes/authorization.form.tsx'),
+    route('/hotels/:hotelId', 'routes/hotel.tsx'),
+    route('/hotels/:hotelId/newRoom', 'routes/newRoom.Form.tsx'),
   ]),
 ] satisfies RouteConfig;
