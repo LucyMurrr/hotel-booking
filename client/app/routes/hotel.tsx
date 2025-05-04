@@ -4,17 +4,14 @@ import {
 } from 'antd';
 import { HeartTwoTone, StarTwoTone } from '@ant-design/icons';
 import { Link } from 'react-router';
-import type { Hotel, HotelsGetRequest } from '@api';
-import client from '~/src/api';
+import client from '@api';
 import type { Route } from './+types/hotel';
 import RoomsTable from '../src/components/roomsTab.component';
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const request: HotelsGetRequest = { hotelId: Number(params.hotelId) };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const Data: Hotel = await client.hotelsGet(request);
-  // console.log(Data);
-  return Data;
+  const hotelId = Number(params.hotelId);
+  const data = await client.hotelsGet({ hotelId });
+  return data;
 }
 
 const cardStyle: React.CSSProperties = {
@@ -22,9 +19,8 @@ const cardStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
 };
-const HotelPage: React.FC<Route.ComponentProps> = ({
-  loaderData,
-}) => {
+
+const HotelPage = ({ loaderData }: Route.ComponentProps) => {
   const {
     id, name, description, stars, rating,
   } = loaderData;

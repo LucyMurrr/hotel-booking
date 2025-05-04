@@ -62,7 +62,6 @@ const BaseLayout: React.FC = () => {
   // <Router>
     <ConfigProvider
       theme={{
-        // algorithm: currentTheme === 'light' ? theme.compactAlgorithm : theme.darkAlgorithm,
         algorithm: currentTheme === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
       }}
     >
