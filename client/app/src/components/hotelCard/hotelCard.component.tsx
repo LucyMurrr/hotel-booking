@@ -75,7 +75,7 @@ const HotelCard: React.FC<HotelCardProps> = ({
   id, name, stars, description, rating,
 }) => {
   const star: string = '⭐'.repeat(stars);
-  console.log(id);
+  // console.log(id);
   return (
   // <div>
     <Card
@@ -97,7 +97,10 @@ const HotelCard: React.FC<HotelCardProps> = ({
             <Link to={`hotels/${String(id)}`}>
               <FullscreenOutlined /> Информация
             </Link>
-            <Link to="/hotels/:hotelName/rooms" style={{ marginLeft: '30px' }}>
+            <Link
+              to={`/hotels/${String(id)}/newRoom`}
+              style={{ marginLeft: '30px' }}
+            > {/* временная ссылка */}
               <CommentOutlined /> Отзывы
             </Link>
             <Link to="/auth" style={{ marginLeft: '30px' }}>

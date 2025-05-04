@@ -16,12 +16,19 @@ interface DataType {
   hotelId: number;
   amenities: Amenities[];
 }
-
 const columns = [
+  // {
+  //   title: 'Номер',
+  //   key: 'name',
+  //   dataIndex: 'name',
+  // },
   {
     title: 'Номер',
     key: 'name',
     dataIndex: 'name',
+    render: (text: string, item: DataType) => ( // Добавляем item как второй параметр
+      <Link to={`rooms/${item.id.toString()}`}>{text}</Link> // Ссылка на номер
+    ),
   },
   {
     title: 'Стоимость',
@@ -29,12 +36,13 @@ const columns = [
     dataIndex: 'price',
     sorter: (a: DataType, b: DataType) => a.price - b.price,
   },
+
   {
     title: '',
     key: 'action',
-    render: () => (
+    render: (item: DataType) => (
       <Space size="middle">
-        <Link to="/">Забронировать</Link>
+        <Link to={`rooms/${item.id.toString()}`}>Забронировать</Link>
       </Space>
     ),
   },
@@ -45,7 +53,7 @@ interface RoomsTableProps {
   hotelId: number;
 }
 
-const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
+const Room: React.FC<RoomsTableProps> = ({ hotelId }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<RoomDto[]>([]);
 
@@ -74,7 +82,7 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
       setLoading(true);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const fetchedData = await fetchRooms({ hotelId });
-      console.log('Fetched Data:', fetchedData);
+      // console.log('Fetched Data:', fetchedData);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setData(fetchedData);
       setLoading(false);
@@ -105,4 +113,4 @@ const RoomsTable: React.FC<RoomsTableProps> = ({ hotelId }) => {
   );
 };
 
-export default RoomsTable;
+export default Room;
