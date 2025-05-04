@@ -87,14 +87,6 @@ const BaseLayout: React.FC = () => {
                 />
               </div>
             </Col>
-            {/* <Col span={(2)}>
-                        <Menu
-                            theme='dark'
-                            mode="horizontal"
-                            items={leftItems}
-                            style={{ flex: '1', display: 'flex', justifyContent: '' }}
-                        />
-                    </Col>  */}
             <Col span={(5)}>
               <div />
             </Col>

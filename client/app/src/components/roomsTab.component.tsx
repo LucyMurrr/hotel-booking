@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { Form, Space, Table } from 'antd';
 import { Link } from 'react-router-dom';
@@ -26,8 +27,8 @@ const columns = [
     title: 'Номер',
     key: 'name',
     dataIndex: 'name',
-    render: (text: string, item: DataType) => ( // Добавляем item как второй параметр
-      <Link to={`rooms/${item.id.toString()}`}>{text}</Link> // Ссылка на номер
+    render: (text: string, item: DataType) => (
+      <Link to={`rooms/${item.id.toString()}`}>{text}</Link>
     ),
   },
   {
@@ -40,15 +41,14 @@ const columns = [
   {
     title: '',
     key: 'action',
-    render: (item: DataType) => (
+    render: () => (
       <Space size="middle">
-        <Link to={`rooms/${item.id.toString()}`}>Забронировать</Link>
+        <Link to="/booking">Забронировать</Link>
       </Space>
     ),
   },
 ];
 
-//   // eslint-disable-next-line @typescript-eslint/no-floating-promises
 interface RoomsTableProps {
   hotelId: number;
 }

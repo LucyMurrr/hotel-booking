@@ -94,16 +94,16 @@ const HotelCard: React.FC<HotelCardProps> = ({
         <div style={descriptionStyle}>
           <InnerCard name={name} stars={star} description={description} rating={rating} />
           <div style={{ ...actionStyle, display: 'flex' }}>
-            <Link to={`hotels/${String(id)}`}>
+            {/* <Link to={`hotels/${String(id)}`}>
               <FullscreenOutlined /> Информация
-            </Link>
+            </Link> */}
             <Link
               to={`/hotels/${String(id)}/newRoom`}
               style={{ marginLeft: '30px' }}
             > {/* временная ссылка */}
               <CommentOutlined /> Отзывы
             </Link>
-            <Link to="/auth" style={{ marginLeft: '30px' }}>
+            <Link to={`hotels/${String(id)}`} style={{ marginLeft: '30px' }}>
               <ShoppingCartOutlined /> Бронирование
             </Link>
           </div>
