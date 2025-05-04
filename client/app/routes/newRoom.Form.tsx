@@ -18,6 +18,7 @@ export async function action({ request, params }: Route.ActionArgs) {
   const response = client.hotelRoomsCreate({
     hotelId, roomCreateDto,
   });
+
   console.log(response);
 
   return redirect('/');
