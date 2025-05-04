@@ -45,7 +45,6 @@ export async function action({ request }: { request: Request }) {
     minStars: formData.get('minStar') ? Number(formData.get('minStar')) : undefined,
     maxStars: formData.get('maxStar') ? Number(formData.get('maxStar')) : undefined,
   };
-  // console.log('Response 111:', requestParameters, request);
   return fetchHotels(requestParameters);
 }
 
@@ -53,7 +52,6 @@ export async function action({ request }: { request: Request }) {
 const BaseLayoutForm: React.FC<{ onFilterChange: (requestParameters: FormValues) => void }> = ({ onFilterChange }: { onFilterChange: (requestParameters: FormValues) => void}) => {
   const [antdForm] = AntdForm.useForm();
   const [rating, setRating] = useState<number[]>([3, 8]);
-  // const submit = useSubmit();
 
   useEffect(() => {
     antdForm.setFieldsValue({
@@ -77,7 +75,6 @@ const BaseLayoutForm: React.FC<{ onFilterChange: (requestParameters: FormValues)
         minStars: requestParameters.minStar ? Number(requestParameters.minStar) : undefined,
         maxStars: requestParameters.maxStar ? Number(requestParameters.maxStar) : undefined,
       });
-      // Правильная передача параметров
       if (rawResponse.ok) {
       // if (rawResponse.ok) {
       // eslint-disable-next-line max-len
