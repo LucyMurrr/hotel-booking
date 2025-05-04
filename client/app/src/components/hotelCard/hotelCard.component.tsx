@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { Card } from 'antd';
 import { Link } from 'react-router-dom';
-import { FullscreenOutlined, ShoppingCartOutlined, CommentOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, CommentOutlined } from '@ant-design/icons';
 
 const { Meta } = Card;
 

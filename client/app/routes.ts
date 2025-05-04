@@ -12,9 +12,6 @@ export default [
       route(':hotelId/newRoom', 'routes/newRoom.form.tsx'),
       route(':hotelId/rooms/:roomId', 'routes/room.tsx'),
     ]),
-    route('/hotels/:hotelId/rooms/:roomId', 'routes/room.tsx'),
     route('/auth', 'routes/authorization.form.tsx'),
-    route('/hotels/:hotelId', 'routes/hotel.tsx'),
-    route('/hotels/:hotelId/newRoom', 'routes/newRoom.Form.tsx'),
   ]),
 ] satisfies RouteConfig;

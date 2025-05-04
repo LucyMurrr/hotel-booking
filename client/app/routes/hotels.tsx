@@ -13,7 +13,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   return response.data;
 }
 
-const BaseLayoutForm: React.FC = () => {
+const HotelsFilterForm: React.FC = () => {
   const [minRating, setMinRating] = useState<number>(0);
   const [maxRating, setMaxRating] = useState<number>(10);
   const [startDate, setStartDate] = useState<string>('');
