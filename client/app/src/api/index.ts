@@ -1,9 +1,11 @@
 import { DefaultApi, Configuration } from '@generatedClient/index';
 
 const config = new Configuration({
-  basePath: 'http://127.0.0.1:4010', // для запуска в vite (в клиенте)
-  // basePath: 'http://hostç.docker.internal:4010', // в linux может не работать
-  // basePath: 'http://hostç.docker.internal:5432',
+  // первые три - мок-сервер
+  // basePath: 'http://127.0.0.1:4010', // для запуска в vite (в клиенте)
+  // basePath: 'http://host.docker.internal:4010', // в linux может не работать
+  // basePath: 'http://host.docker.internal:5432',
+  basePath: 'http://host.docker.internal:8080', // настоящий бэк
 });
 const client = new DefaultApi(config);
 
