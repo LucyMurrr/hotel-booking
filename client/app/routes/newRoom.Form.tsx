@@ -4,7 +4,7 @@
 import { Form, redirect } from 'react-router';
 
 import client from '@api';
-import type { Route } from './+types/newRoom.Form.js';
+import type { Route } from './+types/newRoom.form';
 
 export async function action({ request, params }: Route.ActionArgs) {
   const hd = await request.formData();
