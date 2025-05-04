@@ -4,30 +4,20 @@ import client from '@api';
 import type { Route } from './+types/newRoom.Form.tsx';
 
 export async function action({ request, params }: Route.ActionArgs) {
-  // eslint-disable-next-line max-len
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const hd = await request.formData();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const name = hd.get('name') as string;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const description = hd.get('description') as string;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const priceString = hd.get('price') as string;
   const price: number = Number(priceString);
-  // eslint-disable-next-line max-len
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const hotelIdString = params.hotelId;
   const hotelId: number = Number(hotelIdString);
   const roomCreateDto = { name, description, price, hotelId };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const response = client.hotelRoomsCreateRaw({
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const response = client.hotelRoomsCreate({
     hotelId, roomCreateDto,
   });
   console.log(response);
 
   return redirect('/');
-//   return null;
 }
 
 // Нам нужно получить id отеля из пути

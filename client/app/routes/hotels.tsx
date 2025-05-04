@@ -2,30 +2,15 @@ import React, { useState } from 'react';
 import {
   Flex, Pagination, Space, Select, type PaginationProps,
 } from 'antd';
-import type { Hotel, HotelsList200Response } from '@api';
 import { Form } from 'react-router-dom';
-import client from '~/src/api';
+import client from '@api';
 import HotelCard from '../src/components/hotelCard/hotelCard.component';
-import type { Route } from '../+types/root';
+import type { Route } from './+types/hotels';
 
-export async function loader({
-  params,
-}: Route.LoaderArgs) {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    const response: HotelsList200Response = await client.hotelsList(params);
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-    return response.data;
-  } catch {
-    console.log('Error response', Error);
-  }
-  return null;
+export async function loader({ params }: Route.LoaderArgs) {
+  const response = await client.hotelsList(params);
+  return response.data;
 }
-
-export type HotelsProps = {
-  loaderData: Hotel[];
-};
 
 const BaseLayoutForm: React.FC = () => {
   const [minRating, setMinRating] = useState<number>(0);
@@ -194,9 +179,7 @@ const SortButton: React.FC<{ onChange: (value: string) => void }> = ({ onChange 
   />
 );
 
-const Hotels: React.FC<HotelsProps> = ({
-  loaderData,
-}) => {
+const Hotels = ({ loaderData }: Route.ComponentProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [sortedData, setSortedData] = useState(loaderData);

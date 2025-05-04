@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Space, Table } from 'antd';
 import { Link } from 'react-router-dom';
-import client, { type HotelRoomsList200Response, type RoomDto } from '@api';
+import client, { type RoomDto } from '@api';
 
 interface Amenities {
   id: number;
@@ -59,14 +59,8 @@ const Room: React.FC<RoomsTableProps> = ({ hotelId }) => {
 
   async function fetchRooms(requestParameters: { hotelId: number }) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      const response = await client.hotelRoomsListRaw({ ...requestParameters });
-      // eslint-disable-next-line max-len
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      const resp: HotelRoomsList200Response = await response.raw.json();
-      // eslint-disable-next-line max-len
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-member-access
-      return resp.data;
+      const response = await client.hotelRoomsList({ ...requestParameters });
+      return response.data;
     } catch (error) {
       if (error instanceof Error) {
         console.error('Ошибка:', error.message);
@@ -80,10 +74,7 @@ const Room: React.FC<RoomsTableProps> = ({ hotelId }) => {
   useEffect(() => {
     const getRooms = async () => {
       setLoading(true);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const fetchedData = await fetchRooms({ hotelId });
-      // console.log('Fetched Data:', fetchedData);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setData(fetchedData);
       setLoading(false);
     };
