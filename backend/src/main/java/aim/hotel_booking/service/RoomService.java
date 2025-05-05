@@ -1,6 +1,7 @@
 package aim.hotel_booking.service;
 
 import aim.hotel_booking.entity.RoomEntity;
+import aim.hotel_booking.entity.BookingEntity;
 import aim.hotel_booking.mapper.RoomMapper;
 import aim.hotel_booking.repository.HotelRepository;
 import aim.hotel_booking.repository.RoomRepository;
@@ -9,6 +10,7 @@ import org.openapitools.model.RoomCreateDto;
 import org.openapitools.model.RoomDto;
 import org.openapitools.model.HotelsList200ResponsePagination;
 import org.openapitools.model.RoomFilters;
+import org.openapitools.model.RoomAvailableDates;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,9 @@ import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static aim.hotel_booking.repository.specification.RoomSpecifications.hasHotelId;
 import static aim.hotel_booking.repository.specification.RoomSpecifications.hasNameLike;
@@ -32,11 +37,13 @@ public class RoomService {
     private final RoomRepository repository;
     private final HotelRepository hotelRepository;
     private final RoomMapper mapper;
+    private final BookingService bookingService;
 
-    public RoomService(RoomRepository repository, HotelRepository hotelRepository, RoomMapper mapper) {
+    public RoomService(RoomRepository repository, HotelRepository hotelRepository, RoomMapper mapper, BookingService bookingService) {
         this.repository = repository;
         this.hotelRepository = hotelRepository;
         this.mapper = mapper;
+        this.bookingService = bookingService;
     }
 
     protected Page<RoomEntity> findAllWithFilters(
@@ -146,5 +153,43 @@ public class RoomService {
         response.setFilters(filters);
 
         return response;
+    }
+
+    public ResponseEntity<RoomAvailableDates> getRoomAvailability(Integer roomId, LocalDate start, LocalDate end) {
+        // Проверяем существование номера
+        RoomEntity room = findById(roomId);
+        if (room == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found");
+        }
+
+        // Проверяем валидность дат
+        if (start.isAfter(end)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date must be before end date");
+        }
+
+        // Получаем все бронирования для номера в указанном периоде
+        List<BookingEntity> bookings = bookingService.getBookingsForRoom(roomId, start, end);
+
+        // Создаем список всех дат в периоде
+        List<LocalDate> allDates = start.datesUntil(end.plusDays(1))
+                .collect(Collectors.toList());
+
+        // Фильтруем даты, исключая те, которые заняты
+        List<LocalDate> availableDates = allDates.stream()
+                .filter(date -> isDateAvailable(date, bookings))
+                .collect(Collectors.toList());
+
+        // Создаем и возвращаем ответ
+        RoomAvailableDates response = new RoomAvailableDates();
+        response.setRoomId(roomId);
+        response.setDates(availableDates);
+        return ResponseEntity.ok(response);
+    }
+
+    private boolean isDateAvailable(LocalDate date, List<BookingEntity> bookings) {
+        return bookings.stream()
+                .noneMatch(booking -> 
+                    !date.isBefore(booking.getCheckInDate().toLocalDate()) && 
+                    !date.isAfter(booking.getCheckOutDate().toLocalDate()));
     }
 }
