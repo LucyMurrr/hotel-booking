@@ -13,15 +13,8 @@ import {
 } from 'antd';
 import { StarFilled } from '@ant-design/icons';
 import client from '@api';
+import type { Hotel, HotelFilters, HotelsListSortByEnum, HotelRoomsListSortOrderEnum } from '@api';
 import HotelCard from '../src/components/hotelCard/hotelCard.component';
-
-type Hotel = {
-  id: number;
-  name: string;
-  description: string;
-  stars: number;
-  rating: number;
-};
 
 type Pagination = {
   page: number;
@@ -29,17 +22,9 @@ type Pagination = {
   total: number;
 };
 
-type Filters = {
-  name?: string;
-  minStars?: number;
-  maxStars?: number;
-  minRating?: number;
-  maxRating?: number;
-};
-
 type Sort = {
-  sortBy?: 'name' | 'rating' | 'stars';
-  sortOrder?: 'ASC' | 'DESC';
+  sortBy?: HotelsListSortByEnum;
+  sortOrder?: HotelRoomsListSortOrderEnum;
 };
 
 const renderStars = (count: number) => Array.from({ length: count }, (_, i) => (
@@ -54,8 +39,8 @@ const starOptions = Array.from({ length: 5 }, (_, i) => {
   };
 });
 
-const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: Filters) => void }) => {
-  const [localFilters, setLocalFilters] = useState<Filters>({});
+const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilters) => void }) => {
+  const [localFilters, setLocalFilters] = useState<HotelFilters>({});
 
   const handleApply = () => {
     onFilterChange(localFilters);
@@ -117,7 +102,7 @@ const Hotels = () => {
     perPage: 10,
     total: 0,
   });
-  const [filters, setFilters] = useState<Filters>({});
+  const [filters, setFilters] = useState<HotelFilters>({});
   const [sort, setSort] = useState<Sort>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -160,7 +145,7 @@ const Hotels = () => {
     }));
   };
 
-  const handleFilterChange = (newFilters: Filters) => {
+  const handleFilterChange = (newFilters: HotelFilters) => {
     setFilters(newFilters);
     setPagination((prev) => ({ ...prev, page: 1 }));
   };

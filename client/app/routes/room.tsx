@@ -8,7 +8,7 @@ import {
 // import { Link, useParams } from 'react-router';
 import type { RoomDto, RoomsGetRequest } from '@api';
 import { Link } from 'react-router-dom';
-import client from '~/src/api';
+import client from '@api';
 import type { Route } from './+types/hotel';
 
 export async function clientLoader({ params }: Route.LoaderArgs) {

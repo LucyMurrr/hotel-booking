@@ -12,7 +12,7 @@ import { DefaultApi, Configuration } from '@generatedClient/index';
 const config = new Configuration({
   basePath: 'http://localhost:8080', // настоящий бэк
 });
-export const client = new DefaultApi(config);
+const client = new DefaultApi(config);
 
 export default client;
 export * from '@generatedClient/index';
