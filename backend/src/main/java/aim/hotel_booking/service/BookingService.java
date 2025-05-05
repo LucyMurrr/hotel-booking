@@ -24,6 +24,8 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Optional;
 import java.time.OffsetDateTime;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 @Service
 public class BookingService {
@@ -232,5 +234,13 @@ public class BookingService {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing request", e);
         }
+    }
+
+    public List<BookingEntity> getBookingsForRoom(Integer roomId, LocalDate start, LocalDate end) {
+        Specification<BookingEntity> spec = Specification.where(bookingSpecification.hasRoomId(roomId))
+            .and(bookingSpecification.checkInBefore(end.atStartOfDay().atOffset(ZoneOffset.UTC)))
+            .and(bookingSpecification.checkOutAfter(start.atStartOfDay().atOffset(ZoneOffset.UTC)));
+        
+        return bookingRepository.findAll(spec);
     }
 }
