@@ -6,7 +6,7 @@ import { Form, redirect } from 'react-router';
 import client from '@api';
 import type { Route } from './+types/newRoom';
 
-export async function action({ request, params }: Route.ActionArgs) {
+export async function clientAction({ request, params }: Route.ActionArgs) {
   const hd = await request.formData();
   const name = hd.get('name') as string;
   const description = hd.get('description') as string;

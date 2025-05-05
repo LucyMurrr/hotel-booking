@@ -16,7 +16,7 @@ const leftItems = [
     label: (
       <Link to="/">
         <Space>
-          <Avatar src="/public/booking.png" />HEXLING
+          <Avatar src="/booking.png" />HEXLING
         </Space>
       </Link>),
   },
