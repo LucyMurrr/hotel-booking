@@ -2,11 +2,13 @@ import { useState } from 'react';
 
 import {
   Avatar, ConfigProvider, Layout, Menu, Switch, theme, Space, Flex,
+  Modal,
 } from 'antd';
 import type { MenuTheme } from 'antd';
-
 import { MoonOutlined, SunOutlined, UserOutlined } from '@ant-design/icons/lib/icons';
-import { Link, Outlet } from 'react-router-dom';
+import { BrowserRouter, Link, Outlet, Route } from 'react-router-dom';
+// import AuthProvider from '../authContext.js';
+import Profile from './profile.js';
 
 const { Header, Content, Footer } = Layout;
 
@@ -21,7 +23,9 @@ const leftItems = [
       </Link>),
   },
 ];
-
+// <Button type="primary" onClick={showModal}>
+// Open Modal
+// </Button>
 const rightItems = [
   {
     label: 'Профиль',
@@ -31,6 +35,7 @@ const rightItems = [
       {
         key: '/profile',
         label: <Link to="/profile">Профиль</Link>,
+        // onclick: showModal,
       },
       {
         key: 'bid',
@@ -49,6 +54,16 @@ const BaseLayout: React.FC = () => {
   const changeTheme = (isNewThemeDark: boolean) => {
     setCurrentTheme(isNewThemeDark ? 'dark' : 'light');
   };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <ConfigProvider
@@ -56,38 +71,46 @@ const BaseLayout: React.FC = () => {
         algorithm: currentTheme === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
       }}
     >
-      <Layout>
-        <Header>
-          <Flex justify="space-between">
-            <Menu
-              theme="dark"
-              mode="horizontal"
-              items={leftItems}
-            />
-            <Flex align="center">
-              <Switch
-                checked={currentTheme === 'dark'}
-                onChange={changeTheme}
-                checkedChildren={<MoonOutlined />}
-                unCheckedChildren={<SunOutlined />}
-              />
-              <Menu
-                theme="dark"
-                mode="horizontal"
-                items={rightItems}
-              />
-            </Flex>
-          </Flex>
-        </Header>
+      {/* <AuthProvider> */}
+        <BrowserRouter>
+          <Layout>
+            <Header>
+              <Flex justify="space-between">
+                <Menu
+                  theme="dark"
+                  mode="horizontal"
+                  items={leftItems}
+                />
+                <Flex align="center">
+                  <Switch
+                    checked={currentTheme === 'dark'}
+                    onChange={changeTheme}
+                    checkedChildren={<MoonOutlined />}
+                    unCheckedChildren={<SunOutlined />}
+                  />
+                  <Menu
+                    theme="dark"
+                    mode="horizontal"
+                    items={rightItems}
+                  />
+                </Flex>
+              </Flex>
+            </Header>
 
-        <Content style={{ padding: 48 }}>
-          <Outlet />
-        </Content>
-
-        <Footer style={{ textAlign: 'center' }}>
-          HEXLING © {new Date().getFullYear()} Created by students of Hexlet
-        </Footer>
-      </Layout>
+            <Content style={{ padding: 48 }}>
+              <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <Route path="/" element={<Profile />} />
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+              </Modal>
+              <Outlet />
+            </Content>
+            <Footer style={{ textAlign: 'center' }}>
+              HEXLING © {new Date().getFullYear()} Created by students of Hexlet
+            </Footer>
+          </Layout>
+        </BrowserRouter>
+      {/* </AuthProvider> */}
     </ConfigProvider>
   );
 };

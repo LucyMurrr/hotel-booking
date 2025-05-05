@@ -12,6 +12,18 @@ export default [
       route(':hotelId/newRoom', 'routes/newRoom.tsx'),
       route(':hotelId/rooms/:roomId', 'routes/room.tsx'),
     ]),
+    // route('/admin', 'routes/admin.tsx', { protected: true }),
     // route('/auth', 'routes/authorization.form.tsx'),
   ]),
 ] satisfies RouteConfig;
+
+// const ProtectedRoute = ({ element, requiredRole }) => {
+//   const { isAuthenticated, user } = useAuth();
+//   if (!isAuthenticated) {
+//       return <Navigator to="/login" />;
+//   }
+//   if (user.role !== requiredRole) {
+//       return <Navigator to="/" />;
+//   }
+//   return element;
+// };
