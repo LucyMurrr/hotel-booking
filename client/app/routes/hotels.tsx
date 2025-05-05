@@ -1,256 +1,246 @@
-/* eslint-disable max-len */
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  Flex, Pagination, Space, Select, type PaginationProps,
+  Flex,
+  Pagination,
+  Select,
+  Input,
+  Slider,
+  Button,
+  Card,
+  Alert,
+  Spin,
+  Divider,
 } from 'antd';
-import { Form } from 'react-router-dom';
+import { StarFilled } from '@ant-design/icons';
 import client from '@api';
+import type { Hotel, HotelFilters, HotelsListSortByEnum, HotelRoomsListSortOrderEnum } from '@api';
 import HotelCard from '../src/components/hotelCard/hotelCard.component';
-import type { Route } from './+types/hotels';
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const response = await client.hotelsList(params);
-  return response.data;
-}
+type Pagination = {
+  page: number;
+  perPage: number;
+  total: number;
+};
 
-const HotelsFilterForm: React.FC = () => {
-  const [minRating, setMinRating] = useState<number>(0);
-  const [maxRating, setMaxRating] = useState<number>(10);
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
-  const [search, setSearch] = useState<string>('');
-  const [minStars, setminStars] = useState<string>('2');
-  const [maxStars, setmaxStars] = useState<string>('5');
+type Sort = {
+  sortBy?: HotelsListSortByEnum;
+  sortOrder?: HotelRoomsListSortOrderEnum;
+};
 
-  const resetFilters = () => {
-    setMinRating(0);
-    setMaxRating(10);
-    setStartDate('');
-    setEndDate('');
-    setSearch('');
-    setminStars('2');
-    setmaxStars('5');
+const renderStars = (count: number) => Array.from({ length: count }, (_, i) => (
+  <StarFilled key={i} style={{ color: '#faad14', marginRight: 2 }} />
+));
+
+const starOptions = Array.from({ length: 5 }, (_, i) => {
+  const value = i + 1;
+  return {
+    value,
+    label: <span>{renderStars(value)}</span>,
+  };
+});
+
+const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilters) => void }) => {
+  const [localFilters, setLocalFilters] = useState<HotelFilters>({});
+
+  const handleApply = () => {
+    onFilterChange(localFilters);
   };
 
   return (
-    <Form method="get" className="max-w-lg mx-auto p-4 border rounded-lg shadow-md">
-      <h2 className="pb-6">Отфильтровать по ...</h2>
-      <div className="flex flex-col gap-4">
-        <div>
-          <label className="block mb-1 text-gray-500">... названию:</label>
-          <input
-            type="text"
-            name="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="p-2 border text-gray-500 h-8 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
-          />
-        </div>
+    <Flex vertical>
+      <Flex vertical gap={16}>
+        <Select
+          placeholder="Мин. количество звезд"
+          options={starOptions}
+          value={localFilters.minStars}
+          onChange={(value) => setLocalFilters((prev) => ({ ...prev, minStars: value }))}
+        />
 
-        <div>
-          <label className="block mb-1 text-gray-500">... минимальному количеству звезд:</label>
-          <select
-            name="minStars"
-            value={minStars}
-            onChange={(e) => setminStars(e.target.value)}
-            className="p-2 h-9 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
-          >
-            <option value="2">⭐⭐</option>
-            <option value="3">⭐⭐⭐</option>
-            <option value="4">⭐⭐⭐⭐</option>
-            <option value="5">⭐⭐⭐⭐⭐</option>
-          </select>
-        </div>
+        <Select
+          placeholder="Макс. количество звезд"
+          options={starOptions}
+          value={localFilters.maxStars}
+          onChange={(value) => setLocalFilters((prev) => ({ ...prev, maxStars: value }))}
+        />
+      </Flex>
 
-        <div>
-          <label className="block mb-1 text-gray-500">... максимальному количеству звезд:</label>
-          <select
-            name="maxStars"
-            value={maxStars}
-            onChange={(e) => setmaxStars(e.target.value)}
-            className="p-2 h-9 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
-          >
-            <option value="2">⭐⭐</option>
-            <option value="3">⭐⭐⭐</option>
-            <option value="4">⭐⭐⭐⭐</option>
-            <option value="5">⭐⭐⭐⭐⭐</option>
-          </select>
-        </div>
+      <Divider />
 
-        <div>
-          <label className="block mb-1 text-gray-500">... рейтингу:</label>
-          <input
-            type="range"
-            min="0"
-            max="10"
-            step="0.5"
-            value={minRating}
-            onChange={(e) => setMinRating(Number(e.target.value))}
-            className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer focus:outline-none"
-          />
-          <input
-            type="range"
-            min="0"
-            max="10"
-            step="0.5"
-            value={maxRating}
-            onChange={(e) => setMaxRating(Number(e.target.value))}
-            className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer focus:outline-none"
-          />
-          <div className="flex justify-between text-sm mt-1 text-gray-500">
-            <input
-              type="text"
-              name="minRating"
-              value={minRating}
-              onChange={(e) => setMinRating(Number(e.target.value))}
-              className="w-1/2 p-2 h-9 border border-gray-300 rounded-md"
-            />
-            <input
-              type="text"
-              name="maxRating"
-              value={maxRating}
-              onChange={(e) => setMaxRating(Number(e.target.value))}
-              className="w-1/2 p-2 h-9 border border-gray-300 rounded-md"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block mb-1 text-gray-500">Выберите даты:</label>
-          <div className="flex justify-between">
-            <input
-              type="date"
-              name="startDate"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="p-2 h-9 bg-blue-200 text-gray-500 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
-            />
-            <input
-              type="date"
-              name="endDate"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="p-2 h-9 border bg-blue-200 text-gray-500 border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 hover:border-blue-500"
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-between mt-6">
-          <button
-            type="submit"
-            onClick={resetFilters}
-            className="border border-gray-300 text-gray-500 px-3 py-2 rounded-md transition duration-200 hover:bg-gray-200"
-          >
-            Отмена
-          </button>
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-3 py-2 rounded-md shadow-md transition duration-200 hover:bg-blue-500"
-          >
-            OK
-          </button>
-        </div>
+      <div>
+        <div>Рейтинг:</div>
+        <Slider
+          range
+          min={0}
+          max={10}
+          step={0.1}
+          value={[localFilters.minRating || 0, localFilters.maxRating || 10]}
+          onChange={(value) => setLocalFilters((prev) => ({
+            ...prev,
+            minRating: value[0],
+            maxRating: value[1],
+          }))}
+          marks={{
+            0: '0',
+            10: '10',
+          }}
+        />
       </div>
-    </Form>
+
+      <Divider />
+
+      <Button type="primary" onClick={handleApply}>
+        Применить фильтры
+      </Button>
+    </Flex>
   );
 };
 
-const SortButton: React.FC<{ onChange: (value: string) => void }> = ({ onChange }) => (
-  <Select
-    // autoFocus
-    // className="border rounded-sm shadow-md transition duration-200 hover:bg-blue-500"
-    onChange={onChange}
-    placeholder="Выберите параметр"
-    filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
-    options={[
-      { value: 'nameAsc', label: 'названию по возрастанию' },
-      { value: 'nameDesc', label: 'названию по убыванию' },
-      { value: 'ratingAsc', label: 'рейтингу по возрастанию' },
-      { value: 'ratingDesc', label: 'рейтингу по убыванию' },
-      { value: 'starAsc', label: 'звезности по возрастанию' },
-      { value: 'starDesc', label: 'звезности по убыванию' },
-    ]}
-  />
-);
+const Hotels = () => {
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    perPage: 10,
+    total: 0,
+  });
+  const [filters, setFilters] = useState<HotelFilters>({});
+  const [sort, setSort] = useState<Sort>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-const Hotels = ({ loaderData }: Route.ComponentProps) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [sortedData, setSortedData] = useState(loaderData);
-  // console.log(sortedData);
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedData = sortedData.slice(startIndex, endIndex);
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        setLoading(true);
+        const response = await client.hotelsList({
+          ...filters,
+          ...sort,
+          name: searchQuery,
+          page: pagination.page,
+          perPage: pagination.perPage,
+        });
 
-  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, size) => {
-    setCurrentPage(current);
-    setPageSize(size);
+        setHotels(response.data);
+        setPagination((prev) => ({
+          ...prev,
+          total: response.pagination.total,
+        }));
+      } catch (err) {
+        setError('Ошибка при загрузке отелей');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    fetchHotels();
+  }, [pagination.page, pagination.perPage, filters, sort, searchQuery]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      page,
+      perPage: pageSize,
+    }));
   };
 
-  const sortHotels = (option: string) => {
-    switch (option) {
-      case 'nameAsc':
-        return [...loaderData].sort((a, b) => a.name.localeCompare(b.name));
-      case 'nameDesc':
-        return [...loaderData].sort((a, b) => b.name.localeCompare(a.name));
-      case 'ratingAsc':
-        return [...loaderData].sort((a, b) => a.rating - b.rating);
-      case 'ratingDesc':
-        return [...loaderData].sort((a, b) => b.rating - a.rating);
-      case 'starAsc':
-        return [...loaderData].sort((a, b) => a.stars - b.stars);
-      case 'starDesc':
-        return [...loaderData].sort((a, b) => b.stars - a.stars);
-      default:
-        return loaderData;
-    }
+  const handleFilterChange = (newFilters: HotelFilters) => {
+    setFilters(newFilters);
+    setPagination((prev) => ({ ...prev, page: 1 }));
   };
 
   const handleSortChange = (value: string) => {
-    const sorted = sortHotels(value);
-    setSortedData(sorted);
-    setCurrentPage(1);
+    const [sortBy, sortOrder] = value.split('_');
+    setSort({
+      sortBy: sortBy as 'name' | 'rating' | 'stars',
+      sortOrder: sortOrder as 'ASC' | 'DESC',
+    });
+    setPagination((prev) => ({ ...prev, page: 1 }));
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setPagination((prev) => ({ ...prev, page: 1 }));
+  };
+
+  if (error) {
+    return <Alert message={error} type="error" showIcon />;
+  }
+
   return (
-    <Space direction="horizontal" size="middle" style={{ display: 'flex', height: '100%' }}>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <HotelsFilterForm />
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        {/* <Flex vertical justify="space-between" style={{ padding: 32 }}> */}
-        {/* <Space direction="vertical" size="middle" style={{ display: 'flex', flexGrow: 1 }}> */}
-        <Space className="border rounded-md p-2 w-2/5" style={{ display: 'flex', flexGrow: 1, alignItems: 'center', overflow: 'hidden' }}>
-          <label className="mr-2">Сортировать по ...</label>
-          <SortButton onChange={handleSortChange} />
-        </Space>
-        <div className="flex gap-4 flex-col justify-between h-full mt-15">
-          <Pagination
-            current={currentPage}
-            pageSize={pageSize}
-            total={loaderData.length}
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-            onChange={(page) => setCurrentPage(page)}
-          />
-          <Flex wrap gap="large">
-            {paginatedData.map((data) => (
-              <HotelCard key={data.id} name={data.name} description={data.description} stars={data.stars} rating={data.rating} id={data.id} />
-            ))}
-          </Flex>
-          <Pagination
-            current={currentPage}
-            pageSize={pageSize}
-            total={loaderData.length}
-            showSizeChanger
-            onShowSizeChange={onShowSizeChange}
-            onChange={(page) => setCurrentPage(page)}
-          />
-        </div>
-        {/* </Space> */}
-        {/* </Flex> */}
-      </div>
-    </Space>
+    <Flex gap={20} align="start">
+      <Card title="Все фильтры" style={{ width: 300, position: 'sticky', top: 20 }}>
+        <FiltersForm onFilterChange={handleFilterChange} />
+      </Card>
+
+      <Flex vertical style={{ flex: 1 }} gap={20}>
+        <Input
+          placeholder="Поиск по названию отеля"
+          size="large"
+          allowClear
+          onChange={handleSearch}
+          style={{ maxWidth: 500 }}
+        />
+
+        <Select
+          placeholder="Сортировать по"
+          style={{ width: 300 }}
+          options={[
+            { value: 'name_ASC', label: 'Названию (А-Я)' },
+            { value: 'name_DESC', label: 'Названию (Я-А)' },
+            { value: 'rating_ASC', label: 'Рейтингу (↑)' },
+            { value: 'rating_DESC', label: 'Рейтингу (↓)' },
+            { value: 'stars_ASC', label: 'Звездам (↑)' },
+            { value: 'stars_DESC', label: 'Звездам (↓)' },
+          ]}
+          onChange={handleSortChange}
+        />
+
+        {loading ? (
+          <Spin tip="Загрузка..." size="large">
+            <div style={{ minHeight: 200 }} />
+          </Spin>
+        ) : (
+          <>
+            <Alert
+              message={`Найдено отелей: ${String(pagination.total)}`}
+              type="info"
+              showIcon
+            />
+
+            <Flex wrap="wrap" gap={20}>
+              {hotels.map((hotel) => (
+                <HotelCard
+                  key={hotel.id}
+                  name={hotel.name}
+                  description={hotel.description}
+                  stars={hotel.stars}
+                  rating={hotel.rating}
+                  id={hotel.id}
+                />
+              ))}
+            </Flex>
+
+            <Pagination
+              current={pagination.page}
+              pageSize={pagination.perPage}
+              total={pagination.total}
+              onChange={handlePaginationChange}
+              style={{ marginTop: 20 }}
+              showSizeChanger={{
+                options: [
+                  { value: 10, label: '10 на странице' },
+                  { value: 20, label: '20 на странице' },
+                  { value: 50, label: '50 на странице' },
+                ],
+              }}
+            />
+          </>
+        )}
+      </Flex>
+    </Flex>
   );
 };
+
 export default Hotels;
