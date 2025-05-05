@@ -379,12 +379,11 @@ namespace Rooms {
 
 @route("/rooms/{roomId}/availability")
 namespace RoomAvailability {
-  @useAuth(BearerAuth)
   @get
   op get(@path roomId: int32, ...RoomAvailableDatesParams): {
     @statusCode statusCode: 200;
     @body availableDates: RoomAvailableDates;
-  } | NotFoundError | UnprocessableEntityError | UnauthorizedError;
+  } | NotFoundError | UnprocessableEntityError;
 }
 
 @route("/hotels/{hotelId}/rooms")
