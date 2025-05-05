@@ -266,6 +266,16 @@ model FavoriteCreateDto {
   hotelId: int32;
 }
 
+model RoomAvailableDatesParams {
+  @query start: plainDate;
+  @query end: plainDate;
+}
+
+model RoomAvailableDates {
+  roomId: int32;
+  dates: plainDate[];
+}
+
 model PaginatedDto<Data, Filters, SortBy> {
   data: Data;
   pagination: {
@@ -365,6 +375,15 @@ namespace Rooms {
     @statusCode statusCode: 200;
     @body room: RoomDto;
   } | NotFoundError;
+}
+
+@route("/rooms/{roomId}/availability")
+namespace RoomAvailability {
+  @get
+  op get(@path roomId: int32, ...RoomAvailableDatesParams): {
+    @statusCode statusCode: 200;
+    @body availableDates: RoomAvailableDates;
+  } | NotFoundError | UnprocessableEntityError;
 }
 
 @route("/hotels/{hotelId}/rooms")

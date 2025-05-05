@@ -6,7 +6,7 @@ export default [
   layout('routes/baseLayout.tsx', [
     index('routes/hotels.tsx'),
     route('/profile', 'routes/profile.tsx'),
-    route('/booking', 'routes/booking.form.tsx'),
+    route('/booking/:roomId', 'routes/booking.tsx'),
     ...prefix('hotels', [
       route(':hotelId', 'routes/hotel.tsx'),
       route(':hotelId/newRoom', 'routes/newRoom.tsx'),
