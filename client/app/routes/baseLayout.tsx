@@ -55,6 +55,7 @@ const BaseLayout: React.FC = () => {
     setCurrentTheme(isNewThemeDark ? 'dark' : 'light');
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const showModal = () => {
     setIsModalOpen(true);
   };
