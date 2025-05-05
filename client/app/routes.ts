@@ -7,13 +7,13 @@ export default [
     index('routes/hotels.tsx'),
     route('/profile', 'routes/profile.tsx'),
     route('/booking', 'routes/booking.form.tsx'),
+    route('/signin', 'routes/signin.tsx'),
+    route('/login', 'routes/login.tsx'),
     ...prefix('hotels', [
       route(':hotelId', 'routes/hotel.tsx'),
       route(':hotelId/newRoom', 'routes/newRoom.tsx'),
       route(':hotelId/rooms/:roomId', 'routes/room.tsx'),
     ]),
-    // route('/admin', 'routes/admin.tsx', { protected: true }),
-    // route('/auth', 'routes/authorization.form.tsx'),
   ]),
 ] satisfies RouteConfig;
 
