@@ -39,7 +39,8 @@ public class RoomService {
     private final RoomMapper mapper;
     private final BookingService bookingService;
 
-    public RoomService(RoomRepository repository, HotelRepository hotelRepository, RoomMapper mapper, BookingService bookingService) {
+    public RoomService(RoomRepository repository, HotelRepository hotelRepository, RoomMapper mapper,
+                       BookingService bookingService) {
         this.repository = repository;
         this.hotelRepository = hotelRepository;
         this.mapper = mapper;
