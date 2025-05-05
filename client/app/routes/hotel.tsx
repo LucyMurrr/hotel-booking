@@ -8,7 +8,7 @@ import client from '@api';
 import type { Route } from './+types/hotel';
 import RoomsTable from '../src/components/roomsTab.component';
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function clientLoader({ params }: Route.LoaderArgs) {
   const hotelId = Number(params.hotelId);
   const data = await client.hotelsGet({ hotelId });
   return data;

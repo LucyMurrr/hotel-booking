@@ -10,7 +10,7 @@ import type { Route } from './+types/booking.form';
 
 const { Paragraph } = Typography;
 
-export async function action({ request, params }: Route.ActionArgs) {
+export async function clientAction({ request, params }: Route.ActionArgs) {
   // userId, roomId, checkIn, checkOut
   const hd = await request.formData();
   const userId = 1; // костыль

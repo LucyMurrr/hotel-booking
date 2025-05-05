@@ -34,7 +34,7 @@ async function fetchHotels(requestParameters: { name?: string; minStars?: number
   return response.raw;
 }
 
-export async function action({ request }: { request: Request }) {
+export async function clientAction({ request }: { request: Request }) {
   const formData = await request.formData();
   const requestParameters: {
     name?: string;
