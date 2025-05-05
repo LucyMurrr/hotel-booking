@@ -132,14 +132,14 @@ public class CustomHotelsApiDelegate implements HotelsApiDelegate {
 
     private void validateRatingParams(BigDecimal minRating, BigDecimal maxRating) {
         if (minRating != null && (minRating.compareTo(BigDecimal.ZERO) < 0 ||
-                minRating.compareTo(BigDecimal.valueOf(5.0)) > 0)) {
+                minRating.compareTo(BigDecimal.valueOf(10.0)) > 0)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-                "Minimum rating must be between 0 and 5.0");
+                "Minimum rating must be between 0 and 10.0");
         }
         if (maxRating != null && (maxRating.compareTo(BigDecimal.ZERO) < 0 ||
-                maxRating.compareTo(BigDecimal.valueOf(5.0)) > 0)) {
+                maxRating.compareTo(BigDecimal.valueOf(10.0)) > 0)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
-                "Maximum rating must be between 0 and 5.0");
+                "Maximum rating must be between 0 and 10.0");
         }
         if (minRating != null && maxRating != null && minRating.compareTo(maxRating) > 0) {
             throw new ResponseStatusException
