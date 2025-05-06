@@ -466,6 +466,16 @@ namespace Users {
   } | NotFoundError | UnauthorizedError | ForbiddenError;
 }
 
+@route("/users/me")
+@useAuth(BearerAuth)
+namespace UserMe {
+  @get
+  op get(): {
+    @statusCode statusCode: 200;
+    @body user: UserDto;
+  } | UnauthorizedError;
+}
+
 @route("/users/{userId}/bookings")
 @useAuth(BearerAuth)
 namespace UserBookings {
