@@ -1,15 +1,22 @@
-import React, { useState, useEffect, type PropsWithChildren, useMemo } from 'react';
-import { createContext } from 'vm';
-// import type User from '@api';
+import React, {
+  useState, useEffect, type PropsWithChildren, useMemo, useContext,
+} from 'react';
+import { createContext } from 'react';
 
 interface User {
-    id: number;
-    name: string;
-    email: string;
-    password: string;
+  id: number;
+  name: string;
+  email: string;
 }
 
-const AuthContext = createContext();
+interface AuthContextType {
+  isAuthenticated: boolean;
+  user: User | null;
+  login: (userData: User) => void;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -19,7 +26,7 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const storedUser = localStorage.getItem('user');
 
     if (storedUser) {
-      const parsedUser: User = JSON.parse(storedUser) as User;
+      const parsedUser = JSON.parse(storedUser) as User;
       setUser(parsedUser);
       setIsAuthenticated(true);
     }
@@ -49,6 +56,14 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
 
 export default AuthProvider;

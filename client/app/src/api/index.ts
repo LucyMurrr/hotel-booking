@@ -10,7 +10,19 @@ import { DefaultApi, Configuration } from '@generatedClient/index';
 // const ssrClient = new DefaultApi(ssrConfig);
 
 const config = new Configuration({
-  basePath: 'http://localhost:8080', // настоящий бэк
+  basePath: 'http://localhost:8080',
+  fetchApi: async (url, init) => {
+    const token = localStorage.getItem('token');
+    const headers = new Headers(init?.headers || {});
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return fetch(url, {
+      ...init,
+      headers,
+    });
+  },
 });
 const client = new DefaultApi(config);
 

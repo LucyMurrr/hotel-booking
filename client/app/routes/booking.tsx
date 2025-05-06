@@ -185,15 +185,13 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
         {currentStep === 2 && (
           <div style={{ textAlign: 'center' }}>
             <Title level={4} style={{ marginBottom: 24 }}>Бронирование подтверждено! 🎉</Title>
-            <p>Номер успешно забронирован с {selectedDates?.[0]?.format('DD.MM.YYYY')}
-              по {selectedDates?.[1]?.format('DD.MM.YYYY')}
-            </p>
+            <p>Номер успешно забронирован с {selectedDates?.[0]?.format('DD.MM.YYYY')} по {selectedDates?.[1]?.format('DD.MM.YYYY')}</p>
             <Button
               type="primary"
-              onClick={() => navigate(`/hotels/${String(room.hotelId)}`)}
+              onClick={() => navigate('/bookings')}
               style={{ marginTop: 16 }}
             >
-              Вернуться в отель
+              Перейти к списку бронирований
             </Button>
           </div>
         )}
