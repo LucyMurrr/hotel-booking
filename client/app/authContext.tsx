@@ -1,16 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, {
   useState, useEffect, type PropsWithChildren, useMemo, useContext,
 } from 'react';
 import { createContext } from 'react';
-// import type User from '@api';
 
 interface User {
-    id: number;
-    name: string;
-    email: string;
-    password: string;
+  id: number;
+  name: string;
+  email: string;
 }
 
 interface AuthContextType {
@@ -19,13 +15,6 @@ interface AuthContextType {
   login: (userData: User) => void;
   logout: () => void;
 }
-
-// const defaultAuthContextValue: AuthContextType = {
-//   isAuthenticated: false,
-//   user: null,
-//   login: () => {},
-//   logout: () => {},
-// };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -37,7 +26,7 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const storedUser = localStorage.getItem('user');
 
     if (storedUser) {
-      const parsedUser: User = JSON.parse(storedUser) as User;
+      const parsedUser = JSON.parse(storedUser) as User;
       setUser(parsedUser);
       setIsAuthenticated(true);
     }

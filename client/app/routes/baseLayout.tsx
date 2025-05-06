@@ -38,11 +38,11 @@ const rightItems = [
       },
       {
         key: 'bid',
-        label: <Link to="/signin">Мои Бронирования</Link>,
+        label: <Link to="/bookings">Мои Бронирования</Link>,
       },
       {
         key: 'exit',
-        label: <Link to="/login">Выход</Link>,
+        label: <Link to="/signin">Выход</Link>,
       },
     ],
   },

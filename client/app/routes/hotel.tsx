@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import client from '@api';
 import {
   Rate, Image, Row, Col, Card, Typography, Tag, Space, Divider, Button,
