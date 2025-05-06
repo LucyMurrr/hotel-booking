@@ -1,8 +1,8 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import {
-  Card, Rate, Typography, Image, Tag, Flex,
+  Card, Rate, Typography, Image, Tag, Flex, Button,
 } from 'antd';
-import { StarFilled } from '@ant-design/icons';
+import { StarFilled, HeartFilled, HeartOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
@@ -12,6 +12,8 @@ type HotelCardProps = {
   stars: number;
   description: string;
   rating: number;
+  isFavorite: boolean;
+  toggleFavorite: (hotelId: number) => void;
 };
 
 const HotelCard = ({
@@ -20,11 +22,19 @@ const HotelCard = ({
   stars,
   description,
   rating,
+  isFavorite,
+  toggleFavorite,
 }: HotelCardProps) => {
   const ratingColor = () => {
     if (rating >= 8) return '#52c41a';
     if (rating >= 6) return '#faad14';
     return '#ff4d4f';
+  };
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite(id);
   };
 
   return (
@@ -35,8 +45,29 @@ const HotelCard = ({
         borderRadius: 8,
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         marginBottom: 16,
+        position: 'relative',
       }}
     >
+      <Button
+        type="text"
+        onClick={handleFavoriteClick}
+        style={{
+          position: 'absolute',
+          top: 21,
+          right: 84,
+          zIndex: 1,
+          padding: 4,
+          height: 'auto',
+        }}
+        aria-label={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
+      >
+        {isFavorite ? (
+          <HeartFilled style={{ fontSize: 26, color: 'red' }} />
+        ) : (
+          <HeartOutlined style={{ fontSize: 26, color: '#bfbfbf' }} />
+        )}
+      </Button>
+
       <Link to={`/hotels/${String(id)}`}>
         <Flex gap={16} align="start">
           <Image
@@ -72,7 +103,7 @@ const HotelCard = ({
               />
               <Text type="secondary">
                 {/* eslint-disable-next-line no-nested-ternary */}
-                ({stars} {stars === 1 ? 'звезда' : stars < 5 ? 'звезды' : 'звёзд'})
+                {stars} {stars === 1 ? 'звезда' : stars < 5 ? 'звезды' : 'звёзд'}
               </Text>
             </Flex>
 

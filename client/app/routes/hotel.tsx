@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import client from '@api';
 import {
   Rate, Image, Row, Col, Card, Typography, Tag, Space, Divider, Button,
 } from 'antd';
-import { Link } from 'react-router';
-import { ArrowRightOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import { ArrowRightOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
 import type { Route } from './+types/hotel';
 
 const { Title, Text } = Typography;
@@ -16,18 +17,38 @@ const getRatingColor = (rating: number) => {
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
   const hotelId = Number(params.hotelId);
-  const [hotelData, roomsData] = await Promise.all([
+  const userId = 4; // В реальном приложении брать из авторизации
+
+  const [hotelData, roomsData, favoritesData] = await Promise.all([
     client.hotelsGet({ hotelId }),
     client.hotelRoomsList({ hotelId }),
+    client.listUserFavorites({ userId }),
   ]);
+
+  const isFavorite = favoritesData.data.some((fav) => fav.id === hotelId);
+
   return {
-    hotel: hotelData,
+    hotel: { ...hotelData, isFavorite },
     rooms: roomsData.data,
   };
 }
 
 const HotelPage = ({ loaderData }: Route.ComponentProps) => {
   const { hotel, rooms } = loaderData;
+  const [currentHotel, setCurrentHotel] = useState(hotel);
+
+  const toggleFavorite = async () => {
+    try {
+      if (currentHotel.isFavorite) {
+        await client.deleteFavorite({ hotelId: currentHotel.id });
+      } else {
+        await client.createFavorite({ favoriteCreateDto: { hotelId: currentHotel.id } });
+      }
+      setCurrentHotel((prev) => ({ ...prev, isFavorite: !prev.isFavorite }));
+    } catch (err) {
+      console.error('Ошибка при обновлении избранного:', err);
+    }
+  };
 
   return (
     <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
@@ -45,35 +66,56 @@ const HotelPage = ({ loaderData }: Route.ComponentProps) => {
         </Col>
 
         <Col flex="auto">
-          <Title level={2} style={{ marginBottom: 8 }}>
-            {hotel.name}
-          </Title>
+          <div style={{ position: 'relative' }}>
+            <Button
+              type="text"
+              onClick={toggleFavorite}
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                padding: 4,
+                height: 'auto',
+              }}
+              aria-label={currentHotel.isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
+            >
+              {currentHotel.isFavorite ? (
+                <HeartFilled style={{ fontSize: 26, color: 'red' }} />
+              ) : (
+                <HeartOutlined style={{ fontSize: 26, color: '#bfbfbf' }} />
+              )}
+            </Button>
 
-          <Space size="middle" style={{ marginBottom: 16 }}>
-            <div>
-              <Text strong>Рейтинг:</Text>
-              <Tag
-                color={getRatingColor(hotel.rating)}
-                style={{ fontSize: 16, padding: '4px 8px', marginLeft: 8 }}
-              >
-                {hotel.rating.toFixed(1)}
-              </Tag>
-            </div>
+            <Title level={2} style={{ marginBottom: 8, paddingRight: 40 }}>
+              {currentHotel.name}
+            </Title>
 
-            <div>
-              <Text strong>Звёзды:</Text>
-              <Rate
-                disabled
-                count={5}
-                value={hotel.stars}
-                style={{ marginLeft: 8, fontSize: 16 }}
-              />
-            </div>
-          </Space>
+            <Space size="middle" style={{ marginBottom: 16 }}>
+              <div>
+                <Text strong>Рейтинг:</Text>
+                <Tag
+                  color={getRatingColor(currentHotel.rating)}
+                  style={{ fontSize: 16, padding: '4px 8px', marginLeft: 8 }}
+                >
+                  {currentHotel.rating.toFixed(1)}
+                </Tag>
+              </div>
 
-          <Typography.Paragraph type="secondary">
-            {hotel.description}
-          </Typography.Paragraph>
+              <div>
+                <Text strong>Звёзды:</Text>
+                <Rate
+                  disabled
+                  count={5}
+                  value={currentHotel.stars}
+                  style={{ marginLeft: 8, fontSize: 16 }}
+                />
+              </div>
+            </Space>
+
+            <Typography.Paragraph type="secondary">
+              {currentHotel.description}
+            </Typography.Paragraph>
+          </div>
         </Col>
       </Row>
 
