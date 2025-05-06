@@ -28,6 +28,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import aim.hotel_booking.repository.specification.FavoriteSpecification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -264,6 +266,22 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
         response.setFilters(filters);
 
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<UserDto> userMeGet() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
+
+        return ResponseEntity.ok(userDto);
     }
 
     private Hotel convertToDto(HotelEntity entity) {
