@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useState, useEffect } from 'react';
 import {
   Flex,
@@ -50,6 +46,11 @@ const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilter
     onFilterChange(localFilters);
   };
 
+  const handleReset = () => {
+    setLocalFilters({});
+    onFilterChange({});
+  };
+
   return (
     <Flex vertical>
       <Flex vertical gap={16}>
@@ -92,9 +93,14 @@ const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilter
 
       <Divider />
 
-      <Button type="primary" onClick={handleApply}>
-        Применить фильтры
-      </Button>
+      <Flex gap={8} vertical>
+        <Button type="default" onClick={handleReset}>
+          Сбросить
+        </Button>
+        <Button type="primary" onClick={handleApply}>
+          Применить
+        </Button>
+      </Flex>
     </Flex>
   );
 };
