@@ -1,114 +1,95 @@
-import React, { type ReactNode } from 'react';
-import { Card } from 'antd';
-import { Link } from 'react-router-dom';
-import { FullscreenOutlined, ShoppingCartOutlined, CommentOutlined } from '@ant-design/icons';
+import { Link } from 'react-router';
+import {
+  Card, Rate, Typography, Image, Tag, Flex,
+} from 'antd';
+import { StarFilled } from '@ant-design/icons';
 
-const { Meta } = Card;
+const { Title, Text } = Typography;
 
-interface HotelCardProps {
-  id: number,
+type HotelCardProps = {
+  id: number;
   name: string;
   stars: number;
-  description: ReactNode;
+  description: string;
   rating: number;
-}
-
-interface InnerCardProps {
-  name: string;
-  stars: string;
-  description: ReactNode;
-  rating: number;
-}
-
-const cardWrapperStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  overflow: 'auto',
 };
 
-const imageStyle: React.CSSProperties = {
-  flex: '0 0 auto',
-  width: '35%',
-  height: 'auto',
-  marginRight: '3px',
-};
+const HotelCard = ({
+  id,
+  name,
+  stars,
+  description,
+  rating,
+}: HotelCardProps) => {
+  const ratingColor = () => {
+    if (rating >= 8) return '#52c41a';
+    if (rating >= 6) return '#faad14';
+    return '#ff4d4f';
+  };
 
-const descriptionStyle: React.CSSProperties = {
-  flex: '1',
-  marginLeft: '15px',
-};
-
-const actionStyle: React.CSSProperties = {
-  marginTop: '16px',
-  justifyContent: 'flex-end',
-  display: 'flex',
-};
-
-const InnerCard: React.FC<InnerCardProps> = ({
-  name, stars, description, rating,
-}) => {
-  // eslint-disable-next-line no-nested-ternary
-  const ratingColor = rating <= 5 ? '#B22222' : rating >= 8 ? '#008000' : '#FFD700';
   return (
-    <div style={{ ...cardWrapperStyle }}>
-      <Card
-        type="inner"
-        variant="borderless"
-        title={<h1 style={{ color: '#FFD700' }}>{name}</h1>}
-        extra={stars}
-        // style={{ borderRadius: 0 }}
-        style={{ width: '100%' }}
-      >
-        <Meta
-          // avatar={<Avatar src="../public/booking.png" />}
-          // eslint-disable-next-line max-len
-          title={<h3>Рейтинг:  <span style={{ color: ratingColor }}>{rating}</span></h3>}
-          description={description}
-        />
-      </Card>
-    </div>
-  );
-};
-
-const HotelCard: React.FC<HotelCardProps> = ({
-  id, name, stars, description, rating,
-}) => {
-  const star: string = '⭐'.repeat(stars);
-  console.log(id);
-  return (
-  // <div>
     <Card
-      type="inner"
       hoverable
-      style={{ width: '100%' }}
+      style={{
+        width: '100%',
+        borderRadius: 8,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        marginBottom: 16,
+      }}
     >
-      <div style={cardWrapperStyle}>
-        {/* <Space direction="horizontal" size="middle" style={{ display: 'flex', height: '100%' }}> */}
-        <img
-          alt="example"
+      <Link to={`/hotels/${String(id)}`}>
+        <Flex gap={16} align="start">
+          <Image
+            alt={name}
             // eslint-disable-next-line max-len
-          src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
-          style={imageStyle}
-        />
-        <div style={descriptionStyle}>
-          <InnerCard name={name} stars={star} description={description} rating={rating} />
-          <div style={{ ...actionStyle, display: 'flex' }}>
-            <Link to={`hotels/${String(id)}`}>
-              <FullscreenOutlined /> Информация
-            </Link>
-            <Link to="/hotels/:hotelName/rooms" style={{ marginLeft: '30px' }}>
-              <CommentOutlined /> Отзывы
-            </Link>
-            <Link to="/auth" style={{ marginLeft: '30px' }}>
-              <ShoppingCartOutlined /> Бронирование
-            </Link>
-          </div>
-        </div>
-        {/* </Space> */}
-      </div>
+            src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
+            width={240}
+            height={180}
+            style={{
+              borderRadius: 4,
+              objectFit: 'cover',
+              flexShrink: 0,
+            }}
+            preview={false}
+          />
+
+          <Flex vertical style={{ flex: 1 }} gap={12}>
+            <Flex justify="space-between" align="start">
+              <Title level={4} style={{ margin: 0 }}>
+                {name}
+              </Title>
+              <Tag color={ratingColor()} style={{ fontSize: 16, padding: '4px 8px' }}>
+                {rating.toFixed(1)}
+              </Tag>
+            </Flex>
+
+            <Flex gap={8}>
+              <Rate
+                character={<StarFilled />}
+                value={stars}
+                count={5}
+                disabled
+              />
+              <Text type="secondary">
+                {/* eslint-disable-next-line no-nested-ternary */}
+                ({stars} {stars === 1 ? 'звезда' : stars < 5 ? 'звезды' : 'звёзд'})
+              </Text>
+            </Flex>
+
+            <Text
+              ellipsis={{ tooltip: description }}
+              style={{
+                color: '#595959',
+                fontSize: 15,
+                lineHeight: 1.5,
+              }}
+            >
+              {description}
+            </Text>
+          </Flex>
+        </Flex>
+      </Link>
     </Card>
-  // </div>
   );
 };
 

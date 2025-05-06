@@ -1,95 +1,132 @@
-import React from 'react';
+import client from '@api';
 import {
-  Button, Card, Space, Tag, Typography,
+  Rate, Image, Row, Col, Card, Typography, Tag, Space, Divider, Button,
 } from 'antd';
-import { HeartTwoTone, StarTwoTone } from '@ant-design/icons';
 import { Link } from 'react-router';
-import type { Hotel, HotelsGetRequest } from '@api';
-import client from '~/src/api';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import type { Route } from './+types/hotel';
-import RoomsTable from '../src/components/roomsTab.component';
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const request: HotelsGetRequest = { hotelId: Number(params.hotelId) };
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const Data: Hotel = await client.hotelsGet(request);
-  // console.log(Data);
-  return Data;
+const { Title, Text } = Typography;
+
+const getRatingColor = (rating: number) => {
+  if (rating >= 8) return '#52c41a';
+  if (rating >= 6) return '#faad14';
+  return '#ff4d4f';
+};
+
+export async function clientLoader({ params }: Route.LoaderArgs) {
+  const hotelId = Number(params.hotelId);
+  const [hotelData, roomsData] = await Promise.all([
+    client.hotelsGet({ hotelId }),
+    client.hotelRoomsList({ hotelId }),
+  ]);
+  return {
+    hotel: hotelData,
+    rooms: roomsData.data,
+  };
 }
 
-const cardStyle: React.CSSProperties = {
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-};
-const HotelPage: React.FC<Route.ComponentProps> = ({
-  loaderData,
-}) => {
-  const {
-    id, name, description, stars, rating,
-  } = loaderData;
-  // eslint-disable-next-line no-nested-ternary
-  const ratingColor = rating <= 5 ? '#B22222' : rating >= 8 ? '#008000' : '#FFD700';
-  return (
-    <Card hoverable style={cardStyle}>
-      <Space style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-      }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {Array.from({ length: stars }, (_, index) => (
-              <StarTwoTone key={index} twoToneColor="#eb2f96" />
-            ))}
-          </div>
-          <Typography.Title level={2} style={{ margin: '0 0 8px 0' }}>
-            {name}
-          </Typography.Title>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <HeartTwoTone style={{ fontSize: '24px', marginRight: '16px' }} />
-          <Link to="/hotelsTab" key="booking-date">
-            <Button>
-              Забронировать
-            </Button>
-          </Link>
-        </div>
-      </Space>
+const HotelPage = ({ loaderData }: Route.ComponentProps) => {
+  const { hotel, rooms } = loaderData;
 
-      <div className="flex gap-4 justify-between h-full mt-5">
-        <img
-          alt="Hotel"
-          // eslint-disable-next-line max-len
-          src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
-          style={{
-            width: '50%',
-            height: 'auto',
-            display: 'block',
-          }}
-        />
-        <div style={{ display: 'flex' }}>
-          <Typography.Title level={5}>Оценка пользователей </Typography.Title>
-          <Tag
-            bordered={false}
-            color={ratingColor}
-            style={{ alignSelf: 'flex-start', marginLeft: '8px' }}
-          >
-            {rating}
-          </Tag>
-        </div>
-      </div>
-      <div className="mt-10">
-        <Typography.Title level={5}>
-          {description}
-        </Typography.Title>
-      </div>
-      <div>
-        <RoomsTable hotelId={Number(id)} />
-      </div>
-    </Card>
+  return (
+    <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
+      {/* Hotel Info Section */}
+      <Row gutter={24} align="middle">
+        <Col flex="200px">
+          <Image
+            width={200}
+            height={200}
+            style={{ borderRadius: 8 }}
+            // eslint-disable-next-line max-len
+            src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
+            preview={false}
+          />
+        </Col>
+
+        <Col flex="auto">
+          <Title level={2} style={{ marginBottom: 8 }}>
+            {hotel.name}
+          </Title>
+
+          <Space size="middle" style={{ marginBottom: 16 }}>
+            <div>
+              <Text strong>Рейтинг:</Text>
+              <Tag
+                color={getRatingColor(hotel.rating)}
+                style={{ fontSize: 16, padding: '4px 8px', marginLeft: 8 }}
+              >
+                {hotel.rating.toFixed(1)}
+              </Tag>
+            </div>
+
+            <div>
+              <Text strong>Звёзды:</Text>
+              <Rate
+                disabled
+                count={5}
+                value={hotel.stars}
+                style={{ marginLeft: 8, fontSize: 16 }}
+              />
+            </div>
+          </Space>
+
+          <Typography.Paragraph type="secondary">
+            {hotel.description}
+          </Typography.Paragraph>
+        </Col>
+      </Row>
+
+      <Divider />
+
+      <Title level={3} style={{ marginBottom: 24 }}>
+        Доступные номера
+      </Title>
+
+      <Card styles={{ body: { padding: 0 } }}>
+        {rooms.map((room) => (
+          <div key={room.id} style={{ padding: 24, borderBottom: '1px solid #f0f0f0' }}>
+            <Row align="middle" gutter={24}>
+              <Col flex="auto">
+                <Title level={5} style={{ marginBottom: 8 }}>
+                  {room.name}
+                </Title>
+
+                <Typography.Paragraph
+                  type="secondary"
+                  ellipsis={{ rows: 2 }}
+                  style={{ marginBottom: 12 }}
+                >
+                  {room.description}
+                </Typography.Paragraph>
+
+                <Space wrap size={[0, 8]}>
+                  {room.amenities.map((amenity) => (
+                    <Tag key={amenity.id}>{amenity.name}</Tag>
+                  ))}
+                </Space>
+              </Col>
+
+              <Col>
+                <Title level={4} style={{ margin: 0 }}>
+                  ${room.price} <Text type="secondary">/ ночь</Text>
+                </Title>
+
+                <Link to={`/booking/${String(room.id)}`}>
+                  <Button
+                    type="primary"
+                    style={{ marginTop: 16 }}
+                    icon={<ArrowRightOutlined />}
+                  >
+                    Забронировать
+                  </Button>
+                </Link>
+              </Col>
+            </Row>
+          </div>
+        ))}
+      </Card>
+    </div>
   );
 };
 

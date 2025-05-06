@@ -55,4 +55,3 @@ drop-database:
 
 seed:
 	docker compose exec db psql -U postgres -d mydb -f /docker-entrypoint-initdb.d/data.sql
-
