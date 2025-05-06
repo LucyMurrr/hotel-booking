@@ -58,7 +58,7 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-export const useAuth = (): AuthContextType => {
+const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -67,4 +67,4 @@ export const useAuth = (): AuthContextType => {
 };
 
 export default AuthProvider;
-export { AuthContext };
+export { AuthContext, useAuth };
