@@ -1,38 +1,26 @@
 import React, {
-  useState, useEffect, type PropsWithChildren, useMemo, useContext,
+  useState, useEffect, type PropsWithChildren, useMemo, useContext, useCallback,
 } from 'react';
 import { createContext } from 'react';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+import client from '@api';
+import type { UserDto } from '@api';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: User | null;
-  login: (userData: User) => void;
+  user: UserDto | null;
+  login: (userData: UserDto) => void;
   logout: () => void;
+  checkAuth: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserDto | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser) as User;
-      setUser(parsedUser);
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  const login = (userData: User) => {
+  const login = (userData: UserDto) => {
     setUser(userData);
     setIsAuthenticated(true);
     localStorage.setItem('user', JSON.stringify(userData));
@@ -42,14 +30,39 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
+
+  const checkAuth = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const userResponse = await client.userMeGet();
+      login(userResponse);
+    } catch {
+      logout();
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    checkAuth();
+  }, [checkAuth]);
 
   const value = useMemo(() => ({
     isAuthenticated,
     user,
     login,
     logout,
-  }), [isAuthenticated, user]);
+    checkAuth,
+  }), [checkAuth, isAuthenticated, user]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <AuthContext.Provider value={value}>

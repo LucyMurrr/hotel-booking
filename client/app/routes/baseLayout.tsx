@@ -5,24 +5,24 @@ import {
 import type { MenuProps, MenuTheme } from 'antd';
 import { MoonOutlined, SunOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import AuthProvider from '../authContext.js';
+import { useAuth } from '../authContext';
 
 const { Header, Content, Footer } = Layout;
 
 const BaseLayout: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<MenuTheme>('dark');
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   const changeTheme = (isNewThemeDark: boolean) => {
     setCurrentTheme(isNewThemeDark ? 'dark' : 'light');
   };
 
-  const navigate = useNavigate();
-
   const handleLogout = useCallback(() => {
-    localStorage.removeItem('token');
+    logout();
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     navigate('/signin');
-  }, [navigate]);
+  }, [logout, navigate]);
 
   const profileMenuItems: MenuProps['items'] = [
     {
@@ -43,34 +43,34 @@ const BaseLayout: React.FC = () => {
   ];
 
   return (
-    <AuthProvider>
-      <ConfigProvider
-        theme={{
-          algorithm: currentTheme === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
-          components: {
-            Layout: {
-              headerBg: currentTheme === 'dark' ? '#141414' : '#001529',
-            },
+    <ConfigProvider
+      theme={{
+        algorithm: currentTheme === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
+        components: {
+          Layout: {
+            headerBg: currentTheme === 'dark' ? '#141414' : '#001529',
           },
-        }}
-      >
-        <Layout style={{ minHeight: '100vh' }}>
-          <Header style={{ padding: '0 24px' }}>
-            <Flex justify="space-between" align="center">
-              <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar src="/logo.png" />
-                <span style={{ color: 'white', marginLeft: 8, fontSize: 18 }}>HEXLING</span>
-              </Link>
+        },
+      }}
+    >
+      <Layout style={{ minHeight: '100vh' }}>
+        <Header style={{ padding: '0 24px' }}>
+          <Flex justify="space-between" align="center">
+            <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar src="/logo.png" />
+              <span style={{ color: 'white', marginLeft: 8, fontSize: 18 }}>HEXLING</span>
+            </Link>
 
-              <Flex align="center" gap={16}>
-                <Switch
-                  checked={currentTheme === 'dark'}
-                  onChange={changeTheme}
-                  checkedChildren={<MoonOutlined />}
-                  unCheckedChildren={<SunOutlined />}
-                  aria-label="Переключить тему"
-                />
+            <Flex align="center" gap={16}>
+              <Switch
+                checked={currentTheme === 'dark'}
+                onChange={changeTheme}
+                checkedChildren={<MoonOutlined />}
+                unCheckedChildren={<SunOutlined />}
+                aria-label="Переключить тему"
+              />
 
+              {isAuthenticated ? (
                 <Dropdown menu={{ items: profileMenuItems }} trigger={['click']}>
                   <Button
                     type="text"
@@ -80,22 +80,26 @@ const BaseLayout: React.FC = () => {
                     Профиль
                   </Button>
                 </Dropdown>
-              </Flex>
+              ) : (
+                <Button type="primary" onClick={() => navigate('/signin')}>
+                  Войти
+                </Button>
+              )}
             </Flex>
-          </Header>
+          </Flex>
+        </Header>
 
-          <Content style={{ padding: '24px 48px', flex: 1 }}>
-            <main>
-              <Outlet />
-            </main>
-          </Content>
+        <Content style={{ padding: '24px 48px', flex: 1 }}>
+          <main>
+            <Outlet />
+          </main>
+        </Content>
 
-          <Footer style={{ textAlign: 'center' }}>
-            HEXLING © {new Date().getFullYear()} Created by students of Hexlet
-          </Footer>
-        </Layout>
-      </ConfigProvider>
-    </AuthProvider>
+        <Footer style={{ textAlign: 'center' }}>
+          HEXLING © {new Date().getFullYear()} Created by students of Hexlet
+        </Footer>
+      </Layout>
+    </ConfigProvider>
   );
 };
 

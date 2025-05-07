@@ -4,33 +4,48 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import { Link } from 'react-router';
+import { useEffect, useState } from 'react';
 import client from '@api';
-import type { Route } from './+types/userBookings';
+import type { Booking, RoomDto, Hotel } from '@api';
+import { useAuth } from '~/authContext';
 
 const { Text, Title } = Typography;
 
-export async function clientLoader() {
-  const userId = 1; // В реальном приложении брать из авторизации
-  const bookingsResponse = await client.userBookingsList({ userId });
-
-  const enrichedBookings = await Promise.all(
-    bookingsResponse.data.map(async (booking) => {
-      const room = await client.roomsGet({ roomId: booking.roomId });
-      const hotel = await client.hotelsGet({ hotelId: room.hotelId });
-      return {
-        ...booking,
-        room,
-        hotel,
-        totalPrice: room.price * dayjs(booking.checkOut).diff(dayjs(booking.checkIn), 'days'),
-      };
-    }),
-  );
-
-  return enrichedBookings;
+type EnrichedBooking = Booking & {
+  room: RoomDto;
+  hotel: Hotel;
+  totalPrice: number;
 }
 
-const BookingsPage = ({ loaderData }: Route.ComponentProps) => {
-  const bookings = loaderData;
+const BookingsPage = () => {
+  const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (!user) return;
+
+      const bookingsResponse = await client.userBookingsList({ userId: user.id });
+
+      const enrichedBookings = await Promise.all(
+        bookingsResponse.data.map(async (booking) => {
+          const room = await client.roomsGet({ roomId: booking.roomId });
+          const hotel = await client.hotelsGet({ hotelId: room.hotelId });
+          return {
+            ...booking,
+            room,
+            hotel,
+            totalPrice: room.price * dayjs(booking.checkOut).diff(dayjs(booking.checkIn), 'days'),
+          };
+        }),
+      );
+
+      setBookings(enrichedBookings);
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    fetchBookings();
+  }, [user]);
 
   return (
     <Card title="Мои бронирования" styles={{ body: { padding: 0 } }}>
