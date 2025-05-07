@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import {
   Flex,
   Pagination,
@@ -14,7 +15,8 @@ import {
 import { StarFilled } from '@ant-design/icons';
 import client from '@api';
 import type { Hotel, HotelFilters, HotelsListSortByEnum, HotelRoomsListSortOrderEnum } from '@api';
-import HotelCard from '../src/components/hotelCard/hotelCard.component';
+import HotelCard from '../src/components/hotelCard';
+import { useAuth } from '../authContext';
 
 type Pagination = {
   page: number;
@@ -119,13 +121,14 @@ const Hotels = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchHotels = async () => {
       try {
         setLoading(true);
-
-        const userId = 4;
 
         const [hotelsData, favoritesData] = await Promise.all([
           client.hotelsList({
@@ -135,9 +138,9 @@ const Hotels = () => {
             page: pagination.page,
             perPage: pagination.perPage,
           }),
-          client.listUserFavorites({
-            userId,
-          }),
+          user ? client.listUserFavorites({
+            userId: user.id,
+          }) : { data: [] },
         ]);
 
         const enrichedHotels = hotelsData.data.map((hotel) => {
@@ -160,7 +163,7 @@ const Hotels = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchHotels();
-  }, [pagination.page, pagination.perPage, filters, sort, searchQuery]);
+  }, [pagination.page, pagination.perPage, filters, sort, searchQuery, user]);
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination((prev) => ({
@@ -171,6 +174,12 @@ const Hotels = () => {
   };
 
   const toggleFavorite = async (hotelId: number) => {
+    if (!user) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      navigate('/signin');
+      return;
+    }
+
     const currentHotel = hotels.find((hotel) => hotel.id === hotelId)!;
 
     if (currentHotel.isFavorite) {

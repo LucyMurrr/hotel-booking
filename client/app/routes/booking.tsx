@@ -18,6 +18,8 @@ import dayjs, { type Dayjs } from 'dayjs';
 import type { RangePickerProps } from 'antd/es/date-picker';
 import type { Route } from './+types/booking';
 
+import { useAuth } from '../authContext';
+
 const { RangePicker } = DatePicker;
 const { Step } = Steps;
 const { Title } = Typography;
@@ -32,6 +34,8 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
   const { room } = loaderData;
   const [form] = Form.useForm();
   const navigate = useNavigate();
+
+  const { user } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -70,7 +74,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
     if (!dates || !dates[0] || !dates[1]) return;
     const [start, end] = dates;
     const nights = end.diff(start, 'days');
-    setTotalPrice(nights * room.price);
+    setTotalPrice(Number((nights * room.price).toFixed(2)));
     setSelectedDates([start, end]);
   };
 
@@ -85,10 +89,16 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
   const handleSubmit = async () => {
     if (!selectedDates) return;
 
+    if (!user) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      navigate('/signin');
+      return;
+    }
+
     setLoading(true);
     try {
       const bookingCreateDto: BookingCreateDto = {
-        userId: 1, // Заменить на реальный ID пользователя
+        userId: user.id,
         roomId: room.id,
         checkIn: selectedDates[0].startOf('day').toDate(),
         checkOut: selectedDates[1].startOf('day').toDate(),

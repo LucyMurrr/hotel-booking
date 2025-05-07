@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import client from '@api';
+import { useState, useEffect } from 'react';
+import client, { type Hotel, type RoomDto } from '@api';
 import {
-  Rate, Image, Row, Col, Card, Typography, Tag, Space, Divider, Button,
+  Rate, Image, Row, Col, Card, Typography, Tag, Space, Divider, Button, Spin, Alert,
 } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowRightOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
-import type { Route } from './+types/hotel';
+import { useAuth } from '../authContext';
 
 const { Title, Text } = Typography;
 
@@ -15,40 +15,75 @@ const getRatingColor = (rating: number) => {
   return '#ff4d4f';
 };
 
-export async function clientLoader({ params }: Route.LoaderArgs) {
-  const hotelId = Number(params.hotelId);
-  const userId = 4; // В реальном приложении брать из авторизации
+type HotelWithFavorite = Hotel & { isFavorite: boolean };
 
-  const [hotelData, roomsData, favoritesData] = await Promise.all([
-    client.hotelsGet({ hotelId }),
-    client.hotelRoomsList({ hotelId }),
-    client.listUserFavorites({ userId }),
-  ]);
+const HotelPage = () => {
+  const { hotelId } = useParams<{ hotelId: string }>();
+  const navigate = useNavigate();
+  const [hotel, setHotel] = useState<HotelWithFavorite | null>(null);
+  const [rooms, setRooms] = useState<RoomDto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { user, isAuthenticated } = useAuth();
 
-  const isFavorite = favoritesData.data.some((fav) => fav.id === hotelId);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const id = Number(hotelId);
 
-  return {
-    hotel: { ...hotelData, isFavorite },
-    rooms: roomsData.data,
-  };
-}
+        const [hotelResponse, roomsResponse] = await Promise.all([
+          client.hotelsGet({ hotelId: id }),
+          client.hotelRoomsList({ hotelId: id }),
+        ]);
 
-const HotelPage = ({ loaderData }: Route.ComponentProps) => {
-  const { hotel, rooms } = loaderData;
-  const [currentHotel, setCurrentHotel] = useState(hotel);
+        let favoriteStatus = false;
+        console.log(favoriteStatus);
+        if (user) {
+          const favoritesResponse = await client.listUserFavorites({ userId: user.id });
+          console.log(favoritesResponse);
+          favoriteStatus = favoritesResponse.data.some((fav) => fav.id === id);
+          console.log(favoriteStatus);
+        }
+        console.log(1);
+
+        setHotel({ ...hotelResponse, isFavorite: favoriteStatus });
+        setRooms(roomsResponse.data);
+      } catch {
+        setError('Ошибка загрузки данных');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    loadData();
+  }, [hotelId, user]);
 
   const toggleFavorite = async () => {
+    if (!user) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      navigate('/signin');
+      return;
+    }
+
+    if (!hotel) return;
+
     try {
-      if (currentHotel.isFavorite) {
-        await client.deleteFavorite({ hotelId: currentHotel.id });
+      if (hotel.isFavorite) {
+        await client.deleteFavorite({ hotelId: Number(hotelId) });
       } else {
-        await client.createFavorite({ favoriteCreateDto: { hotelId: currentHotel.id } });
+        await client.createFavorite({ favoriteCreateDto: { hotelId: Number(hotelId) } });
       }
-      setCurrentHotel((prev) => ({ ...prev, isFavorite: !prev.isFavorite }));
+      // setHotel((prevHotel) => prevHotel.isFavorite);
+      setHotel(() => ({ ...hotel, isFavorite: !hotel.isFavorite }));
     } catch (err) {
-      console.error('Ошибка при обновлении избранного:', err);
+      console.error('Ошибка обновления избранного:', err);
     }
   };
+
+  if (loading) return <Spin tip="Загрузка..." />;
+  if (error) return <Alert message={error} type="error" />;
+  if (!hotel) return null;
 
   return (
     <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
@@ -77,9 +112,9 @@ const HotelPage = ({ loaderData }: Route.ComponentProps) => {
                 padding: 4,
                 height: 'auto',
               }}
-              aria-label={currentHotel.isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
+              aria-label={hotel.isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
             >
-              {currentHotel.isFavorite ? (
+              {hotel.isFavorite ? (
                 <HeartFilled style={{ fontSize: 26, color: 'red' }} />
               ) : (
                 <HeartOutlined style={{ fontSize: 26, color: '#bfbfbf' }} />
@@ -87,17 +122,17 @@ const HotelPage = ({ loaderData }: Route.ComponentProps) => {
             </Button>
 
             <Title level={2} style={{ marginBottom: 8, paddingRight: 40 }}>
-              {currentHotel.name}
+              {hotel.name}
             </Title>
 
             <Space size="middle" style={{ marginBottom: 16 }}>
               <div>
                 <Text strong>Рейтинг:</Text>
                 <Tag
-                  color={getRatingColor(currentHotel.rating)}
+                  color={getRatingColor(hotel.rating)}
                   style={{ fontSize: 16, padding: '4px 8px', marginLeft: 8 }}
                 >
-                  {currentHotel.rating.toFixed(1)}
+                  {hotel.rating.toFixed(1)}
                 </Tag>
               </div>
 
@@ -106,14 +141,14 @@ const HotelPage = ({ loaderData }: Route.ComponentProps) => {
                 <Rate
                   disabled
                   count={5}
-                  value={currentHotel.stars}
+                  value={hotel.stars}
                   style={{ marginLeft: 8, fontSize: 16 }}
                 />
               </div>
             </Space>
 
             <Typography.Paragraph type="secondary">
-              {currentHotel.description}
+              {hotel.description}
             </Typography.Paragraph>
           </div>
         </Col>
@@ -127,10 +162,10 @@ const HotelPage = ({ loaderData }: Route.ComponentProps) => {
 
       <Card styles={{ body: { padding: 0 } }}>
         {rooms.map((room) => (
-          <div key={room.id} style={{ padding: 24, borderBottom: '1px solid #f0f0f0' }}>
+          <div key={room.id} style={{ padding: 20, paddingBottom: 36, borderBottom: '1px solid #f0f0f0' }}>
             <Row align="middle" gutter={24}>
               <Col flex="auto">
-                <Title level={5} style={{ marginBottom: 8 }}>
+                <Title level={5} style={{ marginTop: 8, marginBottom: 8 }}>
                   {room.name}
                 </Title>
 
@@ -154,7 +189,7 @@ const HotelPage = ({ loaderData }: Route.ComponentProps) => {
                   ${room.price} <Text type="secondary">/ ночь</Text>
                 </Title>
 
-                <Link to={`/booking/${String(room.id)}`}>
+                <Link to={isAuthenticated ? `/booking/${String(room.id)}` : '/signin'}>
                   <Button
                     type="primary"
                     style={{ marginTop: 16 }}
