@@ -1,4 +1,3 @@
-// AuthProvider.tsx
 import React, {
   useState, useEffect, type PropsWithChildren, useMemo, useContext, useCallback,
 } from 'react';
