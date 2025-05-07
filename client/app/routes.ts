@@ -12,7 +12,7 @@ export default [
     ...prefix('hotels', [
       route(':hotelId', 'routes/hotel.tsx'),
       route(':hotelId/newRoom', 'routes/newRoom.tsx'),
-      route(':hotelId/rooms/:roomId', 'routes/room.tsx'),
+      // route(':hotelId/rooms/:roomId', 'routes/room.tsx'),
     ]),
   ]),
 ] satisfies RouteConfig;
