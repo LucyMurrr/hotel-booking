@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Avatar, ConfigProvider, Layout, Switch, theme, Flex, Dropdown, Button,
 } from 'antd';
@@ -9,14 +9,28 @@ import { useAuth } from '../authContext';
 
 const { Header, Content, Footer } = Layout;
 
+const getInitialTheme = (): MenuTheme => {
+  const savedTheme = localStorage.getItem('theme');
+  return (savedTheme as MenuTheme | null) || 'dark';
+};
+
 const BaseLayout: React.FC = () => {
-  const [currentTheme, setCurrentTheme] = useState<MenuTheme>('dark');
+  const [currentTheme, setCurrentTheme] = useState<MenuTheme>(getInitialTheme);
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const changeTheme = (isNewThemeDark: boolean) => {
-    setCurrentTheme(isNewThemeDark ? 'dark' : 'light');
+    const newTheme = isNewThemeDark ? 'dark' : 'light';
+    setCurrentTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
   };
+
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      'color-scheme',
+      currentTheme === 'dark' ? 'dark' : 'light',
+    );
+  }, [currentTheme]);
 
   const handleLogout = useCallback(() => {
     logout();

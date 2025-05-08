@@ -22,6 +22,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const { user, login } = useAuth();
   const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleProfileUpdate = async (values: { name?: string, email?: string, password?: string }) => {
     if (!user) return;
@@ -33,9 +34,15 @@ const ProfilePage = () => {
         userUpdateDto: { ...user, ...values },
       });
       login(updatedUser);
-      message.success('Профиль успешно обновлён');
+      messageApi.open({
+        type: 'success',
+        content: 'Профиль успешно обновлён',
+      });
     } catch {
-      message.error('Ошибка при обновлении профиля');
+      messageApi.open({
+        type: 'error',
+        content: 'Ошибка при обновлении профиля',
+      });
     } finally {
       setLoading(false);
     }
@@ -51,9 +58,15 @@ const ProfilePage = () => {
         userUpdateDto: { ...user, ...values },
       });
       login(updatedUser);
-      message.success('Пароль успешно обновлён');
+      messageApi.open({
+        type: 'success',
+        content: 'Пароль успешно обновлён',
+      });
     } catch {
-      message.error('Ошибка при обновлении пароля');
+      messageApi.open({
+        type: 'error',
+        content: 'Ошибка при обновлении пароля',
+      });
     } finally {
       setLoading(false);
     }
@@ -89,6 +102,8 @@ const ProfilePage = () => {
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto', padding: 24 }}>
+
+      {contextHolder}
       {/* Заголовок и аватар */}
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
         <Avatar
