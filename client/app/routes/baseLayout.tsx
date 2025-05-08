@@ -5,8 +5,8 @@ import {
 import type { MenuProps, MenuTheme } from 'antd';
 import { MoonOutlined, SunOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../authContext';
 import ChatWidget from '~/src/components/chatWidget';
+import { useAuth } from '../authContext';
 
 const { Header, Content, Footer } = Layout;
 
