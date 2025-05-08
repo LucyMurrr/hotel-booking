@@ -9,21 +9,10 @@ export default [
     route('/bookings', 'routes/userBookings.tsx'),
     route('/booking/:roomId', 'routes/booking.tsx'),
     route('/signin', 'routes/signin.tsx'),
+    route('/manager', 'routes/manager.tsx'),
     ...prefix('hotels', [
       route(':hotelId', 'routes/hotel.tsx'),
       route(':hotelId/newRoom', 'routes/newRoom.tsx'),
-      // route(':hotelId/rooms/:roomId', 'routes/room.tsx'),
     ]),
   ]),
 ] satisfies RouteConfig;
-
-// const ProtectedRoute = ({ element, requiredRole }) => {
-//   const { isAuthenticated, user } = useAuth();
-//   if (!isAuthenticated) {
-//       return <Navigator to="/login" />;
-//   }
-//   if (user.role !== requiredRole) {
-//       return <Navigator to="/" />;
-//   }
-//   return element;
-// };

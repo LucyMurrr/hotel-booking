@@ -6,6 +6,7 @@ import type { MenuProps, MenuTheme } from 'antd';
 import { MoonOutlined, SunOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../authContext';
+import ChatWidget from '~/src/components/chatWidget';
 
 const { Header, Content, Footer } = Layout;
 
@@ -112,6 +113,8 @@ const BaseLayout: React.FC = () => {
         <Footer style={{ textAlign: 'center' }}>
           HEXLING © {new Date().getFullYear()} Created by students of Hexlet
         </Footer>
+
+        {isAuthenticated && <ChatWidget />}
       </Layout>
     </ConfigProvider>
   );
