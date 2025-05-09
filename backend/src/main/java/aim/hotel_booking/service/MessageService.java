@@ -49,7 +49,7 @@ public class MessageService {
         // Отправляем сообщение через WebSocket
         messagingTemplate.convertAndSendToUser(
             receiverId.toString(),
-            "/queue/messages",
+            "/user/queue/messages",
             messageDTO
         );
         
