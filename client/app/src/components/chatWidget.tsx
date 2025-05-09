@@ -1,10 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   FloatButton, Drawer, List, Input, Button, Avatar, Typography, Space,
 } from 'antd';
 import { MessageOutlined, CloseOutlined, SendOutlined } from '@ant-design/icons';
+import { useAuth } from '~/authContext';
 
 const { Text } = Typography;
+
+interface APIMessage {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  content: string;
+  createdAt: string; // ISO строка
+}
+
+// Тип для локального сообщения в состоянии
+interface UIMessage {
+  id: string;
+  text: string;
+  sender: 'user' | 'support';
+  timestamp: Date;
+}
 
 const ChatWidget = () => {
   const [open, setOpen] = useState(false);
@@ -12,9 +29,69 @@ const ChatWidget = () => {
   const [messages, setMessages] = useState([
     { text: 'Добрый день! Чем могу помочь?', sender: 'support', timestamp: new Date() },
   ]);
+  const { user } = useAuth();
+
+  const [ws, setWs] = useState<WebSocket | null>(null);
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8080/ws');
+
+    socket.onmessage = (event) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, max-len
+      const newMessage = JSON.parse(event.data as string) as { text: string, sender: string, timestamp: Date };
+      setMessages((prev) => [...prev, newMessage]);
+    };
+
+    setWs(socket);
+    return () => socket.close();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/messages', {
+          headers: {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error('Ошибка загрузки истории');
+
+        const data = await response.json() as APIMessage[];
+
+        if (!user) return;
+
+        // Конвертация API формата в UI формат
+        const convertedMessages: UIMessage[] = data.map((msg) => ({
+          id: msg.id,
+          text: msg.content,
+          sender: msg.senderId === String(user.id) ? 'user' : 'support',
+          timestamp: new Date(msg.createdAt),
+        }));
+
+        setMessages(convertedMessages);
+      } catch (error) {
+        console.error('Ошибка:', error);
+        // Здесь можно добавить уведомление для пользователя
+      }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    fetchHistory();
+  }, [user]);
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
+
+    if (ws && message.trim() && user) {
+      ws.send(JSON.stringify({
+        senderId: user.id,
+        receiverId: 5,
+        content: message,
+      }));
+    }
 
     const newMessage = {
       text: message,
