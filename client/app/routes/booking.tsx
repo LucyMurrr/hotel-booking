@@ -1,8 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   DatePicker,
   Form,
@@ -36,7 +42,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
-
+  const location = useLocation();
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -74,6 +80,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
     if (!dates || !dates[0] || !dates[1]) return;
     const [start, end] = dates;
     const nights = end.diff(start, 'days');
+    // console.log(nights, room.price);
     setTotalPrice(Number((nights * room.price).toFixed(2)));
     setSelectedDates([start, end]);
   };
@@ -112,6 +119,22 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
       setLoading(false);
     }
   };
+  // если переход из редактирования бронирования извлекаем из запроса даты
+  const searchParams = new URLSearchParams(location.search);
+  const initialCheckIn = searchParams.get('checkIn');
+  const initialCheckOut = searchParams.get('checkOut');
+
+  useEffect(() => {
+    if (initialCheckIn && initialCheckOut) {
+      const start = dayjs(initialCheckIn);
+      const end = dayjs(initialCheckOut);
+      setSelectedDates([start, end]);
+      form.setFieldsValue({
+        dates: [start, end],
+      });
+      calculatePrice([start, end]);
+    }
+  }, [initialCheckIn, initialCheckOut, form]);
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto', padding: 24 }}>

@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useState, useEffect } from 'react';
 import client, { type Hotel, type RoomDto } from '@api';
 import {
@@ -37,14 +41,14 @@ const HotelPage = () => {
         ]);
 
         let favoriteStatus = false;
-        console.log(favoriteStatus);
+        // console.log(favoriteStatus);
         if (user) {
           const favoritesResponse = await client.listUserFavorites({ userId: user.id });
           console.log(favoritesResponse);
           favoriteStatus = favoritesResponse.data.some((fav) => fav.id === id);
           console.log(favoriteStatus);
         }
-        console.log(1);
+        // console.log(1);
 
         setHotel({ ...hotelResponse, isFavorite: favoriteStatus });
         setRooms(roomsResponse.data);
