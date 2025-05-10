@@ -42,8 +42,6 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/message-test.html").permitAll()
-                        .requestMatchers("/message-receiver.html").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/messages/*").permitAll()
                         .anyRequest()
                         .authenticated()
