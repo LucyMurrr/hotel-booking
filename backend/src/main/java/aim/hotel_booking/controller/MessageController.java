@@ -2,12 +2,14 @@ package aim.hotel_booking.controller;
 
 import aim.hotel_booking.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.openapitools.api.MessagesApi;
 import org.openapitools.model.Message;
 import org.openapitools.model.MessageCreateDto;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @RestController
