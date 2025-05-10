@@ -8,11 +8,10 @@ import org.openapitools.model.MessageCreateDto;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,4 +72,4 @@ public class MessageService {
         dto.setCreatedAt(entity.getCreatedAt().atOffset(ZoneOffset.UTC));
         return dto;
     }
-} 
+}

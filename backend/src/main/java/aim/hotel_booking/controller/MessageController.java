@@ -2,6 +2,7 @@ package aim.hotel_booking.controller;
 
 import aim.hotel_booking.service.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.openapitools.api.MessagesApi;
 import org.openapitools.model.Message;
 import org.openapitools.model.MessageCreateDto;
 import org.springframework.messaging.handler.annotation.MessageMapping;

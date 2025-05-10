@@ -50,4 +50,4 @@ public class CustomMessagesApiDelegate implements MessagesApiDelegate {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating message", e);
         }
     }
-} 
+}

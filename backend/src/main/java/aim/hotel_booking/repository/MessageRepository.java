@@ -15,4 +15,4 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
     
     // Получение всех сообщений
     List<MessageEntity> findAllByOrderByCreatedAtAsc();
-} 
+}
