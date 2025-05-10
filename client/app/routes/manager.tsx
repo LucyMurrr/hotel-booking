@@ -5,27 +5,20 @@ import {
 import { UserOutlined, SendOutlined } from '@ant-design/icons';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import client, { type Message } from '@api';
 import { useAuth } from '~/authContext';
 
 const { Text } = Typography;
 
-interface APIMessage {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  content: string;
-  createdAt: string;
-}
-
 interface Chat {
-  userId: string;
+  userId: number;
   clientName: string;
   lastMessage: string;
-  messages: APIMessage[];
+  messages: Message[];
 }
 
 const ChatPage = () => {
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const [chats, setChats] = useState<Chat[]>([]);
   const { user } = useAuth();
@@ -37,8 +30,8 @@ const ChatPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const updateChats = useCallback((prev: Chat[], newMessage: APIMessage): Chat[] => {
-    const userId = Number(newMessage.senderId) === user?.id ? newMessage.receiverId : newMessage.senderId;
+  const updateChats = useCallback((prev: Chat[], newMessage: Message): Chat[] => {
+    const userId = newMessage.senderId === user?.id ? newMessage.receiverId : newMessage.senderId;
     const existing = prev.find((c) => c.userId === userId);
 
     return existing
@@ -49,7 +42,7 @@ const ChatPage = () => {
       } : c))
       : [...prev, {
         userId,
-        clientName: `User ${userId}`,
+        clientName: `User ${String(userId)}`,
         lastMessage: newMessage.content,
         messages: [newMessage],
       }];
@@ -57,33 +50,34 @@ const ChatPage = () => {
 
   useEffect(() => {
     // Загрузка всех сообщений для менеджера
-    const token = localStorage.getItem('token');
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    fetch('http://localhost:8080/api/messages', {
-      headers: {
-        Authorization: `Bearer ${String(token)}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data: APIMessage[]) => {
-        const grouped = data.reduce<Record<string, Chat>>((acc, msg) => {
-          const userId = Number(msg.senderId) === user?.id ? msg.receiverId : msg.senderId;
+    const fetchMessages = async () => {
+      try {
+        const messages = await client.messagesList();
+        const grouped = messages.reduce<Record<string, Chat>>((acc: Record<string, Chat>, msg: Message) => {
+          const userId = msg.senderId === user?.id ? msg.receiverId : msg.senderId;
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           if (!acc[userId]) {
             acc[userId] = {
               userId,
-              clientName: `User ${userId}`,
+              clientName: `User ${String(userId)}`,
               lastMessage: msg.content,
-              messages: [],
+              messages: [msg],
             };
+          } else {
+            acc[userId].messages.push(msg);
+            acc[userId].lastMessage = msg.content;
           }
-          acc[userId].messages.push(msg);
           return acc;
         }, {});
 
         setChats(Object.values(grouped));
-      });
+      } catch (error) {
+        console.error('Ошибка при загрузке сообщений:', error);
+      }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    fetchMessages();
   }, [user]);
 
   useEffect(() => {
@@ -94,25 +88,25 @@ const ChatPage = () => {
       isConnecting.current = true;
 
       const socket = new SockJS('http://localhost:8080/ws');
-      const client = new Client({
+      const socketClient = new Client({
         webSocketFactory: () => socket,
         connectHeaders: {
           Authorization: `Bearer ${String(localStorage.getItem('token'))}`,
         },
         onConnect: () => {
-          client.subscribe(`/user/${String(user?.id)}/queue/messages`, (mes) => {
-            const newMessage = JSON.parse(mes.body) as APIMessage;
+          socketClient.subscribe(`/user/${String(user?.id)}/queue/messages`, (mes) => {
+            const newMessage = JSON.parse(mes.body) as Message;
             setChats((prev) => updateChats(prev, newMessage));
           });
         },
       });
 
-      clientRef.current = client;
-      client.activate();
+      clientRef.current = socketClient;
+      socketClient.activate();
       return () => {
         isConnecting.current = false;
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        client.deactivate();
+        socketClient.deactivate();
       };
     };
 
@@ -205,15 +199,15 @@ const ChatPage = () => {
                       key={msg.id}
                       style={{
                         display: 'flex',
-                        justifyContent: Number(msg.senderId) === user?.id ? 'flex-end' : 'flex-start',
+                        justifyContent: msg.senderId === user?.id ? 'flex-end' : 'flex-start',
                         marginBottom: 8,
                         flexShrink: 0,
                         minHeight: 42,
                       }}
                     >
                       <div style={{
-                        background: Number(msg.senderId) === user?.id ? '#1890ff' : '#fff',
-                        color: Number(msg.senderId) === user?.id ? '#fff' : 'rgba(0, 0, 0, 0.85)',
+                        background: msg.senderId === user?.id ? '#1890ff' : '#fff',
+                        color: msg.senderId === user?.id ? '#fff' : 'rgba(0, 0, 0, 0.85)',
                         padding: '8px 12px',
                         borderRadius: 8,
                         maxWidth: '70%',
@@ -227,7 +221,7 @@ const ChatPage = () => {
                         <div style={{
                           fontSize: 12,
                           // eslint-disable-next-line max-len
-                          color: Number(msg.senderId) === user?.id ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.45)',
+                          color: msg.senderId === user?.id ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.45)',
                           marginTop: 4,
                           whiteSpace: 'nowrap',
                           textOverflow: 'ellipsis',

@@ -1,75 +1,76 @@
 package aim.hotel_booking.service;
 
-import aim.hotel_booking.dto.MessageDTO;
 import aim.hotel_booking.entity.MessageEntity;
 import aim.hotel_booking.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.openapitools.model.Message;
+import org.openapitools.model.MessageCreateDto;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MessageService {
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
-    // Получение всех сообщений пользователя
-    public List<MessageDTO> getUserMessages(Integer userId) {
-        List<MessageEntity> messages = messageRepository.findBySenderIdOrReceiverIdOrderByCreatedAtAsc(userId, userId);
+    public List<Message> getAllMessages() {
+        List<MessageEntity> messages = messageRepository.findAllByOrderByCreatedAtAsc();
         return messages.stream()
-            .map(this::convertToDTO)
+            .map(this::convertToDto)
             .collect(Collectors.toList());
     }
 
-    // Получение всех сообщений
-    public List<MessageDTO> getAllMessages() {
-        List<MessageEntity> messages = messageRepository.findAllByOrderByCreatedAtAsc();
+    public List<Message> getUserMessages(Integer userId) {
+        List<MessageEntity> messages = messageRepository.findBySenderIdOrReceiverIdOrderByCreatedAtAsc(userId, userId);
         return messages.stream()
-            .map(this::convertToDTO)
+            .map(this::convertToDto)
             .collect(Collectors.toList());
     }
 
     @Transactional
-    public MessageDTO sendMessage(Integer senderId, Integer receiverId, String content) {
+    public Message createMessage(MessageCreateDto dto) {
         MessageEntity message = new MessageEntity();
-        message.setSenderId(senderId);
-        message.setReceiverId(receiverId);
-        message.setContent(content);
+        message.setSenderId(dto.getSenderId());
+        message.setReceiverId(dto.getReceiverId());
+        message.setContent(dto.getContent());
         
         message = messageRepository.save(message);
-        MessageDTO messageDTO = convertToDTO(message);
+        Message messageDto = convertToDto(message);
         
-        // Используем convertAndSendToUser вместо convertAndSend
+        // Отправляем сообщение получателю
         messagingTemplate.convertAndSendToUser(
-            receiverId.toString(), 
+            dto.getReceiverId().toString(), 
             "/queue/messages", 
-            messageDTO
+            messageDto
         );
     
         // Отправляем копию отправителю
         messagingTemplate.convertAndSendToUser(
-            senderId.toString(),
+            dto.getSenderId().toString(),
             "/queue/messages",
-            messageDTO
+            messageDto
         );
         
-        return messageDTO;
+        return messageDto;
     }
 
-    private MessageDTO convertToDTO(MessageEntity entity) {
-        MessageDTO dto = new MessageDTO();
-        dto.setId(entity.getId());
+    private Message convertToDto(MessageEntity entity) {
+        Message dto = new Message();
+        dto.setId(entity.getId().intValue());
         dto.setSenderId(entity.getSenderId());
         dto.setReceiverId(entity.getReceiverId());
         dto.setContent(entity.getContent());
-        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setCreatedAt(entity.getCreatedAt().atOffset(ZoneOffset.UTC));
         return dto;
     }
 } 

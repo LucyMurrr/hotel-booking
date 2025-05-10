@@ -5,18 +5,11 @@ import {
 import { MessageOutlined, SendOutlined } from '@ant-design/icons';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import client, { type Message } from '@api';
 import { useAuth } from '~/authContext';
 
-interface APIMessage {
-  id: string;
-  senderId: number;
-  receiverId: number;
-  content: string;
-  createdAt: string;
-}
-
 interface UIMessage {
-  id: string;
+  id: number;
   text: string;
   sender: 'user' | 'support';
   timestamp: Date;
@@ -47,14 +40,14 @@ const ChatWidget = () => {
       isConnecting.current = true;
 
       const socket = new SockJS('http://localhost:8080/ws');
-      const client = new Client({
+      const socketClient = new Client({
         webSocketFactory: () => socket,
         connectHeaders: {
           Authorization: `Bearer ${String(localStorage.getItem('token'))}`,
         },
         onConnect: () => {
-          client.subscribe(`/user/${String(user?.id)}/queue/messages`, (mes) => {
-            const newMessage = JSON.parse(mes.body) as APIMessage;
+          socketClient.subscribe(`/user/${String(user?.id)}/queue/messages`, (mes) => {
+            const newMessage = JSON.parse(mes.body) as Message;
             setMessages((prev) => [
               ...prev,
               {
@@ -68,25 +61,24 @@ const ChatWidget = () => {
         },
       });
 
-      clientRef.current = client;
-      client.activate();
+      clientRef.current = socketClient;
+      socketClient.activate();
       return () => {
         isConnecting.current = false;
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        client.deactivate();
+        socketClient.deactivate();
       };
     };
 
     setupWebSocket();
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         if (!user?.id) return;
-        const response = await fetch(`http://localhost:8080/api/messages/${String(user.id)}`);
-        const data = await response.json() as APIMessage[];
-        const converted = data.map((msg) => ({
+        const apiMessages = await client.messagesGet({ userId: user.id });
+        const converted = apiMessages.map((msg: Message) => ({
           id: msg.id,
           text: msg.content,
           sender: msg.senderId === user.id ? 'user' : 'support',
