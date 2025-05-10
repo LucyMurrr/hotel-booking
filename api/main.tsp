@@ -298,6 +298,20 @@ model TokenInfo {
   token: string;
 }
 
+model Message {
+  id: int32;
+  senderId: int32;
+  receiverId: int32;
+  content: string;
+  createdAt: utcDateTime;
+}
+
+model MessageCreateDto {
+  senderId: int32;
+  receiverId: int32;
+  content: string;
+}
+
 @route("/hotels")
 namespace Hotels {
   @get
@@ -548,4 +562,26 @@ namespace tokens {
     @body token: TokenInfo;
     @statusCode statusCode: 201;
   } | UnprocessableEntityError;
+}
+
+@route("/messages")
+@useAuth(BearerAuth)
+namespace Messages {
+  @get
+  op list(): {
+    @statusCode statusCode: 200;
+    @body messages: Message[];
+  } | UnauthorizedError | ForbiddenError;
+
+  @get
+  op get(@path userId: int32): {
+    @statusCode statusCode: 200;
+    @body messages: Message[];
+  } | NotFoundError | UnauthorizedError | ForbiddenError;
+
+  @post
+  op create(@body message: MessageCreateDto): {
+    @statusCode statusCode: 201;
+    @body newMessage: Message;
+  } | UnprocessableEntityError | UnauthorizedError | ForbiddenError;
 }

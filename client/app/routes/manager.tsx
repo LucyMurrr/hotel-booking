@@ -1,98 +1,162 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import {
   List, Avatar, Card, Typography, Row, Col, Input, Button, Space,
 } from 'antd';
 import { UserOutlined, SendOutlined } from '@ant-design/icons';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
+import client, { type Message } from '@api';
+import { useAuth } from '~/authContext';
 
 const { Text } = Typography;
 
+interface Chat {
+  userId: number;
+  clientName: string;
+  lastMessage: string;
+  messages: Message[];
+}
+
 const ChatPage = () => {
-  const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
-  const [messageInput, setMessageInput] = useState('');
-  const [chats, setChats] = useState([
-    {
-      id: 1,
-      client: 'Клиент 1',
-      lastMessage: 'Привет!',
-      unread: 2,
-      messages: [
-        { id: 1, text: 'Привет!', sender: 'client', timestamp: '2024-01-01T10:00:00' },
-        // eslint-disable-next-line max-len
-        { id: 2, text: 'Здравствуйте! Чем могу помочь?', sender: 'manager', timestamp: '2024-01-01T10:01:00' },
-      ],
-    },
-    {
-      id: 2,
-      client: 'Клиент 2',
-      lastMessage: 'Нужна помощь с бронированием',
-      unread: 0,
-      messages: [
-        { id: 1, text: 'Нужна помощь с бронированием', sender: 'client', timestamp: '2024-01-01T11:00:00' },
-      ],
-    },
-  ]);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [message, setMessage] = useState('');
+  const [chats, setChats] = useState<Chat[]>([]);
+  const { user } = useAuth();
+  const clientRef = useRef<Client | null>(null);
+  const isConnecting = useRef(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSendMessage = () => {
-    if (!selectedChatId || !messageInput.trim()) return;
-
-    const newMessage = {
-      id: Date.now(),
-      text: messageInput,
-      sender: 'manager',
-      timestamp: new Date().toISOString(),
-    };
-
-    setChats((prev) => prev.map((chat) => {
-      if (chat.id === selectedChatId) {
-        return {
-          ...chat,
-          messages: [...chat.messages, newMessage],
-          lastMessage: newMessage.text,
-          unread: 0,
-        };
-      }
-      return chat;
-    }));
-
-    setMessageInput('');
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const selectedChat = chats.find((chat) => chat.id === selectedChatId);
+  const updateChats = useCallback((prev: Chat[], newMessage: Message): Chat[] => {
+    const userId = newMessage.senderId === user?.id ? newMessage.receiverId : newMessage.senderId;
+    const existing = prev.find((c) => c.userId === userId);
+
+    return existing
+      ? prev.map((c) => (c.userId === userId ? {
+        ...c,
+        messages: [...c.messages, newMessage],
+        lastMessage: newMessage.content,
+      } : c))
+      : [...prev, {
+        userId,
+        clientName: `User ${String(userId)}`,
+        lastMessage: newMessage.content,
+        messages: [newMessage],
+      }];
+  }, [user?.id]);
+
+  useEffect(() => {
+    // Загрузка всех сообщений для менеджера
+    const fetchMessages = async () => {
+      try {
+        const messages = await client.messagesList();
+        const grouped = messages.reduce<Record<string, Chat>>((acc: Record<string, Chat>, msg: Message) => {
+          const userId = msg.senderId === user?.id ? msg.receiverId : msg.senderId;
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (!acc[userId]) {
+            acc[userId] = {
+              userId,
+              clientName: `User ${String(userId)}`,
+              lastMessage: msg.content,
+              messages: [msg],
+            };
+          } else {
+            acc[userId].messages.push(msg);
+            acc[userId].lastMessage = msg.content;
+          }
+          return acc;
+        }, {});
+
+        setChats(Object.values(grouped));
+      } catch (error) {
+        console.error('Ошибка при загрузке сообщений:', error);
+      }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    fetchMessages();
+  }, [user]);
+
+  useEffect(() => {
+    const setupWebSocket = () => {
+      if (isConnecting.current) {
+        return null;
+      }
+      isConnecting.current = true;
+
+      const socket = new SockJS('http://localhost:8080/ws');
+      const socketClient = new Client({
+        webSocketFactory: () => socket,
+        connectHeaders: {
+          Authorization: `Bearer ${String(localStorage.getItem('token'))}`,
+        },
+        onConnect: () => {
+          socketClient.subscribe(`/user/${String(user?.id)}/queue/messages`, (mes) => {
+            const newMessage = JSON.parse(mes.body) as Message;
+            setChats((prev) => updateChats(prev, newMessage));
+          });
+        },
+      });
+
+      clientRef.current = socketClient;
+      socketClient.activate();
+      return () => {
+        isConnecting.current = false;
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        socketClient.deactivate();
+      };
+    };
+
+    setupWebSocket();
+  }, [updateChats, user?.id]);
+
+  const handleSendMessage = () => {
+    if (!message.trim() || !user || !clientRef.current) return;
+
+    const messageDTO = {
+      senderId: user.id,
+      receiverId: selectedUserId,
+      content: message,
+    };
+
+    clientRef.current.publish({
+      destination: '/app/sendMessage',
+      body: JSON.stringify(messageDTO),
+    });
+
+    setMessage('');
+  };
+
+  const selectedChat = chats.find((c) => c.userId === selectedUserId);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [selectedChat?.messages]);
 
   return (
     <Card styles={{ body: { padding: 0 } }}>
       <Row style={{ height: '70vh' }}>
-        {/* Список чатов */}
         <Col span={8} style={{ borderRight: '1px solid #f0f0f0' }}>
           <List
             dataSource={chats}
             renderItem={(item) => (
               <List.Item
-                onClick={() => setSelectedChatId(item.id)}
+                onClick={() => setSelectedUserId(item.userId)}
                 style={{
                   cursor: 'pointer',
-                  background: selectedChatId === item.id ? '#595959' : undefined,
+                  background: selectedUserId === item.userId ? '#595959' : undefined,
                   padding: '12px 24px',
                 }}
               >
                 <List.Item.Meta
                   avatar={<Avatar icon={<UserOutlined />} />}
-                  title={item.client}
+                  title={item.clientName}
                   description={(
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Text ellipsis style={{ maxWidth: '70%' }}>{item.lastMessage}</Text>
-                      {item.unread > 0 && (
-                        <span style={{
-                          background: '#ff4d4f',
-                          color: 'white',
-                          borderRadius: '50%',
-                          padding: '2px 6px',
-                          fontSize: 12,
-                        }}
-                        >
-                          {item.unread}
-                        </span>
-                      )}
                     </div>
                   )}
                 />
@@ -101,17 +165,11 @@ const ChatPage = () => {
           />
         </Col>
 
-        {/* Окно чата */}
         <Col span={16}>
           {selectedChat ? (
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              {/* Заголовок чата */}
-              <div style={{
-                padding: 16,
-                borderBottom: '1px solid #f0f0f0',
-              }}
-              >
-                <Text strong>{selectedChat.client}</Text>
+              <div style={{ padding: 16, borderBottom: '1px solid #f0f0f0' }}>
+                <Text strong>{selectedChat.clientName}</Text>
               </div>
 
               {/* Сообщения */}
@@ -141,15 +199,15 @@ const ChatPage = () => {
                       key={msg.id}
                       style={{
                         display: 'flex',
-                        justifyContent: msg.sender === 'manager' ? 'flex-end' : 'flex-start',
+                        justifyContent: msg.senderId === user?.id ? 'flex-end' : 'flex-start',
                         marginBottom: 8,
                         flexShrink: 0,
                         minHeight: 42,
                       }}
                     >
                       <div style={{
-                        background: msg.sender === 'manager' ? '#1890ff' : '#fff',
-                        color: msg.sender === 'manager' ? '#fff' : 'rgba(0, 0, 0, 0.85)',
+                        background: msg.senderId === user?.id ? '#1890ff' : '#fff',
+                        color: msg.senderId === user?.id ? '#fff' : 'rgba(0, 0, 0, 0.85)',
                         padding: '8px 12px',
                         borderRadius: 8,
                         maxWidth: '70%',
@@ -159,35 +217,32 @@ const ChatPage = () => {
                         overflowWrap: 'anywhere',
                       }}
                       >
-                        {msg.text}
+                        {msg.content}
                         <div style={{
                           fontSize: 12,
-                          color: msg.sender === 'manager' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.45)',
+                          // eslint-disable-next-line max-len
+                          color: msg.senderId === user?.id ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.45)',
                           marginTop: 4,
                           whiteSpace: 'nowrap',
                           textOverflow: 'ellipsis',
                           overflow: 'hidden',
                         }}
                         >
-                          {new Date(msg.timestamp).toLocaleTimeString()}
+                          {new Date(msg.createdAt).toLocaleTimeString()}
                         </div>
                       </div>
                     </div>
                   ))}
+                  <div ref={messagesEndRef} />
                 </div>
               </div>
 
-              {/* Поле ввода */}
-              <div style={{
-                padding: 16,
-                borderTop: '1px solid #f0f0f0',
-              }}
-              >
+              <div style={{ padding: 16, borderTop: '1px solid #f0f0f0' }}>
                 <Space.Compact style={{ width: '100%' }}>
                   <Input
                     placeholder="Введите сообщение..."
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     onPressEnter={handleSendMessage}
                     style={{ width: 'calc(100% - 60px)' }}
                   />
@@ -206,7 +261,7 @@ const ChatPage = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'rgba(0,0,0,0.45)',
+              color: '#666',
             }}
             >
               <Text>Выберите чат</Text>
