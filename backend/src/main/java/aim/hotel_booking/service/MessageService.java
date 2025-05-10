@@ -22,7 +22,7 @@ public class MessageService {
 
     // Получение всех сообщений пользователя
     public List<MessageDTO> getUserMessages(Integer userId) {
-        List<MessageEntity> messages = messageRepository.findBySenderIdOrReceiverIdOrderByCreatedAtDesc(userId, userId);
+        List<MessageEntity> messages = messageRepository.findBySenderIdOrReceiverIdOrderByCreatedAtAsc(userId, userId);
         return messages.stream()
             .map(this::convertToDTO)
             .collect(Collectors.toList());
@@ -30,7 +30,7 @@ public class MessageService {
 
     // Получение всех сообщений
     public List<MessageDTO> getAllMessages() {
-        List<MessageEntity> messages = messageRepository.findAllByOrderByCreatedAtDesc();
+        List<MessageEntity> messages = messageRepository.findAllByOrderByCreatedAtAsc();
         return messages.stream()
             .map(this::convertToDTO)
             .collect(Collectors.toList());
@@ -46,10 +46,17 @@ public class MessageService {
         message = messageRepository.save(message);
         MessageDTO messageDTO = convertToDTO(message);
         
-        // Отправляем сообщение через WebSocket
+        // Используем convertAndSendToUser вместо convertAndSend
         messagingTemplate.convertAndSendToUser(
-            receiverId.toString(),
-            "/user/queue/messages",
+            receiverId.toString(), 
+            "/queue/messages", 
+            messageDTO
+        );
+    
+        // Отправляем копию отправителю
+        messagingTemplate.convertAndSendToUser(
+            senderId.toString(),
+            "/queue/messages",
             messageDTO
         );
         

@@ -11,8 +11,8 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
         Integer senderId, Integer receiverId, Integer receiverId2, Integer senderId2);
 
     // Получение всех сообщений пользователя (где он отправитель или получатель)
-    List<MessageEntity> findBySenderIdOrReceiverIdOrderByCreatedAtDesc(Integer userId, Integer userId2);
+    List<MessageEntity> findBySenderIdOrReceiverIdOrderByCreatedAtAsc(Integer userId, Integer userId2);
     
     // Получение всех сообщений
-    List<MessageEntity> findAllByOrderByCreatedAtDesc();
+    List<MessageEntity> findAllByOrderByCreatedAtAsc();
 } 

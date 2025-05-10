@@ -1,21 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
-  FloatButton, Drawer, List, Input, Button, Avatar, Typography, Space,
+  FloatButton, Drawer, List, Input, Button, Space,
 } from 'antd';
-import { MessageOutlined, CloseOutlined, SendOutlined } from '@ant-design/icons';
+import { MessageOutlined, SendOutlined } from '@ant-design/icons';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 import { useAuth } from '~/authContext';
-
-const { Text } = Typography;
 
 interface APIMessage {
   id: string;
-  senderId: string;
-  receiverId: string;
+  senderId: number;
+  receiverId: number;
   content: string;
-  createdAt: string; // ISO строка
+  createdAt: string;
 }
 
-// Тип для локального сообщения в состоянии
 interface UIMessage {
   id: string;
   text: string;
@@ -26,86 +25,101 @@ interface UIMessage {
 const ChatWidget = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([
-    { text: 'Добрый день! Чем могу помочь?', sender: 'support', timestamp: new Date() },
-  ]);
+  const [messages, setMessages] = useState<UIMessage[]>([]);
   const { user } = useAuth();
+  const clientRef = useRef<Client | null>(null);
+  const isConnecting = useRef(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const [ws, setWs] = useState<WebSocket | null>(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080/ws');
+    scrollToBottom();
+  }, [messages]);
 
-    socket.onmessage = (event) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, max-len
-      const newMessage = JSON.parse(event.data as string) as { text: string, sender: string, timestamp: Date };
-      setMessages((prev) => [...prev, newMessage]);
+  useEffect(() => {
+    const setupWebSocket = () => {
+      if (isConnecting.current) {
+        return null;
+      }
+      isConnecting.current = true;
+
+      const socket = new SockJS('http://localhost:8080/ws');
+      const client = new Client({
+        webSocketFactory: () => socket,
+        connectHeaders: {
+          Authorization: `Bearer ${String(localStorage.getItem('token'))}`,
+        },
+        onConnect: () => {
+          client.subscribe(`/user/${String(user?.id)}/queue/messages`, (mes) => {
+            const newMessage = JSON.parse(mes.body) as APIMessage;
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: newMessage.id,
+                text: newMessage.content,
+                sender: newMessage.senderId === user?.id ? 'user' : 'support',
+                timestamp: new Date(newMessage.createdAt),
+              },
+            ]);
+          });
+        },
+      });
+
+      clientRef.current = client;
+      client.activate();
+      return () => {
+        isConnecting.current = false;
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        client.deactivate();
+      };
     };
 
-    setWs(socket);
-    return () => socket.close();
+    setupWebSocket();
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
     const fetchHistory = async () => {
       try {
-        const response = await fetch('http://localhost:8080/messages', {
-          headers: {
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error('Ошибка загрузки истории');
-
+        if (!user?.id) return;
+        const response = await fetch(`http://localhost:8080/api/messages/${String(user.id)}`);
         const data = await response.json() as APIMessage[];
-
-        if (!user) return;
-
-        // Конвертация API формата в UI формат
-        const convertedMessages: UIMessage[] = data.map((msg) => ({
+        const converted = data.map((msg) => ({
           id: msg.id,
           text: msg.content,
-          sender: msg.senderId === String(user.id) ? 'user' : 'support',
+          sender: msg.senderId === user.id ? 'user' : 'support',
           timestamp: new Date(msg.createdAt),
-        }));
-
-        setMessages(convertedMessages);
+        })) as UIMessage[];
+        setMessages(converted);
       } catch (error) {
-        console.error('Ошибка:', error);
-        // Здесь можно добавить уведомление для пользователя
+        console.error('Ошибка загрузки истории:', error);
       }
     };
-
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    fetchHistory();
+    if (user) fetchHistory();
   }, [user]);
 
   const handleSendMessage = () => {
-    if (!message.trim()) return;
+    if (!message.trim() || !user || !clientRef.current) return;
 
-    if (ws && message.trim() && user) {
-      ws.send(JSON.stringify({
-        senderId: user.id,
-        receiverId: 5,
-        content: message,
-      }));
-    }
-
-    const newMessage = {
-      text: message,
-      sender: 'user',
-      timestamp: new Date(),
+    const messageDTO = {
+      senderId: user.id,
+      receiverId: 1,
+      content: message,
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    clientRef.current.publish({
+      destination: '/app/sendMessage',
+      body: JSON.stringify(messageDTO),
+    });
+
     setMessage('');
   };
 
   return (
     <>
-      {/* Плавающая кнопка */}
       <FloatButton
         icon={<MessageOutlined />}
         type="primary"
@@ -113,31 +127,11 @@ const ChatWidget = () => {
         onClick={() => setOpen(true)}
       />
 
-      {/* Выдвижная панель чата */}
       <Drawer
-        title={(
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Avatar
-              size="small"
-              icon={<MessageOutlined />}
-              style={{ backgroundColor: '#1890ff' }}
-            />
-            <Text strong>Чат с поддержкой</Text>
-          </div>
-        )}
+        title="Чат с поддержкой"
         placement="right"
-        closable={false}
         onClose={() => setOpen(false)}
         open={open}
-        width={400}
-        styles={{ header: { padding: '12px 24px' } }}
-        extra={(
-          <Button
-            type="text"
-            icon={<CloseOutlined />}
-            onClick={() => setOpen(false)}
-          />
-        )}
       >
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* История сообщений */}
@@ -175,22 +169,20 @@ const ChatWidget = () => {
                 </div>
               )}
             />
+            <div ref={messagesEndRef} />
           </div>
 
-          {/* Поле ввода */}
           <Space.Compact>
             <Input
               placeholder="Введите сообщение..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onPressEnter={handleSendMessage}
-              style={{ width: 'calc(100% - 60px)' }}
             />
             <Button
               type="primary"
               icon={<SendOutlined />}
               onClick={handleSendMessage}
-              style={{ width: 60 }}
             />
           </Space.Compact>
         </div>
