@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Button, Form, Input, Card, Typography, Alert, Tabs,
 } from 'antd';
@@ -41,7 +45,9 @@ const AuthPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+  const prevPath = location.state?.prevPath || '/';
 
   const handleSubmit = async (values: UserCreateDto | TokensCreateRequest) => {
     setLoading(true);
@@ -67,7 +73,7 @@ const AuthPage = () => {
       const userResponse = await client.userMeGet();
       login(userResponse);
 
-      await navigate('/');
+      await navigate(prevPath);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {

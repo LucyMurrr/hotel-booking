@@ -1,9 +1,15 @@
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useState, useEffect } from 'react';
 import client, { type Hotel, type RoomDto } from '@api';
 import {
   Rate, Image, Row, Col, Card, Typography, Tag, Space, Divider, Button, Spin, Alert,
 } from 'antd';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowRightOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
 import { useAuth } from '../authContext';
 
@@ -20,6 +26,7 @@ type HotelWithFavorite = Hotel & { isFavorite: boolean };
 const HotelPage = () => {
   const { hotelId } = useParams<{ hotelId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [hotel, setHotel] = useState<HotelWithFavorite | null>(null);
   const [rooms, setRooms] = useState<RoomDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,7 +44,6 @@ const HotelPage = () => {
         ]);
 
         let favoriteStatus = false;
-
         if (user) {
           const favoritesResponse = await client.listUserFavorites({ userId: user.id });
           favoriteStatus = favoritesResponse.data.some((fav) => fav.id === id);
@@ -52,14 +58,12 @@ const HotelPage = () => {
       }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     loadData();
   }, [hotelId, user]);
 
   const toggleFavorite = async () => {
     if (!user) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      navigate('/signin');
+      navigate('/signin', { state: { prevPath: location.pathname } });
       return;
     }
 
@@ -78,6 +82,23 @@ const HotelPage = () => {
     }
   };
 
+  const handleBookingClick = (room: RoomDto) => (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    const proceedBooking = async () => {
+      try {
+        if (isAuthenticated) {
+          await navigate(`/booking/${String(room.id)}`);
+        } else {
+          await navigate('/signin', { state: { prevPath: `/booking/${String(room.id)}` } });
+        }
+      } catch (err) {
+        console.error('Navigation error:', err);
+      }
+    };
+
+    proceedBooking();
+  };
+
   if (loading) return <Spin tip="Загрузка..." />;
   if (error) return <Alert message={error} type="error" />;
   if (!hotel) return null;
@@ -91,7 +112,6 @@ const HotelPage = () => {
             width={200}
             height={200}
             style={{ borderRadius: 8 }}
-            // eslint-disable-next-line max-len
             src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
             preview={false}
           />
@@ -186,15 +206,14 @@ const HotelPage = () => {
                   ${room.price} <Text type="secondary">/ ночь</Text>
                 </Title>
 
-                <Link to={isAuthenticated ? `/booking/${String(room.id)}` : '/signin'}>
-                  <Button
-                    type="primary"
-                    style={{ marginTop: 16 }}
-                    icon={<ArrowRightOutlined />}
-                  >
-                    Забронировать
-                  </Button>
-                </Link>
+                <Button
+                  onClick={handleBookingClick(room)}
+                  type="primary"
+                  style={{ marginTop: 16 }}
+                  icon={<ArrowRightOutlined />}
+                >
+                  Забронировать
+                </Button>
               </Col>
             </Row>
           </div>

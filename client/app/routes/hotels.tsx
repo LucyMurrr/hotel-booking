@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import {
   Flex,
   Pagination,
@@ -122,6 +122,7 @@ const Hotels = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { user } = useAuth();
 
@@ -176,7 +177,7 @@ const Hotels = () => {
   const toggleFavorite = async (hotelId: number) => {
     if (!user) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      navigate('/signin');
+      navigate('/signin', { state: { prevPath: location.pathname } });
       return;
     }
 
