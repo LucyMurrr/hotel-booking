@@ -37,14 +37,13 @@ const HotelPage = () => {
         ]);
 
         let favoriteStatus = false;
-        // console.log(favoriteStatus);
+
         if (user) {
           const favoritesResponse = await client.listUserFavorites({ userId: user.id });
           console.log(favoritesResponse);
           favoriteStatus = favoritesResponse.data.some((fav) => fav.id === id);
           console.log(favoriteStatus);
         }
-        // console.log(1);
 
         setHotel({ ...hotelResponse, isFavorite: favoriteStatus });
         setRooms(roomsResponse.data);
