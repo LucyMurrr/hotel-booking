@@ -1,13 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   DatePicker,
@@ -36,6 +27,8 @@ export async function clientLoader({ params }: Route.LoaderArgs) {
   return { room };
 }
 
+const formatDate = (date: Date | Dayjs): string => dayjs(date).format('YYYY-MM-DD');
+
 const BookingPage = ({ loaderData }: Route.ComponentProps) => {
   const { room } = loaderData;
   const [form] = Form.useForm();
@@ -48,7 +41,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
   const [error, setError] = useState('');
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [selectedDates, setSelectedDates] = useState<[Dayjs, Dayjs]>();
+  const [selectedDates, setSelectedDates] = useState<[Dayjs, Dayjs] | undefined>();
 
   // Загрузка доступных дат
   useEffect(() => {
@@ -60,7 +53,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
           end: dayjs().add(3, 'month').endOf('day').toDate(),
         });
 
-        setAvailableDates(response.dates.map((d) => dayjs(d).format('YYYY-MM-DD')));
+        setAvailableDates(response.dates.map(formatDate));
       } catch {
         setError('Ошибка загрузки доступных дат');
       }
@@ -70,20 +63,18 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
   }, [room.id]);
 
   const disabledDate: RangePickerProps['disabledDate'] = (current) => (
-    !availableDates.includes(current.format('YYYY-MM-DD'))
+    !availableDates.includes(formatDate(current.toDate()))
   );
 
-  const calculatePrice = (
+  const calculatePrice = useCallback((
     dates: [Dayjs | null, Dayjs | null] | null,
-    // _dateStrings: [string, string],
   ) => {
     if (!dates || !dates[0] || !dates[1]) return;
     const [start, end] = dates;
     const nights = end.diff(start, 'days');
-    // console.log(nights, room.price);
     setTotalPrice(Number((nights * room.price).toFixed(2)));
     setSelectedDates([start, end]);
-  };
+  }, [room.price]);
 
   const handleDateStepSubmit = () => {
     if (!selectedDates) {
@@ -134,7 +125,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
       });
       calculatePrice([start, end]);
     }
-  }, [initialCheckIn, initialCheckOut, form]);
+  }, [initialCheckIn, initialCheckOut, form, calculatePrice]);
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto', padding: 24 }}>
@@ -158,7 +149,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
                   validator() {
                     if (!selectedDates) throw new Error();
                     if (selectedDates[1].diff(selectedDates[0], 'days') < 1) {
-                      return Promise.reject('Минимальное время бронирования - 1 ночь');
+                      return Promise.reject(new Error('Минимальное время бронирования - 1 ночь'));
                     }
                     return Promise.resolve();
                   },
@@ -186,13 +177,13 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
           </Form>
         )}
 
-        {currentStep === 1 && (
+        {currentStep === 1 && selectedDates && (
           <div>
             <Title level={4} style={{ marginBottom: 24 }}>Подтверждение бронирования</Title>
 
             <Statistic
               title="Даты бронирования"
-              value={`${selectedDates?.[0]?.format('DD.MM.YYYY')} - ${selectedDates?.[1]?.format('DD.MM.YYYY')}`}
+              value={`${formatDate(selectedDates[0])} - ${formatDate(selectedDates[1])}`}
               style={{ marginBottom: 16 }}
             />
 
@@ -215,10 +206,12 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
           </div>
         )}
 
-        {currentStep === 2 && (
+        {currentStep === 2 && selectedDates && (
           <div style={{ textAlign: 'center' }}>
             <Title level={4} style={{ marginBottom: 24 }}>Бронирование подтверждено! 🎉</Title>
-            <p>Номер успешно забронирован с {selectedDates?.[0]?.format('DD.MM.YYYY')} по {selectedDates?.[1]?.format('DD.MM.YYYY')}</p>
+            <p>
+              Номер успешно забронирован с {formatDate(selectedDates[0])} по {formatDate(selectedDates[1])}
+            </p>
             <Button
               type="primary"
               onClick={() => navigate('/bookings')}

@@ -1,21 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/no-deprecated */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// /* eslint-disable max-len */
-
 import {
   List, Typography, Tag, Card, Rate, Button,
 } from 'antd';
 import dayjs from 'dayjs';
 import { Link, useNavigate } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import client from '@api';
 import type { Booking, RoomDto, Hotel } from '@api';
 import { useAuth } from '~/authContext';
@@ -33,7 +22,7 @@ const BookingsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     if (!user) return;
 
     const bookingsResponse = await client.userBookingsList({ userId: user.id });
@@ -51,21 +40,22 @@ const BookingsPage = () => {
     );
 
     setBookings(enrichedBookings);
-  };
+  }, [user]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchBookings();
-  }, [user]);
+  }, [fetchBookings, user]);
 
   const handleEdit = async (bookingId: number, room: RoomDto, checkIn: Date, checkOut: Date) => {
     await client.bookingsDelete({ bookingId });
-    fetchBookings();
-    navigate(`/booking/${room.id.toString()}?checkIn=${dayjs(checkIn).format('YYYY-MM-DD')}&checkOut=${dayjs(checkOut).format('YYYY-MM-DD')}`);
+    await fetchBookings();
+    await navigate(`/booking/${room.id.toString()}?checkIn=${dayjs(checkIn).format('YYYY-MM-DD')}&checkOut=${dayjs(checkOut).format('YYYY-MM-DD')}`);
   };
 
   const handleDelete = async (bookingId: number) => {
     await client.bookingsDelete({ bookingId });
-    fetchBookings();
+    await fetchBookings();
   };
 
   return (
