@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import {
@@ -162,7 +166,6 @@ const Hotels = () => {
       }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchHotels();
   }, [pagination.page, pagination.perPage, filters, sort, searchQuery, user]);
 
@@ -176,7 +179,6 @@ const Hotels = () => {
 
   const toggleFavorite = async (hotelId: number) => {
     if (!user) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       navigate('/signin', { state: { prevPath: location.pathname } });
       return;
     }

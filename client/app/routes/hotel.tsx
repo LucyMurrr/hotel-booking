@@ -40,7 +40,7 @@ const HotelPage = () => {
 
         const [hotelResponse, roomsResponse] = await Promise.all([
           client.hotelsGet({ hotelId: id }),
-          client.hotelRoomsList({ hotelId: id }),
+          client.hotelRoomsList({ hotelId: id, sortBy: 'price', sortOrder: 'ASC' }),
         ]);
 
         let favoriteStatus = false;
