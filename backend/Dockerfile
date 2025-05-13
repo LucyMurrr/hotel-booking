@@ -4,8 +4,6 @@ WORKDIR /app
 
 COPY backend/build.gradle.kts backend/settings.gradle.kts ./
 
-RUN mkdir -p ./src/generated/java
-
 COPY backend/ ./
 
 COPY api/dist/server/src ./src
