@@ -12,24 +12,7 @@ import {
 
 import type { Route } from './+types/root';
 import './app.css';
-// import AppHeader from './src/components/header/header.component.tsx 16-54-30-927';
-// import AppFooter from './src/components/footer/footer.component';
-// import BaseLayout from './routes/baseLayout';
-// import BaseLayout from './routes/baseLayout.component';
-
-// export const links: Route.LinksFunction = () => [
-//   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-//   {
-//     rel: 'preconnect',
-//     href: 'https://fonts.gstatic.com',
-//     crossOrigin: 'anonymous',
-//   },
-//   {
-//     rel: 'stylesheet',
-//
-//     href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
-//   },
-// ];
+import AuthProvider from './authContext';
 
 export const Layout = ({ children }: { children: React.ReactNode }) => (
   <html lang="en">
@@ -49,20 +32,6 @@ export const Layout = ({ children }: { children: React.ReactNode }) => (
 
 // eslint-disable-next-line react/function-component-definition
 export default function App() {
-  // const headerRef = useRef<HTMLDivElement>(null);
-  // const footerRef = useRef<HTMLDivElement>(null);
-  // const [contentHeight, setContentHeight] = useState<string>('auto');
-
-  // useEffect(() => {
-  //   if (headerRef.current && footerRef.current) {
-  //     const headerHeight = headerRef.current.offsetHeight;
-  //     const footerHeight = footerRef.current.offsetHeight;
-  //     const totalHeight = headerHeight + footerHeight;
-
-  //     setContentHeight(`calc(100% - ${String(totalHeight)}px)`);
-  //   }
-  // }, []);
-
   return (
     <div>
       {/* <AppHeader />
@@ -72,7 +41,9 @@ export default function App() {
       </div>
       <div ref={footerRef}>
         <AppFooter /> */}
-      <Outlet />
+      <AuthProvider>
+        <Outlet />
+      </AuthProvider>
     </div>
   );
 }

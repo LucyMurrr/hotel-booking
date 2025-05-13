@@ -1,19 +1,53 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Button, Form, Input, Card, Typography, Alert, Tabs,
 } from 'antd';
 import client from '@api';
 import type { UserCreateDto, TokensCreateRequest, UsersCreateRequest } from '@api';
+import { useAuth } from '../authContext';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
+
+type ErrorWithStatus = {
+  response: {
+    status: number;
+  };
+};
+
+const isErrorWithStatus = (err: unknown): err is ErrorWithStatus => {
+  if (typeof err !== 'object' || err === null) return false;
+  const { response } = (err as Record<string, unknown>);
+
+  if (typeof response !== 'object' || response === null) return false;
+  const { status } = (response as Record<string, unknown>);
+
+  return typeof status === 'number';
+};
+
+const getErrorMessage = (err: unknown): string => {
+  if (isErrorWithStatus(err) && err.response.status === 403) {
+    return 'Неверные логин или пароль, попробуйте ещё раз';
+  }
+
+  if (err instanceof Error) return err.message;
+
+  return 'Ошибка запроса';
+};
 
 const AuthPage = () => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  const prevPath = location.state?.prevPath || '/';
 
   const handleSubmit = async (values: UserCreateDto | TokensCreateRequest) => {
     setLoading(true);
@@ -27,15 +61,21 @@ const AuthPage = () => {
         await client.usersCreate(userCreateRequest as UsersCreateRequest);
         setMode('login');
       }
+
       const tokensCreateRequest = {
         authInfo: values,
       };
 
       const { token } = await client.tokensCreate(tokensCreateRequest as TokensCreateRequest);
       localStorage.setItem('token', token);
-      await navigate('/');
+
+      // Получаем данные пользователя после успешной аутентификации
+      const userResponse = await client.userMeGet();
+      login(userResponse);
+
+      await navigate(prevPath);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ошибка запроса');
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import {
   Flex,
   Pagination,
@@ -14,7 +15,8 @@ import {
 import { StarFilled } from '@ant-design/icons';
 import client from '@api';
 import type { Hotel, HotelFilters, HotelsListSortByEnum, HotelRoomsListSortOrderEnum } from '@api';
-import HotelCard from '../src/components/hotelCard/hotelCard.component';
+import HotelCard from '../src/components/hotelCard';
+import { useAuth } from '../authContext';
 
 type Pagination = {
   page: number;
@@ -26,6 +28,8 @@ type Sort = {
   sortBy?: HotelsListSortByEnum;
   sortOrder?: HotelRoomsListSortOrderEnum;
 };
+
+type HotelWithFavorites = Hotel & { isFavorite: boolean };
 
 const renderStars = (count: number) => Array.from({ length: count }, (_, i) => (
   <StarFilled key={i} style={{ color: '#faad14', marginRight: 2 }} />
@@ -106,7 +110,7 @@ const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilter
 };
 
 const Hotels = () => {
-  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [hotels, setHotels] = useState<HotelWithFavorites[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
     perPage: 10,
@@ -117,23 +121,38 @@ const Hotels = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchHotels = async () => {
       try {
         setLoading(true);
-        const response = await client.hotelsList({
-          ...filters,
-          ...sort,
-          name: searchQuery,
-          page: pagination.page,
-          perPage: pagination.perPage,
+
+        const [hotelsData, favoritesData] = await Promise.all([
+          client.hotelsList({
+            ...filters,
+            ...sort,
+            name: searchQuery,
+            page: pagination.page,
+            perPage: pagination.perPage,
+          }),
+          user ? client.listUserFavorites({
+            userId: user.id,
+          }) : { data: [] },
+        ]);
+
+        const enrichedHotels = hotelsData.data.map((hotel) => {
+          const isFavorite = favoritesData.data.some((favHotel) => favHotel.id === hotel.id);
+          return { ...hotel, isFavorite };
         });
 
-        setHotels(response.data);
+        setHotels(enrichedHotels);
         setPagination((prev) => ({
           ...prev,
-          total: response.pagination.total,
+          total: hotelsData.pagination.total,
         }));
       } catch (err) {
         setError('Ошибка при загрузке отелей');
@@ -145,7 +164,7 @@ const Hotels = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchHotels();
-  }, [pagination.page, pagination.perPage, filters, sort, searchQuery]);
+  }, [pagination.page, pagination.perPage, filters, sort, searchQuery, user]);
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination((prev) => ({
@@ -153,6 +172,26 @@ const Hotels = () => {
       page,
       perPage: pageSize,
     }));
+  };
+
+  const toggleFavorite = async (hotelId: number) => {
+    if (!user) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      navigate('/signin', { state: { prevPath: location.pathname } });
+      return;
+    }
+
+    const currentHotel = hotels.find((hotel) => hotel.id === hotelId)!;
+
+    if (currentHotel.isFavorite) {
+      await client.deleteFavorite({ hotelId });
+    } else {
+      await client.createFavorite({ favoriteCreateDto: { hotelId } });
+    }
+
+    setHotels((prevHotels) => prevHotels.map((hotel) => (
+      hotel.id === hotelId ? { ...hotel, isFavorite: !hotel.isFavorite } : hotel
+    )));
   };
 
   const handleFilterChange = (newFilters: HotelFilters) => {
@@ -228,6 +267,8 @@ const Hotels = () => {
                   stars={hotel.stars}
                   rating={hotel.rating}
                   id={hotel.id}
+                  isFavorite={hotel.isFavorite}
+                  toggleFavorite={toggleFavorite}
                 />
               ))}
             </Flex>
