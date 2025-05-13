@@ -6,11 +6,9 @@ COPY backend/build.gradle.kts backend/settings.gradle.kts ./
 
 RUN mkdir -p ./src/generated/java
 
-COPY backend/src ./src
+COPY backend/ ./
 
-COPY api/dist/server/src /tmp/openapi
-
-RUN cp -r /tmp/openapi/main/java/org ./src/generated/java/
+COPY api/dist/server/src ./src
 
 RUN gradle clean build --no-daemon -x test -x checkstyleMain -x checkstyleTest
 
