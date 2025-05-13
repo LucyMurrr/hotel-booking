@@ -1,13 +1,20 @@
-FROM gradle:jdk23-corretto-al2023
+FROM gradle:jdk23-corretto-al2023 as builder
 
 WORKDIR /app
 
-COPY build.gradle.kts settings.gradle.kts ./
+COPY backend/build.gradle.kts backend/settings.gradle.kts ./
 
-COPY src ./src
+RUN mkdir -p ./src/generated/java
 
-RUN gradle clean build --no-daemon -x checkstyleMain -x checkstyleTest
+COPY backend/src ./src
 
-RUN cp build/libs/hotel-booking-0.0.1-SNAPSHOT.jar app.jar
+COPY api/dist/server/src /tmp/openapi
+
+RUN cp -r /tmp/openapi/main/java/org ./src/generated/java/
+
+RUN gradle clean build --no-daemon -x test -x checkstyleMain -x checkstyleTest
+
+FROM eclipse-temurin:23-jre-alpine
+COPY --from=builder /app/build/libs/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

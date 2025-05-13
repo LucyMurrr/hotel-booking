@@ -1,5 +1,6 @@
 plugins {
 	java
+  application
 	id("org.springframework.boot") version "3.4.3"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("checkstyle")
@@ -12,6 +13,10 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(23)
 	}
+}
+
+application {
+    mainClass.set("org.openapitools.OpenApiGeneratorApplication")
 }
 
 configurations {
