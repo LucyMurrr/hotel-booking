@@ -1,151 +1,122 @@
-// настроить layouot и outlet в routes;
-
-import { useState } from 'react';
-
+import { useState, useCallback, useEffect } from 'react';
 import {
-  Avatar, Col, ConfigProvider, Layout, Menu, Row, Switch, theme,
+  Avatar, ConfigProvider, Layout, Switch, theme, Flex, Dropdown, Button,
 } from 'antd';
-import type { MenuTheme } from 'antd';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import {
-//   BrowserRouter as Link, Outlet,
-// } from 'react-router-dom';
-import { UserOutlined } from '@ant-design/icons/lib/icons';
-import { Link, Outlet } from 'react-router-dom';
-// import HotelPage from './hotel.component';
-// import AuthForm from './authorisation.form';
-// import Profile from './profile.component';
-// import Hotels from './hotels.component';
-
-// import HotelCard from './hotelCard.component';
+import type { MenuProps, MenuTheme } from 'antd';
+import { MoonOutlined, SunOutlined, UserOutlined } from '@ant-design/icons';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import ChatWidget from '~/src/components/chatWidget';
+import { useAuth } from '../authContext';
 
 const { Header, Content, Footer } = Layout;
 
-const leftItems = [
-  {
-    key: '/hotels',
-    label: <Link to="/">HEXLING</Link>,
-
-  },
-];
-
-const rightItems = [
-  {
-    label: 'Profile',
-    key: 'profileMenu',
-    icon: <UserOutlined />,
-    children: [
-      {
-        key: '/profile',
-        label: <Link to="/profile">Профиль</Link>,
-      },
-      {
-        key: 'bid',
-        label: <Link to="/auth">Мои Бронирования</Link>,
-      },
-      {
-        key: 'exit',
-        label: <Link to="/hotel">Выход</Link>,
-      },
-    ],
-  },
-];
+const getInitialTheme = (): MenuTheme => {
+  const savedTheme = localStorage.getItem('theme');
+  return (savedTheme as MenuTheme | null) || 'dark';
+};
 
 const BaseLayout: React.FC = () => {
-  const [currentTheme, setCurrentTheme] = useState<MenuTheme>('dark');
-  const changeTheme = (value: boolean) => {
-    setCurrentTheme(value ? 'dark' : 'light');
+  const [currentTheme, setCurrentTheme] = useState<MenuTheme>(getInitialTheme);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const changeTheme = (isNewThemeDark: boolean) => {
+    const newTheme = isNewThemeDark ? 'dark' : 'light';
+    setCurrentTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
   };
 
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      'color-scheme',
+      currentTheme === 'dark' ? 'dark' : 'light',
+    );
+  }, [currentTheme]);
+
+  const handleLogout = useCallback(() => {
+    logout();
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    navigate('/signin');
+  }, [logout, navigate]);
+
+  const profileMenuItems: MenuProps['items'] = [
+    {
+      key: 'profile',
+      label: <Link to="/profile">Профиль</Link>,
+    },
+    {
+      key: 'bookings',
+      label: <Link to="/bookings">Мои бронирования</Link>,
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'logout',
+      label: <Link to="/" onClick={handleLogout}>Выход</Link>,
+    },
+  ];
+
   return (
-  // <Router>
     <ConfigProvider
       theme={{
-        // algorithm: currentTheme === 'light' ? theme.compactAlgorithm : theme.darkAlgorithm,
         algorithm: currentTheme === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
+        components: {
+          Layout: {
+            headerBg: currentTheme === 'dark' ? '#141414' : '#001529',
+          },
+        },
       }}
     >
-      <Layout>
-        <Header style={{
-          display: 'flex',
-          alignItems: 'center',
-          position: 'sticky',
-          top: 0,
-          zIndex: 1,
-          width: '100%',
-        }}
-        >
-          <Row align="middle" style={{ width: '100%' }}>
-            <Col span={(12)}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
-                <Avatar src="../../public/booking.png" />
-                <Menu
-                  theme="dark"
-                  mode="horizontal"
-                  items={leftItems}
-                  style={{ flex: '1', display: 'flex', justifyContent: '' }}
-                />
-              </div>
-            </Col>
-            {/* <Col span={(2)}>
-                        <Menu
-                            theme='dark'
-                            mode="horizontal"
-                            items={leftItems}
-                            style={{ flex: '1', display: 'flex', justifyContent: '' }}
-                        />
-                    </Col>  */}
-            <Col span={(5)}>
-              <div />
-            </Col>
-            <Col span={(7)}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
-                <Switch
-                  checked={currentTheme === 'dark'}
-                  onChange={changeTheme}
-                  checkedChildren="Dark"
-                  unCheckedChildren="Light"
-                />
-                <Menu
-                  theme="dark"
-                  mode="horizontal"
-                  items={rightItems}
-                  style={{ flex: '1', display: 'flex', textAlign: 'right' }}
-                />
-              </div>
-            </Col>
-          </Row>
+      <Layout style={{ minHeight: '100vh' }}>
+        <Header style={{ padding: '0 24px' }}>
+          <Flex justify="space-between" align="center">
+            <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar src="/logo.png" />
+              <span style={{ color: 'white', marginLeft: 8, fontSize: 18 }}>HEXLING</span>
+            </Link>
+
+            <Flex align="center" gap={16}>
+              <Switch
+                checked={currentTheme === 'dark'}
+                onChange={changeTheme}
+                checkedChildren={<MoonOutlined />}
+                unCheckedChildren={<SunOutlined />}
+                aria-label="Переключить тему"
+              />
+
+              {isAuthenticated ? (
+                <Dropdown menu={{ items: profileMenuItems }} trigger={['click']}>
+                  <Button
+                    type="text"
+                    style={{ color: 'white' }}
+                    icon={<UserOutlined />}
+                  >
+                    Профиль
+                  </Button>
+                </Dropdown>
+              ) : (
+                <Button type="primary" onClick={() => navigate('/signin')}>
+                  Войти
+                </Button>
+              )}
+            </Flex>
+          </Flex>
         </Header>
-        <Content
-          style={{ padding: '0 48px' }}
-        >
-          <div
-            style={{
-              minHeight: 600,
-              padding: 24,
-            }}
-          >
+
+        <Content style={{ padding: '24px 48px', flex: 1 }}>
+          <main>
             <Outlet />
-            {/* <Routes>
-
-              <Route path="/" element={<Hotels />} />
-              <Route path="/hotels/hotel" element={<HotelPage />} />
-              <Route path="/auth" element={<AuthForm />} />
-              <Route path="/profile" element={<Profile />} />
-
-            </Routes> */}
-          </div>
-
+          </main>
         </Content>
 
         <Footer style={{ textAlign: 'center' }}>
-          HEXLING ©{new Date().getFullYear()} Created by students of Hexlet
+          HEXLING © {new Date().getFullYear()} Created by students of Hexlet
         </Footer>
+
+        {isAuthenticated && <ChatWidget />}
       </Layout>
     </ConfigProvider>
-  // </Router>
-
   );
 };
 

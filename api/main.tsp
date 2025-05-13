@@ -55,6 +55,7 @@ model UnprocessableEntityError {
 }
 
 model Hotel {
+  @example(1)
   id: int32;
   @example("Hilton")
   name: string;
@@ -129,10 +130,15 @@ model RoomAmenityCreateDto {
 }
 
 model Room {
+  @example(1)
   id: int32;
+  @example("Люкс с видом на колизей")
   name: string;
+  @example("Описание люкса с видом на колизей")
   description: string;
+  @example(300)
   price: float;
+  @example(1)
   hotelId: int32;
 }
 
@@ -260,6 +266,16 @@ model FavoriteCreateDto {
   hotelId: int32;
 }
 
+model RoomAvailableDatesParams {
+  @query start: plainDate;
+  @query end: plainDate;
+}
+
+model RoomAvailableDates {
+  roomId: int32;
+  dates: plainDate[];
+}
+
 model PaginatedDto<Data, Filters, SortBy> {
   data: Data;
   pagination: {
@@ -280,6 +296,20 @@ model AuthInfo {
 
 model TokenInfo {
   token: string;
+}
+
+model Message {
+  id: int32;
+  senderId: int32;
+  receiverId: int32;
+  content: string;
+  createdAt: utcDateTime;
+}
+
+model MessageCreateDto {
+  senderId: int32;
+  receiverId: int32;
+  content: string;
 }
 
 @route("/hotels")
@@ -359,6 +389,15 @@ namespace Rooms {
     @statusCode statusCode: 200;
     @body room: RoomDto;
   } | NotFoundError;
+}
+
+@route("/rooms/{roomId}/availability")
+namespace RoomAvailability {
+  @get
+  op get(@path roomId: int32, ...RoomAvailableDatesParams): {
+    @statusCode statusCode: 200;
+    @body availableDates: RoomAvailableDates;
+  } | NotFoundError | UnprocessableEntityError;
 }
 
 @route("/hotels/{hotelId}/rooms")
@@ -441,6 +480,16 @@ namespace Users {
   } | NotFoundError | UnauthorizedError | ForbiddenError;
 }
 
+@route("/users/me")
+@useAuth(BearerAuth)
+namespace UserMe {
+  @get
+  op get(): {
+    @statusCode statusCode: 200;
+    @body user: UserDto;
+  } | UnauthorizedError;
+}
+
 @route("/users/{userId}/bookings")
 @useAuth(BearerAuth)
 namespace UserBookings {
@@ -455,6 +504,7 @@ namespace UserBookings {
 @useAuth(BearerAuth)
 namespace UserFavorites {
   @get
+  @operationId("listUserFavorites")
   op list(@path userId: int32, ...HotelParams): {
     @statusCode statusCode: 200;
     @body favorites: PaginatedDto<Hotel[], HotelFilters, HotelSortOptions>;
@@ -492,12 +542,14 @@ namespace Bookings {
 @useAuth(BearerAuth)
 namespace Favorites {
   @post
+  @operationId("createFavorite")
   op create(@body favorite: FavoriteCreateDto): {
     @statusCode statusCode: 201;
     @body newFavorite: Hotel;
   } | UnprocessableEntityError | UnauthorizedError | ForbiddenError;
 
   @delete
+  @operationId("deleteFavorite")
   op delete(@path hotelId: int32): {
     @statusCode statusCode: 204;
   } | NotFoundError | UnauthorizedError | ForbiddenError;
@@ -510,4 +562,26 @@ namespace tokens {
     @body token: TokenInfo;
     @statusCode statusCode: 201;
   } | UnprocessableEntityError;
+}
+
+@route("/messages")
+@useAuth(BearerAuth)
+namespace Messages {
+  @get
+  op list(): {
+    @statusCode statusCode: 200;
+    @body messages: Message[];
+  } | UnauthorizedError | ForbiddenError;
+
+  @get
+  op get(@path userId: int32): {
+    @statusCode statusCode: 200;
+    @body messages: Message[];
+  } | NotFoundError | UnauthorizedError | ForbiddenError;
+
+  @post
+  op create(@body message: MessageCreateDto): {
+    @statusCode statusCode: 201;
+    @body newMessage: Message;
+  } | UnprocessableEntityError | UnauthorizedError | ForbiddenError;
 }

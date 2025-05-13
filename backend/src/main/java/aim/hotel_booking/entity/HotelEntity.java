@@ -28,6 +28,6 @@ public class HotelEntity {
     @Column(nullable = false)
     private Integer stars;
 
-    @Column(precision = 3, scale = 2)
+    @Column(precision = 4, scale = 2)
     private BigDecimal rating;
 }

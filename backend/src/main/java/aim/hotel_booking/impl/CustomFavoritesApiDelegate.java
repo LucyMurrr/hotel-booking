@@ -28,7 +28,7 @@ public class CustomFavoritesApiDelegate implements FavoritesApiDelegate {
     private final FavoriteRepository favoriteRepository;
 
     @Override
-    public ResponseEntity<Hotel> favoritesCreate(FavoriteCreateDto favoriteCreateDto) {
+    public ResponseEntity<Hotel> createFavorite(FavoriteCreateDto favoriteCreateDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
         
@@ -51,7 +51,7 @@ public class CustomFavoritesApiDelegate implements FavoritesApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> favoritesDelete(Integer hotelId) {
+    public ResponseEntity<Void> deleteFavorite(Integer hotelId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
         
