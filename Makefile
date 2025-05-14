@@ -7,18 +7,18 @@ gen-api:
 	docker run --rm -v ${PWD}/api:/api node:22-alpine sh -c "cd /api && npm i && npx tsp compile ."
 
 gen-server:
-	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \
+	docker run --rm -v ${PWD}/api:/local -v ${PWD}/backend:/backend $(OPENAPI_GENERATOR_IMAGE) generate \
 		-i /local/tsp-output/openapi.yaml \
 		-g spring \
-		-o /local/dist/server \
+		-o /backend/generated \
    		--additional-properties=useSpringBoot3=true,hibernateMode=true,jpa=true \
    		--additional-properties=useBeanValidation=true,useLombok=true,delegatePattern=true
 
 gen-client:
-	docker run --rm -v ${PWD}/api:/local $(OPENAPI_GENERATOR_IMAGE) generate \
+	docker run --rm -v ${PWD}/api:/local -v ${PWD}/client:/client $(OPENAPI_GENERATOR_IMAGE) generate \
 		-i /local/tsp-output/openapi.yaml \
 		-g typescript-fetch \
-		-o /local/dist/client \
+		-o /client/generated_client \
 		--additional-properties=npmName="@api/client",supportsES6=true
 
 test-api:
@@ -45,10 +45,10 @@ start-mock:
 gen-all: gen-api gen-server gen-client
 
 dev:
-	docker compose up --build
+	COMPOSE_BAKE=true docker compose up --build
 
-build: gen-all
-	docker compose -f docker-compose.yml up --build
+build:
+	COMPOSE_BAKE=true docker compose -f docker-compose.yml up --build
 
 drop-database:
 	docker compose down -v

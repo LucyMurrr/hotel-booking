@@ -16,7 +16,7 @@ java {
 }
 
 application {
-    mainClass.set("org.openapitools.OpenApiGeneratorApplication")
+    mainClass.set("aim.hotel_booking.HotelBookingApplication")
 }
 
 configurations {
@@ -36,10 +36,10 @@ tasks.withType<JavaExec> {
 sourceSets {
 	main {
 		java {
-			srcDirs("/api/dist/server/src/main/java")
+			srcDirs("${projectDir}/generated/src/main/java")
 		}
 		resources {
-			srcDirs("/api/dist/server/src/main/resources")
+			srcDirs("${projectDir}/generated/src/main/resources")
 		}
 	}
 }
@@ -54,7 +54,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
-	implementation("org.springframework.security:spring-security-messaging:6.2.3")
+	implementation("org.springframework.security:spring-security-messaging:6.4.3")
 	implementation("org.postgresql:postgresql")
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 	implementation("org.springframework.boot:spring-boot-starter-validation")

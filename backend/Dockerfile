@@ -1,16 +1,15 @@
-FROM gradle:jdk23-corretto-al2023 as builder
+FROM gradle:jdk23-corretto-al2023 AS builder
 
 WORKDIR /app
 
-COPY backend/build.gradle.kts backend/settings.gradle.kts ./
+COPY build.gradle.kts settings.gradle.kts ./
+COPY src ./src
+COPY generated/ ./generated
 
-COPY backend/ ./
-
-COPY api/dist/server/src ./src
-
-RUN gradle clean build --no-daemon -x test -x checkstyleMain -x checkstyleTest
+RUN gradle build -x test -x checkstyleMain -x checkstyleTest
 
 FROM eclipse-temurin:23-jre-alpine
+
 COPY --from=builder /app/build/libs/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
