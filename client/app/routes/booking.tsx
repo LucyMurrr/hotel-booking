@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -58,7 +60,6 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
         setError('Ошибка загрузки доступных дат');
       }
     };
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     loadAvailability();
   }, [room.id]);
 
@@ -88,8 +89,8 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
     if (!selectedDates) return;
 
     if (!user) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      navigate('/signin');
+      // @typescript-eslint/no-floating-promises
+      navigate('/signin', { state: { prevPath: location.pathname } });
       return;
     }
 

@@ -10,6 +10,7 @@ export default [
     route('/booking/:roomId', 'routes/booking.tsx'),
     route('/signin', 'routes/signin.tsx'),
     route('/manager', 'routes/manager.tsx'),
+    route('/favorite', 'routes/favoriteHotels.tsx'),
     ...prefix('hotels', [
       route(':hotelId', 'routes/hotel.tsx'),
       route(':hotelId/newRoom', 'routes/newRoom.tsx'),
