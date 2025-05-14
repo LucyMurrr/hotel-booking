@@ -84,7 +84,6 @@ tasks.withType<Test> {
 
 tasks {
 	named<Checkstyle>("checkstyleMain") {
-		source = sourceSets.main.get().allJava // Включает сгенерированные файлы
 		classpath = sourceSets.main.get().compileClasspath
 	}
 }
