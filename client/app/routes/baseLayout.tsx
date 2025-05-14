@@ -49,6 +49,10 @@ const BaseLayout: React.FC = () => {
       label: <Link to="/bookings">Мои бронирования</Link>,
     },
     {
+      key: 'favorite',
+      label: <Link to="/favorite">Любимые отели</Link>,
+    },
+    {
       type: 'divider',
     },
     {

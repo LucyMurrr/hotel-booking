@@ -97,7 +97,7 @@ const BookingsPage = () => {
                     </div>
                   </div>
                   <div style={{ textAlign: 'right', minWidth: 120 }}>
-                    <Title level={4} style={{ margin: 0 }}>${booking.totalPrice}</Title>
+                    <Title level={4} style={{ margin: 0 }}>${booking.totalPrice.toFixed(2)}</Title>
                     <Text type="secondary">{booking.room.price}$/ночь</Text>
                     <div style={{ marginTop: 16 }}>
                       <Button
