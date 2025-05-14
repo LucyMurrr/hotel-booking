@@ -13,8 +13,6 @@ COPY client ./
 COPY api/dist/client ./client
 COPY --from=development-dependencies-env ./node_modules ./node_modules
 WORKDIR /app
-#COPY client/app ./
-#COPY api/dist/client/src ./src
 RUN npm run build
 
 FROM node:22-alpine
