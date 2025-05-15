@@ -14,7 +14,9 @@ jobs:
         id: cache-api
         uses: actions/cache@v4
         with:
-          path: ./api/dist
+          path: |
+            ./client/generated_client
+            ./backend/generated
           key: ${{ runner.os }}-api-${{ hashFiles('api/main.tsp') }}
           restore-keys: |
             ${{ runner.os }}-api-
@@ -25,13 +27,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: generated-client
-          path: ./api/dist/client
+          path: ./client/generated_client
           retention-days: 1
       - name: Upload generated backend
         uses: actions/upload-artifact@v4
         with:
           name: generated-backend
-          path: ./api/dist/server
+          path: ./backend/generated
           retention-days: 1
 
   lint-backend:
@@ -43,7 +45,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: generated-backend
-          path: ./api/dist/server
+          path: ./backend/generated
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -76,7 +78,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: generated-client
-          path: ./api/dist/client
+          path: ./client/generated_client
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:

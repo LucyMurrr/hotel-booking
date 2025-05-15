@@ -18,7 +18,7 @@
       "~/*": ["./app/*"],
       "@components/*": ["./app/src/components/*"],
       "@api": ["app/src/api/index"],
-      "@generatedClient/*": ["../api/dist/client/src/*"],
+      "@generatedClient/*": ["./generated_client/src/*"],
     },
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,

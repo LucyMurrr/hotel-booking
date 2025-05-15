@@ -1,5 +1,6 @@
 plugins {
 	java
+  application
 	id("org.springframework.boot") version "3.4.3"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("checkstyle")
@@ -12,6 +13,10 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(23)
 	}
+}
+
+application {
+    mainClass.set("aim.hotel_booking.HotelBookingApplication")
 }
 
 configurations {
@@ -31,10 +36,10 @@ tasks.withType<JavaExec> {
 sourceSets {
 	main {
 		java {
-			srcDirs("/api/dist/server/src/main/java")
+			srcDirs("${projectDir}/generated/src/main/java")
 		}
 		resources {
-			srcDirs("/api/dist/server/src/main/resources")
+			srcDirs("${projectDir}/generated/src/main/resources")
 		}
 	}
 }
@@ -49,7 +54,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
-	implementation("org.springframework.security:spring-security-messaging:6.2.3")
+	implementation("org.springframework.security:spring-security-messaging:6.4.3")
 	implementation("org.postgresql:postgresql")
 	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -79,7 +84,9 @@ tasks.withType<Test> {
 
 tasks {
 	named<Checkstyle>("checkstyleMain") {
-		source = sourceSets.main.get().allJava // Включает сгенерированные файлы
 		classpath = sourceSets.main.get().compileClasspath
+		source = fileTree("src/main/java") {
+			exclude("**/generated/**")
+		}
 	}
 }

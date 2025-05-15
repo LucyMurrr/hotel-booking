@@ -4,13 +4,11 @@ services:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "80:80"
     environment:
       - NODE_ENV=production
     depends_on:
       - server
-    volumes:
-      - ./api:/api
 
   server:
     build:
@@ -20,8 +18,11 @@ services:
       - "8080:8080"
     depends_on:
       - db
-    volumes:
-      - ./api:/api
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mydb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_PROFILES_ACTIVE=prod
 
   db:
     image: postgres:17
