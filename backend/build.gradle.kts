@@ -85,5 +85,8 @@ tasks.withType<Test> {
 tasks {
 	named<Checkstyle>("checkstyleMain") {
 		classpath = sourceSets.main.get().compileClasspath
+		source = fileTree("src/main/java") {
+			exclude("**/generated/**")
+		}
 	}
 }
