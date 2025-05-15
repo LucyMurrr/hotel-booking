@@ -9,6 +9,7 @@ services:
       - NODE_ENV=production
     depends_on:
       - server
+    restart: unless-stopped
 
   server:
     build:
@@ -23,6 +24,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_PROFILES_ACTIVE=prod
+    restart: unless-stopped
 
   db:
     image: postgres:17
@@ -33,6 +35,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/data.sql:/docker-entrypoint-initdb.d/data.sql
+    restart: unless-stopped
 
 volumes:
   postgres_data:

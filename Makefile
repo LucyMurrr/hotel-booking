@@ -47,8 +47,11 @@ gen-all: gen-api gen-server gen-client
 dev:
 	COMPOSE_BAKE=true docker compose up --build
 
-build:
-	COMPOSE_BAKE=true docker compose -f docker-compose.yml up --build
+start:
+	COMPOSE_BAKE=true docker-compose -f docker-compose.yml up --build -d
+
+stop:
+	docker-compose down
 
 drop-database:
 	docker compose down -v
