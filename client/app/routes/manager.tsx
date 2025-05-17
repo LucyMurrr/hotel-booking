@@ -5,7 +5,7 @@ import {
 import { UserOutlined, SendOutlined } from '@ant-design/icons';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
-import client, { type Message } from '@api';
+import client, { type Message, basePath } from '@api';
 import { useAuth } from '~/authContext';
 
 const { Text } = Typography;
@@ -87,7 +87,7 @@ const ChatPage = () => {
       }
       isConnecting.current = true;
 
-      const socket = new SockJS('http://localhost:8080/ws');
+      const socket = new SockJS(`${basePath}/ws`);
       const socketClient = new Client({
         webSocketFactory: () => socket,
         connectHeaders: {

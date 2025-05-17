@@ -1,7 +1,9 @@
 import { DefaultApi, Configuration } from '@generatedClient/index';
 
+const basePath = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://hexling.ru/api';
+
 const config = new Configuration({
-  basePath: process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://hexling.ru/api',
+  basePath,
   fetchApi: async (url, init) => {
     const token = localStorage.getItem('token');
     const headers = new Headers(init?.headers || {});
@@ -17,5 +19,7 @@ const config = new Configuration({
 });
 const client = new DefaultApi(config);
 
-export default client;
+export { basePath };
 export * from '@generatedClient/index';
+
+export default client;
