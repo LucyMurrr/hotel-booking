@@ -5,8 +5,9 @@ test('test', async ({ page }) => {
   await page.click('a[href="/hotels/1"]');
   await page.locator('div').filter({ hasText: /^\$199\.99 \/ ночьЗабронировать$/ }).getByRole('button').click();
   await page.getByRole('textbox', { name: 'Start date' }).click();
-  await page.locator('div.ant-picker-input > input[date-range="start"]').fill('01.07.2025');
-  await page.locator('div.ant-picker-input > input[date-range="end"]').fill('02.07.2025');
+  await page.locator('div.ant-picker-input > input[date-range="start"]').fill('05.07.2025');
+  await page.locator('div.ant-picker-input > input[date-range="end"]').fill('06.07.2025');
+  await page.keyboard.press('Enter');
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Подтвердить бронирование' }).click();
   await expect(page.getByRole('heading', { name: 'Бронирование подтверждено! 🎉' })).toBeVisible();
@@ -14,7 +15,7 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Изменить даты' }).click();
   await expect(page.getByRole('heading', { name: 'Выберите даты проживания' })).toBeVisible();
   await page.getByRole('textbox', { name: 'End date' }).click();
-  await page.locator('div.ant-picker-input > input[date-range="end"]').fill('04.07.2025');
+  await page.locator('div.ant-picker-input > input[date-range="end"]').fill('08.07.2025');
   await page.keyboard.press('Enter');
   await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Подтвердить бронирование' }).click();
