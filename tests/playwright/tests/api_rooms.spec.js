@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import parser from '../utils/parser.js';
 
 // Конфигурация тестов
 const HOTEL_ID = 1;

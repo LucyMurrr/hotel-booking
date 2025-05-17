@@ -1,5 +1,5 @@
 import { test, expect } from '../fixtures/auth.fixture';
-import parser from '../utils/parser.js';
+import parser from '../utils/parser';
 
 const testData = parser('./utils/auth/user.json');
 
