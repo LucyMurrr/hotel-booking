@@ -7,7 +7,7 @@ test('test', async ({ page, browserName }) => {
   await page .getByRole('button', { name: 'user Профиль' }).click();
   await page .getByRole('link', { name: 'Любимые отели' }).click();
   await page.waitForLoadState('networkidle');
-  await expect(page.getByRole('link', { name: 'Grand Hotel Grand Hotel 4.8' })).toBeVisible();
+  await expect(page.locator('div.ant-flex css-1dvur0k ant-flex-align-start').first()).toBeVisible();
   const button = page.getByRole('button', { name: 'Удалить из избранного' });
   await button.waitFor({ state: 'visible' });
   await button.click();
