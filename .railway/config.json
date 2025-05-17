@@ -1,4 +1,0 @@
-{
-  "type": "docker",
-  "dockerfile": "Dockerfile"
-}
