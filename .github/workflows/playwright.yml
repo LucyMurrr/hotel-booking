@@ -17,6 +17,7 @@ jobs:
         with:
           node-version: lts/*
           cache: "npm"
+          cache-dependency-path: "tests/playwright/package.json"
 
       - name: Install dependencies
         run: |
