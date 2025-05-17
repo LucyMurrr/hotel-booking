@@ -1,7 +1,4 @@
 import { test as base } from '@playwright/test';
-import parser from '../utils/parser.js';
-
-const testData = parser('./utils/auth/user.json');
 
 export const test = base.extend({
   page: async ({ browser }, use) => {
