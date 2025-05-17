@@ -33,6 +33,12 @@ jobs:
           chmod +x tests/playwright/wait-for-run-tests.sh
           ./tests/playwright/wait-for-run-tests.sh http://hexling.ru
 
+      - name: Download auth state
+        uses: actions/download-artifact@v4
+        with:
+          name: auth-state
+          path: tests/playwright/utils/auth/auth-state.json
+
       - name: Run Playwright tests
         run: |
           cd tests/playwright
@@ -60,3 +66,7 @@ jobs:
           name: playwright-traces
           path: tests/playwright/test-results/
           retention-days: 30
+
+      - name: Cleanup
+        if: always()
+        run: rm -f tests/playwright/utils/auth/auth-state.json
