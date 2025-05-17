@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  const uniqueId = Date.now();
+  const uniqueId = `${Date.now()}${Math.floor(Math.random() * 1000)}`
   await page.goto('http://hexling.ru/');
   await page.getByRole('button', { name: 'Войти' }).click();
   await page.getByRole('tab', { name: 'Регистрация' }).click();
