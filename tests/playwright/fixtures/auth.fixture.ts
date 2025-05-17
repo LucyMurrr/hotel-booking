@@ -16,7 +16,7 @@ export const test = base.extend({
     await page.locator('input[placeholder="Email"]').fill(email);
     await page.locator('input[placeholder="Пароль"]').fill(password);
     await page.locator('form').getByRole('button', { name: 'Войти' }).click();
-    await context.storageState({ path: 'auth-state.json' });
+    await context.storageState();
     await use(page);
     await context.close();
   },
