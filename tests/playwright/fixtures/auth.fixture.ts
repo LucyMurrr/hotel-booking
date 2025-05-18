@@ -26,11 +26,16 @@ export const test = base.extend({
     console.log('Переход на страницу входа...');
     await page.goto(testData.page);
     await page.waitForLoadState('networkidle');
+    console.log('Нажать кнопку "Вход"');
     await page.locator('header > div > div > button.ant-btn').click();
     await page.waitForLoadState('networkidle');
+    console.log('Ввести email');
     await page.locator('input[placeholder="Email"]').fill(testData.user.email);
+    console.log('Ввести пароль');
     await page.locator('input[placeholder="Пароль"]').fill(testData.user.valid_password);
+    console.log('Нажать кнопку "Войти"');
     await page.locator('form').getByRole('button', { name: 'Войти' }).click();
+    console.log('Авторизация успешна!');
     await use(page);
     await context.close();
   },
