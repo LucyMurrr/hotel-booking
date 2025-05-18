@@ -1,7 +1,23 @@
 import { test as base } from '@playwright/test';
 import parser from '../utils/parser.js';
 
-const testData = parser('./utils/auth/user.json');
+//const testData = parser('./utils/auth/user.json');
+
+const useEnv = Boolean(process.env.TEST_USER_FOR && process.env.TEST_PASSWORD_FOR);
+let testData;
+
+if (useEnv) {
+  testData = {
+    user: {
+      page: 'http://hexling.ru/',
+      email: process.env.TEST_USER_FOR,
+      valid_password: process.env.TEST_PASSWORD_FOR,
+      invalid_password: '12344214',
+    },
+  };
+} else {
+  testData = parser('./utils/auth/user.json');
+}
 
 export const test = base.extend({
   page: async ({ browser }, use) => {
