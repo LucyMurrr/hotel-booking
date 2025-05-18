@@ -1,15 +1,13 @@
 import { test as base } from '@playwright/test';
 import parser from '../utils/parser.js';
 
-//const testData = parser('./utils/auth/user.json');
-
-const useEnv = Boolean(process.env.TEST_USER_FOR && process.env.TEST_PASSWORD_FOR);
+const useEnv = Boolean(process.env.TEST_USER_FOR && process.env.TEST_PASSWORD_FOR && process.env.URL_FOR);
 let testData;
 
 if (useEnv) {
   testData = {
+    page: process.env.URL_FOR,
     user: {
-      page: 'http://hexling.ru/',
       email: process.env.TEST_USER_FOR,
       valid_password: process.env.TEST_PASSWORD_FOR,
       invalid_password: '12344214',

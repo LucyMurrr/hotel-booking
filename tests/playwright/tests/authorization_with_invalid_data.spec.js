@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
 import parser from '../utils/parser.js';
 
-const useEnv = Boolean(process.env.TEST_USER_FOR && process.env.TEST_PASSWORD_FOR);
+const useEnv = Boolean(process.env.TEST_USER_FOR && process.env.TEST_PASSWORD_FOR && process.env.URL_FOR);
 let testData;
 
 if (useEnv) {
   testData = {
+    page: process.env.URL_FOR,
     user: {
       email: process.env.TEST_USER_FOR,
       valid_password: process.env.TEST_PASSWORD_FOR,
@@ -18,7 +19,7 @@ if (useEnv) {
 
 test('test', async ({ page }) => {
   // Переход на страницу
-  await page.goto('http://hexling.ru/');
+  await page.goto(testData.page);
   // Ожидание загрузки основных ресурсов страницы
   await page.waitForLoadState('networkidle');
   // Нажать кноку "Вход"
