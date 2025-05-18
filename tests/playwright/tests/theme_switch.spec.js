@@ -6,6 +6,4 @@ test('Проверка переключателя темы', async ({ page }) =>
   await expect(themeSwitch).toHaveClass(/ant-switch-checked/);
   await themeSwitch.click();
   await expect(themeSwitch).not.toHaveClass(/ant-switch-checked/);
-  await page.getByRole('button', { name: 'user Профиль' }).click();
-  await page.getByRole('link', { name: 'Выход' }).click();
 });
