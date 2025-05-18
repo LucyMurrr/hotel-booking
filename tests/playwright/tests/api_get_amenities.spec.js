@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Конфигурация тестов
 const AMENITIES_ENDPOINT = 'http://hexling.ru/api/amenities';
 
 test.describe('API тесты для /amenities', () => {
@@ -62,5 +61,4 @@ test.describe('API тесты для /amenities', () => {
   test('Должен возвращать Content-Type application/json', () => {
     expect(response.headers['content-type']).toContain('application/json');
   });
-  
 });

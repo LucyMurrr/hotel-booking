@@ -1,8 +1,20 @@
 import { test, expect } from '@playwright/test';
+import parser from '../utils/parser.js';
+
+const useEnv = Boolean(process.env.URL_FOR);
+let testData;
+
+if (useEnv) {
+  testData = {
+    page: process.env.URL_FOR,
+  };
+} else {
+  testData = parser('./utils/auth/user.json');
+}
 
 test('test', async ({ page }) => {
   const uniqueId = `${Date.now()}${Math.floor(Math.random() * 1000)}`
-  await page.goto('http://hexling.ru/');
+  await page.goto(testData.page);
   await page.waitForLoadState('networkidle');
   await expect(page.getByRole('button', { name: 'Войти' })).toBeVisible();
   await page.getByRole('button', { name: 'Войти' }).click();

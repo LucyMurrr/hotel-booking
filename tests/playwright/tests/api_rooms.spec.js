@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Конфигурация тестов
 const HOTEL_ID = 1;
 const ROOMS_ENDPOINT = `http://hexling.ru/api/hotels/${HOTEL_ID}/rooms`;
 
@@ -13,7 +12,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     responseData = await response.json();
   });
 
-  // Базовые тесты
   test('Должен возвращать статус 200', () => {
     expect(response.status()).toBe(200);
   });
@@ -22,7 +20,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     expect(response.headers()['content-type']).toContain('application/json');
   });
 
-  // Тесты структуры ответа
   test('Ответ должен содержать правильную структуру', () => {
     expect(responseData).toEqual({
       data: expect.any(Array),
@@ -33,7 +30,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     });
   });
 
-  // Тесты данных комнат
   test('Каждая комната должна иметь правильную структуру', () => {
     responseData.data.forEach(room => {
       expect(room).toEqual({
@@ -45,7 +41,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
         amenities: expect.any(Array)
       });
 
-      // Проверка amenities
       room.amenities.forEach(amenity => {
         expect(amenity).toEqual({
           id: expect.any(Number),
@@ -55,7 +50,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     });
   });
 
-  // Тесты фильтров
   test('Фильтры должны иметь правильную структуру', () => {
     expect(responseData.filters).toEqual({
       name: null,
@@ -64,7 +58,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     });
   });
 
-  // Параметризованные тесты фильтрации
   const filterTestCases = [
     { 
       name: 'Фильтрация по минимальной цене',
@@ -100,7 +93,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     });
   }
 
-  // Тесты сортировки
   const sortTestCases = [
     {
       name: 'Сортировка по имени (ASC)',
@@ -125,8 +117,7 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
         params: testCase.params
       });
       const sortedData = await sortedResponse.json();
-      
-      // Проверяем что данные отсортированы правильно
+
       for (let i = 0; i < sortedData.data.length - 1; i++) {
         const comparison = testCase.validator(sortedData.data[i], sortedData.data[i + 1]);
         expect(comparison).toBeLessThanOrEqual(0);
@@ -134,7 +125,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     });
   }
 
-  // Тесты на пустые результаты
   test('Фильтрация с несуществующими параметрами должна возвращать пустой массив', async ({ request }) => {
     const filteredResponse = await request.get(ROOMS_ENDPOINT, {
       params: { name: 'Non-existent Room' }
@@ -144,7 +134,6 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     expect(filteredData.data.length).toBe(0);
   });
 
-  // Тесты производительности
   test('Время ответа должно быть < 500мс', async ({ request }) => {
     const startTime = Date.now();
     await request.get(ROOMS_ENDPOINT);

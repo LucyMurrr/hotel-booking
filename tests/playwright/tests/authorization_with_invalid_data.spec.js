@@ -18,21 +18,12 @@ if (useEnv) {
 }
 
 test('test', async ({ page }) => {
-  // Переход на страницу
   await page.goto(testData.page);
-  // Ожидание загрузки основных ресурсов страницы
   await page.waitForLoadState('networkidle');
-  // Нажать кноку "Вход"
   await page.getByRole('button', { name: 'Войти' }).click();
-
-  // Нажать кноку "Вход"
   await page.getByRole('button', { name: 'Войти' }).click();
-
-  //Заполнение полей email и пароль
   await page.locator('input[placeholder="Email"]').fill(testData.user.email);
   await page.locator('input[placeholder="Пароль"]').fill(testData.user.invalid_password);
-  //Вход
   await page.locator('form').getByRole('button', { name: 'Войти' }).click();
-  // Проверка наличия ведомления 'Неверные логин или пароль, попробуйте ещё раз'
   await expect(page.getByText('Неверные логин или пароль, попробуйте ещё раз')).toBeVisible();
 });
