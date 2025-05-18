@@ -1,0 +1,9 @@
+{
+  "page": "http://hexling.ru/",
+  "user": {
+    "name": "testuser_01",
+    "email": "testuser_01@test.ru",
+    "valid_password": "testpassword",
+    "invalid_password": "Qwerty55674"
+  }
+}
