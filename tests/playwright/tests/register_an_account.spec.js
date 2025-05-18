@@ -17,4 +17,6 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Зарегистрироваться' }).click();
   await page.waitForLoadState('networkidle');
   await expect(page.getByRole('button', { name: 'user Профиль' })).toBeVisible();
+  await page.getByRole('button', { name: 'user Профиль' }).click();
+  await page.getByRole('link', { name: 'Выход' }).click();
 });

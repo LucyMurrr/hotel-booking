@@ -33,4 +33,6 @@ test('test', async ({ page }) => {
   //Вход
   await page.locator('form').getByRole('button', { name: 'Войти' }).click();
   await expect(page.getByRole('button', { name: 'user Профиль' })).toBeVisible();
+  await page.getByRole('button', { name: 'user Профиль' }).click();
+  await page.getByRole('link', { name: 'Выход' }).click();
 });

@@ -7,4 +7,6 @@ test('Отображение информации об отеле', async ({ pag
   await expect(page.locator('div').filter({ hasText: /^Звёзды:$/ }).nth(1)).toBeVisible();
   await expect(page.getByText('Рейтинг:4.8')).toBeVisible();
   await expect(page.getByText('Доступные номера')).toBeVisible();
+  await page.getByRole('button', { name: 'user Профиль' }).click();
+  await page.getByRole('link', { name: 'Выход' }).click();
 });

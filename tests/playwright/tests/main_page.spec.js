@@ -27,4 +27,6 @@ test('Отображение основных элементов страниц�
   // Проверка наличия кнопок
   await expect(page.locator('button:has-text("Сбросить")')).toBeVisible();
   await expect(page.locator('button:has-text("Применить")')).toBeVisible();
+  await page.getByRole('button', { name: 'user Профиль' }).click();
+  await page.getByRole('link', { name: 'Выход' }).click();
 });

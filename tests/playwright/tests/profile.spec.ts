@@ -11,4 +11,6 @@ test('test', async ({ page }) => {
   await expect(page.getByText('Личные данные')).toBeVisible();
   await expect(page.getByText('Безопасность')).toBeVisible();
   await expect(page.getByRole('button', { name: 'delete Удалить аккаунт' })).toBeVisible();
+  await page.getByRole('button', { name: 'user Профиль' }).click();
+  await page.getByRole('link', { name: 'Выход' }).click();
 });

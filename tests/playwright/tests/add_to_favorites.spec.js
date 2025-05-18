@@ -10,4 +10,6 @@ test('test', async ({ page }) => {
   await button.waitFor({ state: 'visible' });
   await button.click();
   await expect(button).not.toBeVisible();
+  await page.getByRole('button', { name: 'user Профиль' }).click();
+  await page.getByRole('link', { name: 'Выход' }).click();
 });

@@ -32,7 +32,6 @@ export default defineConfig({
     baseURL: 'http://hexling.ru',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    storageState: 'auth-state.json'
   },
 
   /* Configure projects for major browsers */
