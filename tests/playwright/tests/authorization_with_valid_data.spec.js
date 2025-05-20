@@ -19,20 +19,11 @@ if (useEnv) {
 }
 
 test('Авторизация с корректным паролем', async ({ page }) => {
-  // Переход на страницу
   await page.goto(testData.page);
-
-  // Ожидание загрузки основных ресурсов страницы
   await page.waitForLoadState('networkidle');
-
-  // Нажать кноку "Вход"
   await page.getByRole('button', { name: 'Войти' }).click();
-
-  //Заполнение полей email и пароль
   await page.locator('input[placeholder="Email"]').fill(testData.user.email);
   await page.locator('input[placeholder="Пароль"]').fill(testData.user.valid_password);
-
-  //Вход
   await page.locator('form').getByRole('button', { name: 'Войти' }).click();
   await expect(page.getByRole('button', { name: 'user Профиль' })).toBeVisible();
   await page.getByRole('button', { name: 'user Профиль' }).click();
