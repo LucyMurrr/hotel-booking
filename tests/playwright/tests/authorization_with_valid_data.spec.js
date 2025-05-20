@@ -18,7 +18,7 @@ if (useEnv) {
   testData = parser('./utils/auth/user.json');
 }
 
-test('test', async ({ page }) => {
+test('Авторизация с корректным паролем', async ({ page }) => {
   // Переход на страницу
   await page.goto(testData.page);
 

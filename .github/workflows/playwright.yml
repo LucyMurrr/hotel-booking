@@ -35,6 +35,7 @@ jobs:
         env:
           TEST_USER_FOR: ${{ secrets.TEST_USER_FOR}}
           TEST_PASSWORD_FOR: ${{ secrets.TEST_PASSWORD_FOR }}
+          URL_FOR: ${{secrets.URL_FOR}}
         run: |
           cd tests/playwright
           npx playwright test --trace on
