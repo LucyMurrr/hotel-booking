@@ -8,24 +8,19 @@ test('3.2.2 - Защита от XSS', async ({ page }) => {
     '<svg/onload=alert("XSS")>'
   ];
 
-  // Переходим на главную страницу
   await page.goto('http://hexling.ru/');
-  
-  // Находим поле поиска
+
   const searchInput = page.locator('input[placeholder="Поиск по названию отеля"]');
   await expect(searchInput).toBeVisible();
 
-  // Проверяем каждый XSS-вектор
   for (const payload of testPayloads) {
-    // Вводим и отправляем payload
+
     await searchInput.fill(payload);
     await page.keyboard.press('Enter');
     await page.waitForLoadState('networkidle');
 
-    // Проверяем отсутствие payload в DOM
     await expect(page.locator('body')).not.toContainText(payload);
 
-    // Проверяем всплывающие окна с явной типизацией
     let dialogDetected = false;
     page.on('dialog', (dialog: import('@playwright/test').Dialog) => {
       dialogDetected = true;

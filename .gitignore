@@ -6,3 +6,5 @@ dist/
 .idea/
 .DS_Store
 tests/schemathesis_reports/junit.xml
+tests/playwright/utils/auth/user.json
+tests/playwright/r/

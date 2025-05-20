@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures/auth.fixture';
 
-test('test', async ({ page }) => {
+test('Добавление в избранное', async ({ page }) => {
   await page.getByRole('button', { name: 'Добавить в избранное' }).first().click();
   await page.getByRole('button', { name: 'user Профиль' }).click();
   await page.getByRole('link', { name: 'Любимые отели' }).click();
