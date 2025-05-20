@@ -3,7 +3,7 @@ import parser from '../utils/parser.js';
 
 const testData = parser('./utils/auth/user.json');
 
-test('test', async ({ page }) => {
+test('Должен отображать элементы профиля', async ({ page }) => {
   await page.getByRole('button', { name: 'user Профиль' }).click();
   await page.getByRole('link', { name: 'Профиль' }).click();
   await page.waitForLoadState('networkidle');

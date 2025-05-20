@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures/auth.fixture';
 
-test('test', async ({ page }) => {
+test('Должен писать в чат поддержки', async ({ page }) => {
   const uniqueId = `${Date.now()}${Math.floor(Math.random() * 1000)}`;
   await page.getByRole('button', { name: 'message' }).click();
   await page.getByRole('textbox', { name: 'Введите сообщение' }).click();

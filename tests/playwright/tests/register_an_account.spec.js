@@ -12,7 +12,7 @@ if (useEnv) {
   testData = parser('./utils/auth/user.json');
 }
 
-test('test', async ({ page }) => {
+test('Должен регистрировать учетную запись', async ({ page }) => {
   const uniqueId = `${Date.now()}${Math.floor(Math.random() * 1000)}`
   await page.goto(testData.page);
   await page.waitForLoadState('networkidle');

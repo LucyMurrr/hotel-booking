@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures/auth.fixture';
 
-test('test', async ({ page }) => {
+test('Бронирование', async ({ page }) => {
   await page.waitForLoadState('networkidle');
   await page.click('a[href="/hotels/1"]');
   await page.locator('div').filter({ hasText: /^\$199\.99 \/ ночьЗабронировать$/ }).getByRole('button').click();

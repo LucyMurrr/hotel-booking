@@ -17,7 +17,7 @@ if (useEnv) {
   testData = parser('./utils/auth/user.json');
 }
 
-test('test', async ({ page }) => {
+test('Авторизация с некорректным паролем', async ({ page }) => {
   await page.goto(testData.page);
   await page.waitForLoadState('networkidle');
   await page.getByRole('button', { name: 'Войти' }).click();

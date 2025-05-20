@@ -7,3 +7,5 @@ dist/
 .DS_Store
 tests/schemathesis_reports/junit.xml
 certbot/
+tests/playwright/utils/auth/user.json
+tests/playwright/r/
