@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import parser from '../utils/parser.js';
-
+//include
 const useEnv = Boolean(process.env.TEST_USER_FOR && process.env.TEST_PASSWORD_FOR && process.env.URL_FOR);
 let testData;
 
@@ -20,7 +20,6 @@ if (useEnv) {
 test('Авторизация с некорректным паролем', async ({ page }) => {
   await page.goto(testData.page);
   await page.waitForLoadState('networkidle');
-  await page.getByRole('button', { name: 'Войти' }).click();
   await page.getByRole('button', { name: 'Войти' }).click();
   await page.locator('input[placeholder="Email"]').fill(testData.user.email);
   await page.locator('input[placeholder="Пароль"]').fill(testData.user.invalid_password);
