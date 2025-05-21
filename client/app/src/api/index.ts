@@ -1,6 +1,8 @@
 import { DefaultApi, Configuration } from '@generatedClient/index';
 
-const basePath = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://hexling.ru/api';
+const basePath = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:8080'
+  : 'https://hexling.ru/api';
 
 const config = new Configuration({
   basePath,

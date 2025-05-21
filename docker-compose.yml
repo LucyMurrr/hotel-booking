@@ -5,11 +5,23 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+      - "443:443"
     environment:
       - NODE_ENV=production
     depends_on:
       - server
     restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes: 
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --keep-until-expiring --email danozh.b@gmail.com -d hexling.ru --agree-tos
 
   server:
     build:
