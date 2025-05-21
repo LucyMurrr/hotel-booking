@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const AMENITIES_ENDPOINT = 'http://hexling.ru/api/amenities';
+const AMENITIES_ENDPOINT = 'https://hexling.ru/api/amenities';
 
 test.describe('API тесты для /amenities', () => {
   let response;

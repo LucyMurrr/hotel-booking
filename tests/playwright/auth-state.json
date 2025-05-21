@@ -2,7 +2,7 @@
   "cookies": [],
   "origins": [
     {
-      "origin": "http://hexling.ru",
+      "origin": "https://hexling.ru",
       "localStorage": [
         {
           "name": "token",
