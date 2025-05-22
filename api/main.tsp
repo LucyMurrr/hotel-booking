@@ -65,6 +65,7 @@ model Hotel {
   rating: float;
   @example(5)
   stars: int32;
+  photoSrc: string;
 }
 
 model HotelCreateDto {
@@ -72,6 +73,7 @@ model HotelCreateDto {
   description: string;
   rating: float;
   stars: int32;
+  photoSrc: string;
 }
 
 model HotelUpdateDto {
@@ -79,6 +81,7 @@ model HotelUpdateDto {
   description?: string;
   rating?: float;
   stars?: int32;
+  photoSrc?: string;
 }
 
 model HotelFilters {
