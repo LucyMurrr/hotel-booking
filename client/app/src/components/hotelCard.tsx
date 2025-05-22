@@ -13,6 +13,7 @@ type HotelCardProps = {
   description: string;
   rating: number;
   isFavorite: boolean;
+  photoSrc: string;
   toggleFavorite: (hotelId: number) => void;
 };
 
@@ -23,6 +24,7 @@ const HotelCard = ({
   description,
   rating,
   isFavorite,
+  photoSrc,
   toggleFavorite,
 }: HotelCardProps) => {
   const ratingColor = () => {
@@ -72,8 +74,7 @@ const HotelCard = ({
         <Flex gap={16} align="start">
           <Image
             alt={name}
-            // eslint-disable-next-line max-len
-            src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
+            src={`/hotel-images/${photoSrc}`}
             width={240}
             height={180}
             style={{
@@ -108,12 +109,14 @@ const HotelCard = ({
             </Flex>
 
             <Text
-              ellipsis={{ tooltip: description }}
               style={{
                 color: '#595959',
                 fontSize: 15,
                 lineHeight: 1.5,
+                height: '135px',
+                overflow: 'hidden',
               }}
+              ellipsis={{ expanded: true }}
             >
               {description}
             </Text>

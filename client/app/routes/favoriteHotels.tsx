@@ -148,6 +148,7 @@ const FavoriteHotels: React.FC<FavoriteHotelsProps> = ({
                 rating={hotel.rating}
                 id={hotel.id}
                 isFavorite={hotel.isFavorite}
+                photoSrc={hotel.photoSrc}
                 toggleFavorite={toggleFavorite}
               />
             ))}
