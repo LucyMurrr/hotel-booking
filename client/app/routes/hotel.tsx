@@ -199,7 +199,7 @@ const HotelPage = () => {
 
               <Col>
                 <Title level={4} style={{ margin: 0 }}>
-                  ${room.price} <Text type="secondary">/ ночь</Text>
+                  {room.price} ₽ <Text type="secondary">/ ночь</Text>
                 </Title>
 
                 <Button

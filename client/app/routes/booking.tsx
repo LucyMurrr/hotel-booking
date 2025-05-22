@@ -168,7 +168,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
             <Statistic
               title="Стоимость"
               value={totalPrice}
-              prefix="$"
+              prefix="₽"
               style={{ margin: '24px 0' }}
             />
 
@@ -191,7 +191,7 @@ const BookingPage = ({ loaderData }: Route.ComponentProps) => {
             <Statistic
               title="Итоговая стоимость"
               value={totalPrice}
-              prefix="$"
+              prefix="₽"
               style={{ marginBottom: 24 }}
             />
 

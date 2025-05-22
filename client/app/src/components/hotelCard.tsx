@@ -108,12 +108,14 @@ const HotelCard = ({
             </Flex>
 
             <Text
-              ellipsis={{ tooltip: description }}
               style={{
                 color: '#595959',
                 fontSize: 15,
                 lineHeight: 1.5,
+                height: '135px',
+                overflow: 'hidden',
               }}
+              ellipsis={{ expanded: true }}
             >
               {description}
             </Text>
