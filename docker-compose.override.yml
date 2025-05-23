@@ -12,6 +12,10 @@ services:
       HOST: "0.0.0.0"
     command: npm run dev
 
+  certbot:
+    profiles:
+      - cert # отключаем сервис для dev
+
   server:
     build:
       context: ./backend

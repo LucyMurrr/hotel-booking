@@ -30,4 +30,7 @@ public class HotelEntity {
 
     @Column(precision = 4, scale = 2)
     private BigDecimal rating;
+
+    @Column(name = "photo_src", nullable = false)
+    private String photoSrc;
 }

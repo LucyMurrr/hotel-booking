@@ -108,7 +108,7 @@ const HotelPage = () => {
             width={200}
             height={200}
             style={{ borderRadius: 8 }}
-            src="https://avatars.mds.yandex.net/i?id=3a4b25811801d377b6df70980e7c1591_l-8342740-images-thumbs&ref=rim&n=13&w=1920&h=1080"
+            src={`/hotel-images/${hotel.photoSrc}`}
             preview={false}
           />
         </Col>
@@ -199,7 +199,7 @@ const HotelPage = () => {
 
               <Col>
                 <Title level={4} style={{ margin: 0 }}>
-                  ${room.price} <Text type="secondary">/ ночь</Text>
+                  {room.price} ₽ <Text type="secondary">/ ночь</Text>
                 </Title>
 
                 <Button
