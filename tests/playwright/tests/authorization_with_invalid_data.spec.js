@@ -21,7 +21,6 @@ test('Авторизация с некорректным паролем', async 
   await page.goto(testData.page);
   await page.waitForLoadState('networkidle');
   await page.getByRole('button', { name: 'Войти' }).click();
-  await page.getByRole('button', { name: 'Войти' }).click();
   await page.locator('input[placeholder="Email"]').fill(testData.user.email);
   await page.locator('input[placeholder="Пароль"]').fill(testData.user.invalid_password);
   await page.locator('form').getByRole('button', { name: 'Войти' }).click();

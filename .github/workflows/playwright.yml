@@ -29,7 +29,7 @@ jobs:
       - name: Wait for site to be available
         run: |
           chmod +x tests/playwright/wait-for-run-tests.sh
-          ./tests/playwright/wait-for-run-tests.sh http://hexling.ru
+          ./tests/playwright/wait-for-run-tests.sh https://hexling.ru
 
       - name: Run Playwright tests
         env:
@@ -38,7 +38,7 @@ jobs:
           URL_FOR: ${{secrets.URL_FOR}}
         run: |
           cd tests/playwright
-          npx playwright test --trace on
+          npx playwright test --trace on --reporter=list
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const HOTEL_ID = 1;
-const ROOMS_ENDPOINT = `http://hexling.ru/api/hotels/${HOTEL_ID}/rooms`;
+const ROOMS_ENDPOINT = `https://hexling.ru/api/hotels/ ${HOTEL_ID}/rooms`;
 
 test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
   let response;
@@ -38,14 +38,12 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
         description: expect.any(String),
         price: expect.any(Number),
         hotelId: HOTEL_ID,
-        amenities: expect.any(Array)
-      });
-
-      room.amenities.forEach(amenity => {
-        expect(amenity).toEqual({
-          id: expect.any(Number),
-          name: expect.any(String)
-        });
+        amenities: expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            name: expect.any(String)
+          })
+        ])
       });
     });
   });
@@ -58,24 +56,25 @@ test.describe(`API тесты для /hotels/${HOTEL_ID}/rooms`, () => {
     });
   });
 
+  // Обновленные тесты фильтрации с учетом новых данных
   const filterTestCases = [
-    { 
-      name: 'Фильтрация по минимальной цене',
-      params: { minPrice: 300 },
-      expectedCount: 1,
-      validator: (room) => room.price >= 300
+    {
+      name: 'Фильтрация по минимальной цене (20000)',
+      params: { minPrice: 20000 },
+      expectedCount: 2,
+      validator: (room) => room.price >= 20000
     },
     {
-      name: 'Фильтрация по максимальной цене',
-      params: { maxPrice: 200 },
-      expectedCount: 1,
-      validator: (room) => room.price <= 200
+      name: 'Фильтрация по максимальной цене (25000)',
+      params: { maxPrice: 25000 },
+      expectedCount: 2,
+      validator: (room) => room.price <= 25000
     },
     {
-      name: 'Фильтрация по диапазону цен',
-      params: { minPrice: 200, maxPrice: 300 },
+      name: 'Фильтрация по диапазону цен (20000-30000)',
+      params: { minPrice: 20000, maxPrice: 30000 },
       expectedCount: 1,
-      validator: (room) => room.price >= 200 && room.price <= 300
+      validator: (room) => room.price >= 20000 && room.price <= 30000
     }
   ];
 

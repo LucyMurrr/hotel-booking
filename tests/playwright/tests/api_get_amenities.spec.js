@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const AMENITIES_ENDPOINT = 'http://hexling.ru/api/amenities';
+const AMENITIES_ENDPOINT = 'https://hexling.ru/api/amenities ';
 
 test.describe('API тесты для /amenities', () => {
   let response;
@@ -33,7 +33,7 @@ test.describe('API тесты для /amenities', () => {
   });
 
   test('Должен содержать обязательные удобства', () => {
-    const requiredAmenities = ['Wi-Fi', 'Air Conditioning', 'TV'];
+    const requiredAmenities = ['Wi-Fi', 'Кондиционер', 'Телевизор'];
     requiredAmenities.forEach((amenityName) => {
       expect(response.body.some((a) => a.name === amenityName)).toBeTruthy();
     });

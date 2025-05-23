@@ -3,7 +3,7 @@
 set -e
 
 URL="$1"
-MAX_RETRIES=30
+MAX_RETRIES=2
 RETRY_INTERVAL=10
 
 echo "Ожидание доступности $URL..."
