@@ -38,7 +38,7 @@ jobs:
           URL_FOR: ${{secrets.URL_FOR}}
         run: |
           cd tests/playwright
-          npx playwright test --trace on --reporter=list --verbose
+          npx playwright test --trace on --reporter=list
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
