@@ -1,10 +1,8 @@
-/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable react/prop-types */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import {

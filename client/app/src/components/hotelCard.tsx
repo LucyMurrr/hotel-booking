@@ -1,9 +1,14 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/jsx-indent */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Link } from 'react-router-dom';
 import {
-  Card, Rate, Typography, Image, Tag, Flex, Button,
+  Card, Rate, Typography, Image, Tag, Flex, Button, Grid,
 } from 'antd';
 import { StarFilled, HeartFilled, HeartOutlined } from '@ant-design/icons';
 
+const { useBreakpoint } = Grid;
 const { Title, Text } = Typography;
 
 type HotelCardProps = {
@@ -32,7 +37,7 @@ const HotelCard = ({
     if (rating >= 6) return '#faad14';
     return '#ff4d4f';
   };
-
+  const { md } = useBreakpoint();
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -40,51 +45,59 @@ const HotelCard = ({
   };
 
   return (
-    <Card
-      hoverable
-      style={{
-        width: '100%',
-        borderRadius: 8,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        marginBottom: 16,
-        position: 'relative',
-      }}
-    >
-      <Button
-        type="text"
-        onClick={handleFavoriteClick}
-        style={{
-          position: 'absolute',
-          top: 21,
-          right: 84,
-          zIndex: 1,
-          padding: 4,
-          height: 'auto',
-        }}
-        aria-label={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
-      >
-        {isFavorite ? (
-          <HeartFilled style={{ fontSize: 26, color: 'red' }} />
-        ) : (
-          <HeartOutlined style={{ fontSize: 26, color: '#bfbfbf' }} />
-        )}
-      </Button>
-
+<Card
+  hoverable
+  style={{
+    width: '100%',
+    borderRadius: 8,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    marginBottom: 16,
+  }}
+>
       <Link to={`/hotels/${String(id)}`}>
-        <Flex gap={16} align="start">
-          <Image
-            alt={name}
-            src={`/hotel-images/${photoSrc}`}
-            width={240}
-            height={180}
-            style={{
-              borderRadius: 4,
-              objectFit: 'cover',
-              flexShrink: 0,
-            }}
-            preview={false}
-          />
-
+        <Flex vertical={!md} gap={16} align="start">
+          <div style={{ position: 'relative', width: md ? 240 : '100%' }}>
+            <Image
+              alt={name}
+              src={`/hotel-images/${photoSrc}`}
+              width="100%"
+              height={180}
+              style={{
+                borderRadius: 4,
+                objectFit: 'cover',
+              }}
+              preview={false}
+            />
+            <Button
+              type="text"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleFavoriteClick(e);
+              }}
+              style={{
+                position: 'absolute',
+                top: 8,
+                left: 8,
+                zIndex: 2,
+                padding: 4,
+                background: 'rgba(255, 255, 255, 0.8)',
+                borderRadius: '50%',
+                width: 32,
+                height: 32,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              aria-label={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
+            >
+              {isFavorite ? (
+                <HeartFilled style={{ fontSize: 18, color: 'red' }} />
+              ) : (
+                <HeartOutlined style={{ fontSize: 18, color: '#bfbfbf' }} />
+              )}
+            </Button>
+          </div>
           <Flex vertical style={{ flex: 1 }} gap={12}>
             <Flex justify="space-between" align="start">
               <Title level={4} style={{ margin: 0 }}>
@@ -94,7 +107,6 @@ const HotelCard = ({
                 {rating.toFixed(1)}
               </Tag>
             </Flex>
-
             <Flex gap={8}>
               <Rate
                 character={<StarFilled />}
@@ -103,11 +115,9 @@ const HotelCard = ({
                 disabled
               />
               <Text type="secondary">
-                {/* eslint-disable-next-line no-nested-ternary */}
                 {stars} {stars === 1 ? 'звезда' : stars < 5 ? 'звезды' : 'звёзд'}
               </Text>
             </Flex>
-
             <Text
               style={{
                 color: '#595959',
@@ -123,7 +133,7 @@ const HotelCard = ({
           </Flex>
         </Flex>
       </Link>
-    </Card>
+</Card>
   );
 };
 
