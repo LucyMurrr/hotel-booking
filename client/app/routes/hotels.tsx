@@ -79,6 +79,7 @@ const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilter
         />
       </Flex>
       <Divider style={{ margin: '12px 0' }} />
+      <div>Рейтинг:</div>
       <Slider
         range
         min={0}
