@@ -291,6 +291,7 @@ public class CustomUsersApiDelegate implements UsersApiDelegate {
         dto.setDescription(entity.getDescription());
         dto.setStars(entity.getStars());
         dto.setRating(entity.getRating());
+        dto.setPhotoSrc(entity.getPhotoSrc());
         return dto;
     }
 

@@ -12,5 +12,6 @@ public interface FavoriteMapper {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "stars", source = "stars")
     @Mapping(target = "rating", source = "rating")
+    @Mapping(target = "photoSrc", source = "photoSrc")
     Hotel toDto(HotelEntity entity);
 }
