@@ -13,7 +13,7 @@ typecheck:
 build:
 	npm run build
 
-start:пше 
+start:
 	npm run start
 
 docker-dependencies-fix:
