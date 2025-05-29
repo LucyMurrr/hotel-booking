@@ -76,6 +76,7 @@ public class CustomFavoritesApiDelegate implements FavoritesApiDelegate {
         dto.setDescription(entity.getDescription());
         dto.setStars(entity.getStars());
         dto.setRating(entity.getRating());
+        dto.setPhotoSrc(entity.getPhotoSrc());
         return dto;
     }
 }
