@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
 // import { useRef } from 'react';
+import '@ant-design/v5-patch-for-react-19';
 import {
-  // isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
-  // Outlet,
   Scripts,
   ScrollRestoration,
 } from 'react-router';
@@ -34,13 +33,6 @@ export const Layout = ({ children }: { children: React.ReactNode }) => (
 export default function App() {
   return (
     <div>
-      {/* <AppHeader />
-      </div>
-      <div style={{ height: contentHeight, display: 'flex' }}>
-        <Outlet />
-      </div>
-      <div ref={footerRef}>
-        <AppFooter /> */}
       <AuthProvider>
         <Outlet />
       </AuthProvider>
@@ -59,16 +51,6 @@ export const ErrorBoundary = ({ error }: Route.ErrorBoundaryProps) => {
   const message = 'Oops!';
   const details = 'Сьто-то отшатнулось.';
   let stack: string | undefined;
-
-  // if (isRouteErrorResponse(error)) {
-  //   message = error.status === 404 ? '404' : 'Error';
-  //   details = error.status === 404
-  //     ? 'The requested page could not be found.'
-  //     : error.statusText || details;
-  // } else if (import.meta.env.DEV && error && error instanceof Error) {
-  //   details = error.message;
-  //   stack = error.stack;
-  // }
 
   return (
     <main className="pt-16 p-4 container mx-auto">

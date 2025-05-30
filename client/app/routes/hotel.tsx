@@ -71,7 +71,6 @@ const HotelPage = () => {
       } else {
         await client.createFavorite({ favoriteCreateDto: { hotelId: Number(hotelId) } });
       }
-      // setHotel((prevHotel) => prevHotel.isFavorite);
       setHotel(() => ({ ...hotel, isFavorite: !hotel.isFavorite }));
     } catch (err) {
       console.error('Ошибка обновления избранного:', err);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
@@ -13,6 +12,7 @@ import {
   Alert,
   Spin,
   Divider,
+  Grid,
 } from 'antd';
 import { StarFilled } from '@ant-design/icons';
 import client from '@api';
@@ -47,7 +47,8 @@ const starOptions = Array.from({ length: 5 }, (_, i) => {
 
 const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilters) => void }) => {
   const [localFilters, setLocalFilters] = useState<HotelFilters>({});
-
+  const { useBreakpoint } = Grid;
+  const { md } = useBreakpoint();
   const handleApply = () => {
     onFilterChange(localFilters);
   };
@@ -58,47 +59,44 @@ const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilter
   };
 
   return (
-    <Flex vertical>
+    <Flex vertical gap={md ? 24 : 16}>
       <Flex vertical gap={16}>
         <Select
-          placeholder="Мин. количество звезд"
+          placeholder="Мин. звезд"
           options={starOptions}
           value={localFilters.minStars}
           onChange={(value) => setLocalFilters((prev) => ({ ...prev, minStars: value }))}
+          size={md ? 'middle' : 'large'}
+          style={{ minWidth: md ? 200 : '100%' }}
         />
-
         <Select
-          placeholder="Макс. количество звезд"
+          placeholder="Макс. звезд"
           options={starOptions}
           value={localFilters.maxStars}
           onChange={(value) => setLocalFilters((prev) => ({ ...prev, maxStars: value }))}
+          size={md ? 'middle' : 'large'}
+          style={{ minWidth: md ? 200 : '100%' }}
         />
       </Flex>
-
-      <Divider />
-
-      <div>
-        <div>Рейтинг:</div>
-        <Slider
-          range
-          min={0}
-          max={10}
-          step={0.1}
-          value={[localFilters.minRating || 0, localFilters.maxRating || 10]}
-          onChange={(value) => setLocalFilters((prev) => ({
-            ...prev,
-            minRating: value[0],
-            maxRating: value[1],
-          }))}
-          marks={{
-            0: '0',
-            10: '10',
-          }}
-        />
-      </div>
-
-      <Divider />
-
+      <Divider style={{ margin: '12px 0' }} />
+      <div>Рейтинг:</div>
+      <Slider
+        range
+        min={0}
+        max={10}
+        step={0.1}
+        value={[localFilters.minRating || 0, localFilters.maxRating || 10]}
+        onChange={(value) => setLocalFilters((prev) => ({
+          ...prev,
+          minRating: value[0],
+          maxRating: value[1],
+        }))}
+        marks={{
+          0: '0',
+          10: '10',
+        }}
+      />
+      <Divider style={{ margin: '12px 0' }} />
       <Flex gap={8} vertical>
         <Button type="default" onClick={handleReset}>
           Сбросить
@@ -108,6 +106,7 @@ const FiltersForm = ({ onFilterChange }: { onFilterChange: (filters: HotelFilter
         </Button>
       </Flex>
     </Flex>
+
   );
 };
 
