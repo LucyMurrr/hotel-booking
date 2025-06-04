@@ -9,10 +9,10 @@ test('Отображение основных элементов страниц�
   await expect(hotelCards.first()).toBeVisible();
   expect(await hotelCards.count()).toBeGreaterThan(0);
   await expect(page.locator('.ant-pagination-item-active >> text=1')).toBeVisible();
-  await expect(page.locator('.ant-select-selection-placeholder:has-text("Мин. количество звезд")')).toBeVisible();
-  await expect(page.locator('.ant-select-selection-placeholder:has-text("Макс. количество звезд")')).toBeVisible();
+  await expect(page.locator('.ant-select-selection-placeholder:has-text("Мин. звезд")')).toBeVisible();
+  await expect(page.locator('.ant-select-selection-placeholder:has-text("Макс. звезд")')).toBeVisible();
   await expect(page.locator('.ant-slider')).toBeVisible();
-  await expect(page.locator('button:has-text("Сбросить")')).toBeVisible();
+  await expect(page.locator('button:has-text("Сбросить")')).toBeVisible()
   await expect(page.locator('button:has-text("Применить")')).toBeVisible();
   await page.getByRole('button', { name: 'user Профиль' }).click();
   await page.getByRole('link', { name: 'Выход' }).click();
